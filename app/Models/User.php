@@ -137,21 +137,21 @@ class User extends Authenticatable
         return (int)$this->id === (int)$id;
     }
 
-//    public function createToken(string $name, DateTimeInterface $expiresAt = NULL)
-//    {
-//        $plainTextToken = $this->generateTokenString();
-//
-//        $abilities = $this->getAbilities();
-//
-//        $token = $this->tokens()->create([
-//            'name' => $name,
-//            'token' => hash('sha256', $plainTextToken),
-//            'abilities' => $abilities,
-//            'expires_at' => $expiresAt,
-//        ]);
-//
-//        return new NewAccessToken($token, $token->getKey() . '|' . $plainTextToken);
-//    }
+    public function createToken(string $name, DateTimeInterface $expiresAt = NULL)
+    {
+        $plainTextToken = $this->generateTokenString();
+
+        $abilities = $this->getAbilities();
+
+        $token = $this->tokens()->create([
+            'name' => $name,
+            'token' => hash('sha256', $plainTextToken),
+            'abilities' => $abilities,
+            'expires_at' => $expiresAt,
+        ]);
+
+        return new NewAccessToken($token, $token->getKey() . '|' . $plainTextToken);
+    }
 
     public function getAbilities(): array
     {
