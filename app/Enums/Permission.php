@@ -37,4 +37,9 @@ enum Permission: string
     case JOB_REMOVE_MEMBER = 'remove-member-from-job';
     case JOB_UPDATE = 'update-job';
     case JOB_DELETE = 'delete-job';
+
+    public function resource(Resource $resource, $id): string
+    {
+        return $this->value.'_'.$resource->name.'_'.$id;
+    }
 }

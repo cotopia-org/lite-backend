@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Permission;
+use App\Enums\Resource;
 use App\Http\Resources\CalendarResource;
 use App\Http\Resources\JobResource;
 use App\Http\Resources\RoomListResource;
@@ -14,6 +16,7 @@ use App\Notifications\WorkspaceCreatedNotification;
 use App\Notifications\WorkspaceJoinedNotification;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class WorkspaceController extends Controller
 {
@@ -53,11 +56,14 @@ class WorkspaceController extends Controller
 
     public function get(Workspace $workspace)
     {
-        if (auth()->user()->can('get-'.$workspace->id)) {
-            return api(WorkspaceResource::make($workspace));
+        /** @var User $user */
+        $user = auth()->user();
+        $hasPerm = $user->can(Permission::WS_GET->value);
 
-        }
-        dd('Cant');
+        dd($hasPerm, $user->roles()->with('permissions')->get()->toArray());
+        abort_if(! $hasPerm, Response::HTTP_FORBIDDEN);
+
+        return api(WorkspaceResource::make($workspace));
     }
 
     public function create(Request $request)

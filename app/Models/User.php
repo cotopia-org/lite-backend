@@ -60,7 +60,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
         ];
     }
 
@@ -118,8 +118,7 @@ class User extends Authenticatable
         $abilities = $currentToken->abilities;
 
         foreach ($permissions as $permission) {
-            $abilities[] = $permission . '-' . $workspace->id;
-
+            $abilities[] = $permission.'-'.$workspace->id;
         }
 
         $currentToken->abilities = $abilities;
@@ -144,20 +143,19 @@ class User extends Authenticatable
         $abilities = $this->getAbilities();
 
         $token = $this->tokens()->create([
-            'name' => $name,
-            'token' => hash('sha256', $plainTextToken),
-            'abilities' => $abilities,
+            'name'       => $name,
+            'token'      => hash('sha256', $plainTextToken),
+            'abilities'  => $abilities,
             'expires_at' => $expiresAt,
         ]);
 
-        return new NewAccessToken($token, $token->getKey() . '|' . $plainTextToken);
+        return new NewAccessToken($token, $token->getKey().'|'.$plainTextToken);
     }
 
     public function getAbilities(): array
     {
-        $roleIds = $this->roles()->pluck('id');
-        $permIds = PermissionRole::whereIn('role_id', $roleIds)->distinct()->pluck('permission_id');
-        $perms = Permission::query()->whereIn('id', $permIds)->pluck('name');
+        $roles = $this->roles()->with('permissions')->get();
+        $perms = $roles->pluck('permissions')->flatten()->pluck('name');
 
         return $perms->toArray();
     }
