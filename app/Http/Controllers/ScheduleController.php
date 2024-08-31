@@ -18,17 +18,20 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
-class ScheduleController extends Controller {
+class ScheduleController extends Controller
+{
 
 
-    public function all() {
+    public function all()
+    {
 
 
         return api(ScheduleResource::collection(Schedule::orderByDesk('id')->get()));
 
     }
 
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
 
         $types = get_enum_values(AvailabilityType::cases());
         $days = get_enum_values(Days::cases());
@@ -45,7 +48,8 @@ class ScheduleController extends Controller {
 
         $schedule = auth()->user()->schedules()->create([
                                                             'availability_type'   => $request->availability_type,
-                                                            'days'                => json_encode($request->days, JSON_THROW_ON_ERROR),
+                                                            'days'                => json_encode($request->days,
+                                                                                                 JSON_THROW_ON_ERROR),
                                                             'start_time'          => $request->start_time ?? '08:00:00',
                                                             'end_time'            => $request->end_time ?? '18:00:00',
                                                             'is_recurrence'       => $request->is_recurrence ?? FALSE,
@@ -59,7 +63,8 @@ class ScheduleController extends Controller {
     }
 
 
-    public function update(Request $request, Schedule $schedule) {
+    public function update(Request $request, Schedule $schedule)
+    {
 
         if (auth()->user()->isOwner($schedule->user_id)) {
             $schedule->update($request->all());
@@ -70,7 +75,8 @@ class ScheduleController extends Controller {
     }
 
 
-    public function delete(Schedule $schedule) {
+    public function delete(Schedule $schedule)
+    {
 
         if (auth()->user()->isOwner($schedule->user_id)) {
             $schedule->delete();
