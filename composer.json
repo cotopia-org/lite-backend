@@ -16,7 +16,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/telescope": "^5.1",
         "laravel/tinker": "^2.9",
-        "predis/predis": "^2.0",
+        "predis/predis": "^2.2",
         "rakutentech/laravel-request-docs": "^2.38",
         "rap2hpoutre/laravel-log-viewer": "^2.4"
     },

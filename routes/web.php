@@ -11,6 +11,9 @@ Route::get('/', function () {
 
 Route::get('/tester', function () {
 
+
+    \App\Jobs\disconnectLivekitJob::dispatch(\App\Models\Room::first(), \App\Models\User::first());
+    dd('Here');
     return \App\Http\Resources\UserResource::make(\App\Models\User::first());
     dd($room->isUserInLk(\App\Models\User::find(3)));
     $host = config('livekit.host');
