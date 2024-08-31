@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Agence104\LiveKit\RoomServiceClient;
 use App\Http\Resources\RoomResource;
 use App\Http\Resources\UserResource;
+use App\Jobs\disconnectLivekitJob;
 use App\Models\Activity;
 use App\Models\Room;
 use App\Models\User;
@@ -132,15 +133,7 @@ class SocketController extends Controller {
             sendSocket(Constants::workspaceRoomUpdated, $room->workspace->channel, RoomResource::make($room));
 
 
-            if ($room->isUserInLk($user)) {
-                try {
-                    $host = config('livekit.host');
-                    $svc = new RoomServiceClient($host, config('livekit.apiKey'), config('livekit.apiSecret'));
-                    $svc->removeParticipant("$room->id", $user->username);
-                } catch (\Exception $e) {
-                    logger($e);
-                }
-            }
+            disconnectLivekitJob::dispatch($room, $user);
 
         }
         $user->left();
