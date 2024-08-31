@@ -23,7 +23,6 @@ class sendSocketJob implements ShouldQueue {
      * Execute the job.
      */
     public function handle(): void {
-        logger('Here,Socket Queue works');
 
         try {
 

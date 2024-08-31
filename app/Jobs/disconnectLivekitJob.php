@@ -27,7 +27,6 @@ class disconnectLivekitJob implements ShouldQueue {
      */
     public function handle(): void {
 
-        logger('Here,Queue works');
         $room_id = $this->room->id;
         if ($this->room->isUserInLk($this->user)) {
             try {
