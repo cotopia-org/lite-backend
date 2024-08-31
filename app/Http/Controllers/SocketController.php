@@ -133,9 +133,13 @@ class SocketController extends Controller {
 
 
             if ($room->isUserInLk($user)) {
-                $host = config('livekit.host');
-                $svc = new RoomServiceClient($host, config('livekit.apiKey'), config('livekit.apiSecret'));
-                $svc->removeParticipant("$room->id", $user->username);
+                try {
+                    $host = config('livekit.host');
+                    $svc = new RoomServiceClient($host, config('livekit.apiKey'), config('livekit.apiSecret'));
+                    $svc->removeParticipant("$room->id", $user->username);
+                } catch (\Exception $e) {
+                    logger($e);
+                }
             }
 
         }
