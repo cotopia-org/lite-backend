@@ -138,7 +138,7 @@ class WorkspaceController extends Controller
     {
 
 
-        $users = $workspace->users()->with('activities')->get();
+        $users = $workspace->users()->get();
         $d = [];
         foreach ($users as $user) {
             $d[] = collect($user->getTime('currentMonth', NULL, NULL, FALSE, $workspace->id));
