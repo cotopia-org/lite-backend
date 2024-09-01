@@ -7,7 +7,9 @@ use App\Http\Resources\RoomResource;
 use App\Http\Resources\UserResource;
 use App\Jobs\disconnectLivekitJob;
 use App\Models\Activity;
+use App\Models\Message;
 use App\Models\Room;
+use App\Models\Seen;
 use App\Models\User;
 use App\Utilities\Constants;
 use App\Utilities\EventType;
@@ -24,6 +26,23 @@ class SocketController extends Controller {
 
 
         return api(UserResource::make(auth()->user()));
+    }
+
+    public function seen(Message $message) {
+        $user = auth()->user();
+        $room = $message->room;
+        //        if (!$room->participants()->contains('id', $user->id)) {
+        //            return error('You cant seen this message');
+        //        }
+
+        Seen::firstOrCreate(['user_id' => $user->id, 'room_id' => $room->id, 'message_id' => $message->id]);
+
+        //        sendSocket(Constants::messageSeen, $message->room->channel, MessageResource::make($message));
+
+
+        return api(TRUE);
+
+
     }
 
     public function events(Request $request) {

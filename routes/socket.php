@@ -11,6 +11,8 @@ Route::prefix('socket')->group(function () {
             Route::post('/updateCoordinates', 'updateCoordinates');
             Route::post('/connected', 'connected');
             Route::get('/disconnected', 'disconnected');
+            Route::get('messages/{message}/seen', 'seen');
+
 
         });
     });
