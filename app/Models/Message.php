@@ -11,6 +11,8 @@ class Message extends Model {
 
     use SoftDeletes;
 
+    protected $with = ['seens'];
+
     protected $fillable = [
         'text',
         'room_id',
@@ -57,6 +59,9 @@ class Message extends Model {
     }
 
     public function saw($user) {
+        if ($user === NULL) {
+            return FALSE;
+        }
         return $this->seens->where('user_id', $user->id)->first() !== NULL;
 
     }

@@ -38,7 +38,7 @@ class SocketController extends Controller {
 
         Seen::firstOrCreate(['user_id' => $user->id, 'room_id' => $room->id, 'message_id' => $message->id]);
 
-        //        sendSocket(Constants::messageSeen, $message->room->channel, MessageResource::make($message));
+        //                sendSocket(Constants::messageSeen, $message->room->channel, MessageResource::make($message));
 
 
         return api(TRUE);
