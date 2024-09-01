@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Agence104\LiveKit\RoomServiceClient;
+use App\Http\Resources\MessageResource;
 use App\Http\Resources\RoomResource;
 use App\Http\Resources\UserResource;
 use App\Jobs\disconnectLivekitJob;
@@ -37,7 +38,7 @@ class SocketController extends Controller {
 
         Seen::firstOrCreate(['user_id' => $user->id, 'room_id' => $room->id, 'message_id' => $message->id]);
 
-        //        sendSocket(Constants::messageSeen, $message->room->channel, MessageResource::make($message));
+        sendSocket(Constants::messageSeen, $message->room->channel, MessageResource::make($message));
 
 
         return api(TRUE);
