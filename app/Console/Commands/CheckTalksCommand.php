@@ -30,7 +30,6 @@ class CheckTalksCommand extends Command
      */
     public function handle()
     {
-        logger('talk is working');
         $talks = Talk::where('created_at', '<=', now()->subMinutes(3))->whereNull('response')->get();
 
 

@@ -14,6 +14,12 @@ class TalkResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id'         => $this->id,
+            'user'       => UserMinimalResource::make($this->user),
+            'owner'      => UserMinimalResource::make($this->owner),
+            'response'   => $this->response,
+            'created_at' => $this->created_at,
+        ];
     }
 }
