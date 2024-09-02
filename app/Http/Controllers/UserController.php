@@ -6,6 +6,7 @@ use App\Http\Resources\ActivityResource;
 use App\Http\Resources\JobResource;
 use App\Http\Resources\RoomResource;
 use App\Http\Resources\ScheduleResource;
+use App\Http\Resources\TalkResource;
 use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\UserResource;
 use App\Models\File;
@@ -15,35 +16,42 @@ use App\Models\Workspace;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
 
-class UserController extends Controller {
-    public function me() {
+class UserController extends Controller
+{
+    public function me()
+    {
 
         return api(UserResource::make(auth()->user()));
     }
 
-    public function jobs() {
+    public function jobs()
+    {
         $user = auth()->user();
 
         return api(JobResource::collection($user->jobs()));
     }
 
 
-    public function workspaces() {
+    public function workspaces()
+    {
         $user = auth()->user();
 
         return api(JobResource::collection($user->workspaces()));
     }
 
-    public function search(Request $request) {
+    public function search(Request $request)
+    {
         //TODO: have to use meiliserach instead
         $search = $request->search;
         $users = User::where(function ($query) use ($search) {
-            $query->where('name', 'LIKE', $search . '%')->orWhere('username', 'LIKE', $search . '%')->orWhere('email', 'LIKE', $search . '%');
+            $query->where('name', 'LIKE', $search . '%')->orWhere('username', 'LIKE', $search . '%')
+                  ->orWhere('email', 'LIKE', $search . '%');
         })->get();
         return api(UserMinimalResource::collection($users));
     }
 
-    public function updateCoordinates(Request $request) {
+    public function updateCoordinates(Request $request)
+    {
         $user = auth()->user();
         $request->validate([
                                'coordinates' => 'required'
@@ -63,7 +71,8 @@ class UserController extends Controller {
 
     }
 
-    public function toggleMegaphone() {
+    public function toggleMegaphone()
+    {
         $user = auth()->user();
 
 
@@ -82,7 +91,8 @@ class UserController extends Controller {
     }
 
 
-    public function update(Request $request) {
+    public function update(Request $request)
+    {
         $user = auth()->user();
         $user->update([
                           'name' => $request->name ?? $user->name,
@@ -100,17 +110,25 @@ class UserController extends Controller {
         return api($response);
     }
 
-    public function activities(Request $request) {
+    public function activities(Request $request)
+    {
 
         return api(auth()->user()->getTime($request->period)['sum_minutes']);
     }
 
-    public function directs() {
+    public function directs()
+    {
         return api(RoomResource::collection(auth()->user()->directs()));
     }
 
 
-    public function schedules() {
+    public function talks()
+    {
+        return api(TalkResource::collection(auth()->user()->talks));
+    }
+
+    public function schedules()
+    {
         return api(ScheduleResource::collection(auth()->user()->schedules));
     }
 

@@ -12,6 +12,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\TalkController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkspaceController;
 use Illuminate\Support\Facades\Route;
@@ -27,7 +28,7 @@ Route::controller(AuthController::class)->prefix('auth')->group(function () {
     Route::post('/checkUsername', 'checkUsername');
 });
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(callback: function () {
     Route::apiResource('notifications', NotificationController::class);
 
     Route::apiResource('calendars', CalendarController::class);
@@ -49,6 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/directs', 'directs');
         Route::get('/jobs', 'directs');
         Route::get('/schedules', 'schedules');
+        Route::get('/talks', 'talks');
         Route::get('/', 'all');
         Route::post('/', 'update');
         Route::post('/updateCoordinates', 'updateCoordinates');
@@ -115,6 +117,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{job}', 'get');
         Route::put('/{job}', 'update');
         Route::delete('/{job}', 'delete');
+
+    });
+
+
+    Route::controller(TalkController::class)->prefix('talks')->group(function () {
+        Route::post('/', 'talk');
+        Route::get('/{talk}', 'respond');
 
     });
 

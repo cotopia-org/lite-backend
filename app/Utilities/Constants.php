@@ -4,7 +4,8 @@ namespace App\Utilities;
 
 use App\Enums\Permission;
 
-class Constants {
+class Constants
+{
     public const ROLE_PERMISSIONS = [
         'member'      => [
             Permission::WS_GET,
@@ -52,5 +53,12 @@ class Constants {
     const messagePinned = 'messagePinned';
     const messageSeen = 'messageSeen';
     const workspaceRoomUpdated = 'workspaceRoomUpdated';
+    const talkCreated = 'talkCreated';
+    const  talkResponded = 'talkResponded';
+    const  talkExpired = 'talkExpired';
+    const  ACCEPTED = 'accepted';
+    const  REJECTED = 'rejected';
+    const  LATER = 'later';
+    const  NO_RESPONSE = 'no_response';
 
 }
