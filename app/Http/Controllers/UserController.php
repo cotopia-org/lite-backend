@@ -91,6 +91,19 @@ class UserController extends Controller
     }
 
 
+    public function unGhost()
+    {
+        $user = auth()->user();
+        $user->update([
+                          'status' => Constants::ONLINE,
+                      ]);
+        $response = UserMinimalResource::make($user);
+
+        sendSocket(Constants::userUpdated, $user->room->channel, $response);
+        return api($response);
+
+    }
+
     public function update(Request $request)
     {
         $user = auth()->user();

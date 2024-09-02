@@ -51,6 +51,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/jobs', 'directs');
         Route::get('/schedules', 'schedules');
         Route::get('/talks', 'talks');
+        Route::get('/unGhost', 'unGhost');
         Route::get('/', 'all');
         Route::post('/', 'update');
         Route::post('/updateCoordinates', 'updateCoordinates');
@@ -123,7 +124,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
 
     Route::controller(TalkController::class)->prefix('talks')->group(function () {
         Route::post('/', 'talk');
-        Route::get('/{talk}', 'respond');
+        Route::post('/{talk}', 'respond');
 
     });
 

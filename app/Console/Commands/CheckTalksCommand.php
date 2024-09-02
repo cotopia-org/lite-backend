@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Http\Resources\TalkResource;
+use App\Http\Resources\UserMinimalResource;
+use App\Http\Resources\UserResource;
 use App\Models\Talk;
 use App\Utilities\Constants;
 use Illuminate\Console\Command;
@@ -28,6 +30,7 @@ class CheckTalksCommand extends Command
      */
     public function handle()
     {
+        logger('talk is working');
         $talks = Talk::where('created_at', '<=', now()->subMinutes(3))->whereNull('response')->get();
 
 
@@ -37,6 +40,17 @@ class CheckTalksCommand extends Command
                               'response' => Constants::NO_RESPONSE
                           ]);
 
+
+            $user = $talk->user;
+            $user->update([
+                              'status' => Constants::GHOST,
+
+                          ]);
+
+            if ($user->room !== NULL) {
+                sendSocket(Constants::userUpdated, $user->room->channel, UserMinimalResource::make($user));
+
+            }
 
             sendSocket(Constants::talkExpired, $talk->owner->socket_id, TalkResource::make($talk));
 

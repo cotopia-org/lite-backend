@@ -38,6 +38,7 @@ class Constants
     const SCHEDULE_DATE_FORMAT = 'H:i:s';
     const ONLINE = 'online';
     const OFFLINE = 'offline';
+    const GHOST = 'ghost';
 
     const API_SUCCESS_MSG = 'success';
     const API_FAILED_MSG = 'failed';
