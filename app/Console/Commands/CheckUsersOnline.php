@@ -3,13 +3,13 @@
 namespace App\Console\Commands;
 
 use App\Http\Resources\RoomResource;
+use App\Http\Resources\UserMinimalResource;
 use App\Models\Room;
 use App\Models\User;
 use App\Utilities\Constants;
 use Illuminate\Console\Command;
 
-class CheckUsersOnline extends Command
-{
+class CheckUsersOnline extends Command {
     /**
      * The name and signature of the console command.
      *
@@ -27,8 +27,7 @@ class CheckUsersOnline extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
-    {
+    public function handle() {
         $rooms = Room::whereNotNull('workspace_id')->get();
         foreach ($rooms as $room) {
             foreach ($room->lkUsers() as $lkUser) {
@@ -58,6 +57,12 @@ class CheckUsersOnline extends Command
 
 
                     sendSocket(Constants::roomUpdated, $room->channel, $res);
+
+                    sendSocket(Constants::userJoinedToRoom, $room->workspace->channel, [
+                        'room_id' => $room->id,
+                        'user'    => UserMinimalResource::make($user)
+                    ]);
+
                 }
 
 

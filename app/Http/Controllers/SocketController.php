@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Agence104\LiveKit\RoomServiceClient;
 use App\Http\Resources\MessageResource;
 use App\Http\Resources\RoomResource;
+use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\UserResource;
 use App\Jobs\disconnectLivekitJob;
 use App\Models\Activity;
@@ -150,6 +151,13 @@ class SocketController extends Controller {
 
 
         if ($room !== NULL) {
+
+
+            sendSocket(Constants::userLeftFromRoom, $room->workspace->channel, [
+                'room_id' => $room_id,
+                'user'    => UserMinimalResource::make($user)
+            ]);
+
             sendSocket(Constants::workspaceRoomUpdated, $room->workspace->channel, RoomResource::make($room));
 
 

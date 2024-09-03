@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Agence104\LiveKit\RoomServiceClient;
 use App\Http\Resources\MessageResource;
 use App\Http\Resources\RoomResource;
+use App\Http\Resources\UserMinimalResource;
 use App\Models\File;
 use App\Models\Room;
 use App\Models\Seen;
@@ -89,13 +90,22 @@ class RoomController extends Controller {
         if ($before_room !== NULL) {
             $before_room = Room::find($before_room);
             sendSocket(Constants::roomUpdated, $before_room->channel, RoomResource::make($before_room));
-            sendSocket(Constants::workspaceRoomUpdated, $room->workspace->channel, RoomResource::make($before_room));
+            sendSocket(Constants::workspaceRoomUpdated, $before_room->workspace->channel, RoomResource::make($before_room));
 
-
+            sendSocket(Constants::userLeftFromRoom, $before_room->workspace->channel, [
+                'room_id' => $before_room->id,
+                'user'    => UserMinimalResource::make($user)
+            ]);
         }
 
         sendSocket(Constants::roomUpdated, $room->channel, $res);
         sendSocket(Constants::workspaceRoomUpdated, $room->workspace->channel, $res);
+
+
+        sendSocket(Constants::userJoinedToRoom, $room->workspace->channel, [
+            'room_id' => $room->id,
+            'user'    => UserMinimalResource::make($user)
+        ]);
 
 
         return api($res);
