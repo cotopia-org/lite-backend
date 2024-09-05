@@ -21,6 +21,7 @@ class MessageResource extends JsonResource {
             'room_id'    => $this->room_id,
             'seen'       => $this->saw(auth()->user()),
             //TODO: has to have another req for seens
+            'nonce_id'   => $this->nonce_id,
             'is_edited'  => $this->is_edited,
             'is_pinned'  => $this->is_pinned,
             'reply_to'   => self::make($this->replyTo),

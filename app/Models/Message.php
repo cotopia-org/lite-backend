@@ -23,7 +23,7 @@ class Message extends Model {
         'created_at',
         'deleted_at',
         'updated_at',
-        'is_replied_to_deleted',
+        'nonce_id',
     ];
 
     public function room() {

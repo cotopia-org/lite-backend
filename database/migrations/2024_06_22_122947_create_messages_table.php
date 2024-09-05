@@ -20,6 +20,9 @@ return new class () extends Migration {
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('room_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
 
+
+
+            $table->string('nonce_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

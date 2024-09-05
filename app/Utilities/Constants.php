@@ -51,6 +51,7 @@ class Constants {
     const messageUpdated = 'messageUpdated';
     const messageDeleted = 'messageDeleted';
     const messagePinned = 'messagePinned';
+    const messageUnPinned = 'messageUnPinned';
     const messageSeen = 'messageSeen';
     const workspaceRoomUpdated = 'workspaceRoomUpdated';
     const talkCreated = 'talkCreated';

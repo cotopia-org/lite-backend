@@ -46,6 +46,7 @@ class MessageController extends Controller {
                                        'reply_to' => $request->reply_to,
                                        'user_id'  => $user->id,
                                        'room_id'  => $room->id,
+                                       'nonce_id'  => $request->nonce_id,
                                    ]);
 
         if ($request->mentions) {
@@ -151,7 +152,7 @@ class MessageController extends Controller {
 
         $message->update(['is_pinned' => FALSE]);
 
-        sendSocket(Constants::messagePinned, $message->room->channel, MessageResource::make($message));
+        sendSocket(Constants::messageUnPinned, $message->room->channel, MessageResource::make($message));
 
     }
 
