@@ -17,8 +17,10 @@ use App\Utilities\Constants;
 use App\Utilities\EventType;
 use Illuminate\Http\Request;
 
-class SocketController extends Controller {
-    public function connected(Request $request) {
+class SocketController extends Controller
+{
+    public function connected(Request $request)
+    {
 
         $user = auth()->user();
         $user->update([
@@ -30,24 +32,9 @@ class SocketController extends Controller {
         return api(UserResource::make(auth()->user()));
     }
 
-    public function seen(Message $message) {
-        $user = auth()->user();
-        $room = $message->room;
-        //        if (!$room->participants()->contains('id', $user->id)) {
-        //            return error('You cant seen this message');
-        //        }
 
-        Seen::firstOrCreate(['user_id' => $user->id, 'room_id' => $room->id, 'message_id' => $message->id]);
-
-        //                sendSocket(Constants::messageSeen, $message->room->channel, MessageResource::make($message));
-
-
-        return api(TRUE);
-
-
-    }
-
-    public function events(Request $request) {
+    public function events(Request $request)
+    {
 
         try {
 
@@ -117,7 +104,8 @@ class SocketController extends Controller {
     }
 
 
-    public function updateCoordinates(Request $request) {
+    public function updateCoordinates(Request $request)
+    {
 
         $user = auth()->user();
 
@@ -131,7 +119,8 @@ class SocketController extends Controller {
 
     }
 
-    public function disconnected() {
+    public function disconnected()
+    {
 
         $user = auth()->user();
         $request = \request();

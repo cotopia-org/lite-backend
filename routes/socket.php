@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\SocketController;
 use Illuminate\Support\Facades\Route;
 
@@ -11,10 +12,24 @@ Route::prefix('socket')->group(function () {
             Route::post('/updateCoordinates', 'updateCoordinates');
             Route::post('/connected', 'connected');
             Route::get('/disconnected', 'disconnected');
-            Route::get('messages/{message}/seen', 'seen');
 
 
         });
+
+
+        Route::controller(MessageController::class)->prefix('messages')->group(function () {
+
+            Route::post('/', 'send');
+            Route::put('/{message:nonce_id}', 'update');
+            Route::delete('/{message:nonce_id}', 'delete');
+
+            Route::get('/{message}/seen', 'seen');
+            Route::get('/{message:nonce_id}/pin', 'pin');
+            Route::get('/{message:nonce_id}/unPin', 'unPin');
+
+
+        });
+
     });
 
     Route::controller(SocketController::class)->group(function () {
