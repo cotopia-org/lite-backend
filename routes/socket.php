@@ -23,7 +23,7 @@ Route::prefix('socket')->group(function () {
             Route::put('/{message:nonce_id}', 'update');
             Route::delete('/{message:nonce_id}', 'delete');
 
-            Route::get('/{message}/seen', 'seen');
+            Route::get('/{message:nonce_id}/seen', 'seen');
             Route::get('/{message:nonce_id}/pin', 'pin');
             Route::get('/{message:nonce_id}/unPin', 'unPin');
 
