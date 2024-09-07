@@ -19,6 +19,7 @@ class MessageResource extends JsonResource {
             'text'       => $this->deleted_at === NULL ? $this->text : 'This message has been deleted',
             'files'      => FileResource::collection($this->files),
             'room_id'    => $this->room_id,
+            'is_direct'  => $this->room->isDirectRoom(),
             'seen'       => $this->saw(auth()->user()),
             //TODO: has to have another req for seens
             'nonce_id'   => (int)$this->nonce_id,
