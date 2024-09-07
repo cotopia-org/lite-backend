@@ -35,7 +35,7 @@ class UserResource extends JsonResource {
             'screenshare_size'        => $this->screenshare_size,
             'video_coordinates'       => $this->video_coordinates,
             'video_size'              => $this->video_size,
-            'last_login'              => $last_login?->joined_at
+            'last_login'              => $last_login?->join_at
         ];
     }
 }

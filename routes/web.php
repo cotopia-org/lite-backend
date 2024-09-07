@@ -13,14 +13,8 @@ Route::get('/', function () {
 
 Route::get('/tester', function () {
 
-    $connection = new AMQPStreamConnection('aa806ae2-6ce3-4074-a993-bf0620841149.hsvc.ir', 30255, 'rabbitmq', 'gUVi7ebl89iqzQMltbiPbXYvTUVxfbY1');
-    $channel = $connection->channel();
-
-
-    $msg = new AMQPMessage('HELLOO TEST');
-
-
-    dd($channel->basic_publish($msg, 'tester'));
+    $user = \App\Models\User::first();
+    return \App\Http\Resources\UserMinimalResource::make($user);
 
 });
 Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
