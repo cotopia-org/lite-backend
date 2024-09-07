@@ -12,6 +12,8 @@ class UserResource extends JsonResource {
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array {
+
+        $last_login = $this->activities()->orderBy('id', 'DESC')->first();
         return [
             'id'                      => $this->id,
             'name'                    => $this->name,
@@ -33,7 +35,7 @@ class UserResource extends JsonResource {
             'screenshare_size'        => $this->screenshare_size,
             'video_coordinates'       => $this->video_coordinates,
             'video_size'              => $this->video_size,
-            'last_login'              => $this->activities()->orderBy('id', 'DESC')->first()?->joined_at
+            'last_login'              => $last_login?->joined_at
         ];
     }
 }
