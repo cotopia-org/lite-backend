@@ -130,6 +130,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
 
 
     Route::controller(ReportController::class)->prefix('reports')->group(function () {
+        Route::get('/', 'all');
         Route::post('/', 'create');
 
     });

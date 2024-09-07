@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ReportResource;
 use App\Models\Message;
+use App\Models\Report;
 use App\Models\Room;
 use App\Models\User;
 use App\Models\Workspace;
@@ -11,6 +12,14 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
+    public function all()
+    {
+
+
+        return api(ReportResource::collection(Report::all()));
+
+    }
+
     public function create(Request $request)
     {
 
