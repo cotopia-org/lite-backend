@@ -60,7 +60,17 @@ class ScheduleController extends Controller {
     public function update(Request $request, Schedule $schedule) {
 
         if (auth()->user()->isOwner($schedule->user_id)) {
-            $schedule->update($request->all());
+
+            $timezone = $request->timezone ?? 'Asia/Tehran';
+
+            $schedule->update([
+                                  'availability_type'   => $schedule->availability_type,
+                                  'days'                => json_encode($request->days, JSON_THROW_ON_ERROR),
+                                  'is_recurrence'       => $request->is_recurrence ?? FALSE,
+                                  'recurrence_start_at' => $request->recurrence_start_at ?? now()->timezone($timezone),
+                                  'recurrence_end_at'   => $request->recurrence_end_at,
+                                  'timezone'            => $timezone,
+                              ]);
         }
 
 
