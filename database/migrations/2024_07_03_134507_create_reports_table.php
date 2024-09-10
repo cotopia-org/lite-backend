@@ -21,6 +21,9 @@ return new class extends Migration {
 
             $table->nullableMorphs('reportable');
 
+            $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+
+
             $table->timestamps();
         });
     }

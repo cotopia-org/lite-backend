@@ -12,12 +12,18 @@ class Report extends Model
         'description',
         'type',
         'reportable_type',
-        'reportable_id'
+        'reportable_id',
+        'user_id'
     ];
 
     public function files()
     {
         return $this->morphMany(File::class, 'fileable');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function reportable()
