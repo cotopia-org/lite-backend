@@ -15,6 +15,10 @@ class Report extends Model
         'reportable_id'
     ];
 
+    public function files()
+    {
+        return $this->morphMany(File::class, 'fileable');
+    }
 
     public function reportable()
     {

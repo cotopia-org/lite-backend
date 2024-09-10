@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ReportResource;
+use App\Models\File;
 use App\Models\Message;
 use App\Models\Report;
 use App\Models\Room;
