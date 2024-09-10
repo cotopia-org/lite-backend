@@ -35,7 +35,12 @@ class ReportController extends Controller
                                                'reportable_type' => $models($request->model_type),
                                                'reportable_id'   => $request->model_id,
                                            ]);
+        if ($request->get('files')) {
+            foreach ($request->get('files') as $file) {
+                File::syncFile($file, $report);
 
+            }
+        }
 
         return api(ReportResource::make($report));
 

@@ -180,6 +180,10 @@ class User extends Authenticatable
         return (int) $this->id === (int) $id;
     }
 
+    public function reports() {
+        return $this->hasMany(Report::class);
+    }
+
     public function createToken(string $name, $abilities = [], $expiresAt = NULL): NewAccessToken
     {
         $plainTextToken = $this->generateTokenString();
