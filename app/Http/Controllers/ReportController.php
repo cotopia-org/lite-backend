@@ -40,7 +40,7 @@ class ReportController extends Controller
         ];
         $report = $user->reports()->create([
                                                'title'           => $request->title,
-                                               'description'     => $request->descritpion,
+                                               'description'     => $request->description,
                                                'type'            => $request->type,
                                                'reportable_type' => $models[$request->model_type],
                                                'reportable_id'   => $request->model_id,

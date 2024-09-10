@@ -17,11 +17,10 @@ return new class extends Migration {
             $table->string('title');
             $table->text('description');
             $table->string('type')->nullable();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
 
 
             $table->nullableMorphs('reportable');
-
-            $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
 
 
             $table->timestamps();
