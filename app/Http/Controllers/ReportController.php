@@ -42,7 +42,7 @@ class ReportController extends Controller
                                                'title'           => $request->title,
                                                'description'     => $request->descritpion,
                                                'type'            => $request->type,
-                                               'reportable_type' => $models($request->model_type),
+                                               'reportable_type' => $models[$request->model_type],
                                                'reportable_id'   => $request->model_id,
                                            ]);
         if ($request->get('files')) {
