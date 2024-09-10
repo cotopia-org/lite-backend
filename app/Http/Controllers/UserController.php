@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ActivityResource;
+use App\Http\Resources\ChatResource;
 use App\Http\Resources\JobResource;
 use App\Http\Resources\RoomResource;
 use App\Http\Resources\ScheduleResource;
@@ -143,6 +144,12 @@ class UserController extends Controller
     public function schedules()
     {
         return api(ScheduleResource::collection(auth()->user()->schedules));
+    }
+
+
+    public function chats()
+    {
+        return ChatResource::collection(auth()->user()->chats);
     }
 
 }

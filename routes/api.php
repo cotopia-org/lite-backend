@@ -113,6 +113,13 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::delete('/{message}', 'delete');
     });
 
+
+
+
+
+
+
+
     Route::controller(JobController::class)->prefix('jobs')->group(function () {
         Route::post('/', 'create');
         Route::get('/{job}', 'get');

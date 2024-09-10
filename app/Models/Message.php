@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Redirect;
 
-class Message extends Model {
+class Message extends Model
+{
 
 
     use SoftDeletes;
@@ -24,41 +25,58 @@ class Message extends Model {
         'deleted_at',
         'updated_at',
         'nonce_id',
+        'chat_id',
     ];
 
-    public function room() {
+
+    public function chat()
+    {
+        return $this->belongsTo(Chat::class);
+
+    }
+
+    public function room()
+    {
         return $this->belongsTo(Room::class);
     }
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function replyTo() {
+    public function replyTo()
+    {
         return $this->belongsTo(__CLASS__, 'reply_to');
     }
 
-    public function files() {
+    public function files()
+    {
         return $this->morphMany(File::class, 'fileable');
     }
 
-    public function mentions() {
+    public function mentions()
+    {
         return $this->hasMany(Mention::class);
     }
 
-    public function replies() {
+    public function replies()
+    {
         return $this->hasMany(__CLASS__, 'reply_to');
     }
 
-    public function seens() {
+    public function seens()
+    {
         return $this->hasMany(Seen::class);
     }
 
-    public function links() {
+    public function links()
+    {
         return $this->hasMany(Link::class);
     }
 
-    public function saw($user) {
+    public function saw($user)
+    {
         if ($user === NULL) {
             return FALSE;
         }

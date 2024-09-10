@@ -180,7 +180,8 @@ class User extends Authenticatable
         return (int) $this->id === (int) $id;
     }
 
-    public function reports() {
+    public function reports()
+    {
         return $this->hasMany(Report::class);
     }
 
@@ -199,6 +200,10 @@ class User extends Authenticatable
         return new NewAccessToken($token, $token->getKey() . '|' . $plainTextToken);
     }
 
+    public function chats()
+    {
+        return $this->belongsToMany(Chat::class);
+    }
 
     public function lastActivity()
     {

@@ -8,7 +8,8 @@ return new class () extends Migration {
     /**
      * Run the migrations.
      */
-    public function up(): void {
+    public function up(): void
+    {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
             $table->text('text');
@@ -19,7 +20,7 @@ return new class () extends Migration {
 
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('room_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
-
+            $table->foreignId('chat_id')->nullable()->constrained()->onDelete('cascade')->onUpdate('cascade');
 
 
             $table->string('nonce_id')->nullable();
@@ -31,7 +32,8 @@ return new class () extends Migration {
     /**
      * Reverse the migrations.
      */
-    public function down(): void {
+    public function down(): void
+    {
         Schema::dropIfExists('messages');
     }
 };
