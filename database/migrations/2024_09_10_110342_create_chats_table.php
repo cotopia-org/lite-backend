@@ -16,10 +16,12 @@ return new class extends Migration {
 
             $table->string('title');
             $table->boolean('active')->default(TRUE);
-            $table->boolean('is_private')->default(FALSE);
+            $table->enum('type', ['direct', 'group', 'channel']);
             $table->string('password')->nullable();
-            $table->string('status')->nullable();
+
+
             $table->foreignId('workspace_id')->nullable()->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
 
 
             $table->timestamps();

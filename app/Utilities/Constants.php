@@ -4,7 +4,8 @@ namespace App\Utilities;
 
 use App\Enums\Permission;
 
-class Constants {
+class Constants
+{
     public const ROLE_PERMISSIONS = [
         'member'      => [
             Permission::WS_GET,
@@ -28,8 +29,9 @@ class Constants {
             Permission::ALL,
         ],
     ];
-
-
+    const DIRECT = 'direct';
+    const GROUP = 'group';
+    const CHANNEL = 'channel';
     const JOINED = 'participant_joined';
     const LEFT = 'participant_left';
 

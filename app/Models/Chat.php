@@ -11,16 +11,52 @@ class Chat extends Model
     protected $fillable = [
         'title',
         'active',
-        'is_private',
+        'type',
         'password',
-        'status',
         'workspace_id',
+        'user_id',
     ];
 
 
+    public function lastMessage()
+    {
+        return $this->messages()->orderByDesc('id')
+                    ->first();
+
+    }
+
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     public function participants()
     {
-        return $this->belongsToMany(User::class, 'chat_user');
+        if ($this->type === 'direct') {
+            return User::find(explode('-', $this->title));
+
+        }
+
+
+        if ($this->type === 'group' && $this->workspace_id !== NULL) {
+            return $this->workspace()->users;
+
+        }
+
+        return $this->users;
+    }
+
+
+    public function unSeens($user)
+    {
+        // Messages that pinned and not seen
+        // Message that user mentioned and not seen
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class)->withPivot('role');
     }
 
 

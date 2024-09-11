@@ -14,6 +14,14 @@ class ChatResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id'           => $this->id,
+            'title'        => $this->title,
+            'workspace_id' => $this->workspace_id,
+            'participants' => UserMinimalResource::collection($this->participants()),
+
+            'last_message' => MessageResource::make($this->lastMessage),
+            'unseens'      => $this->unSeens(),
+        ];
     }
 }
