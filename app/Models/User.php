@@ -13,8 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Sanctum\NewAccessToken;
 
-class User extends Authenticatable
-{
+class User extends Authenticatable {
     use HasFactory, Notifiable, HasApiTokens, Settingable;
 
     /**
@@ -62,8 +61,7 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
+    protected function casts(): array {
         return [
             'email_verified_at' => 'datetime',
             'password'          => 'hashed',
@@ -71,67 +69,66 @@ class User extends Authenticatable
     }
 
 
-    public static function byUsername($username)
-    {
-        return self::where('username', $username)->firstOrFail();
+    public static function byUsername($username) {
+        return self::where('username', $username)
+                   ->firstOrFail();
 
     }
 
-    public function avatar()
-    {
+    public function avatar() {
         return $this->morphOne(File::class, 'fileable');
     }
 
-    public function workspaces()
-    {
-        return $this->belongsToMany(Workspace::class)->withPivot('role', 'tag_id');
+    public function workspaces() {
+        return $this
+            ->belongsToMany(Workspace::class)
+            ->withPivot('role', 'tag_id');
     }
 
-    public function room()
-    {
+    public function room() {
         return $this->belongsTo(Room::class);
     }
 
-    public function activities()
-    {
+    public function activities() {
         return $this->hasMany(Activity::class);
     }
 
-    public function messages()
-    {
+    public function messages() {
         return $this->hasMany(Message::class);
     }
 
 
-    public function workspace()
-    {
+    public function workspace() {
         return $this->belongsTo(Workspace::class);
     }
 
-    public function jobs()
-    {
-        return $this->belongsToMany(Job::class)->withPivot('role');
+    public function jobs() {
+        return $this
+            ->belongsToMany(Job::class)
+            ->withPivot('role');
     }
 
-    public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(Role::class)->withPivot('workspace_id', 'room_id');
+    public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany {
+        return $this
+            ->belongsToMany(Role::class)
+            ->withPivot('workspace_id', 'room_id');
     }
 
-    public function directs()
-    {
-        return Room::where('title', 'regexp', "[[:<:]]$this->id[[:>:]]")->get();
-    }
-
-
-    public function isSuperAdmin($workspace)
-    {
-        return $this->roles->where('title', 'super-admin')->where('workspace_id', $workspace->id)->first() !== NULL;
+    public function directs() {
+        return Room::where('title', 'regexp', "[[:<:]]$this->id[[:>:]]")
+                   ->get();
     }
 
 
-    public function checkIsInRoomForReal()
-    {
+    public function isSuperAdmin($workspace) {
+        return $this->roles
+                   ->where('title', 'super-admin')
+                   ->where('workspace_id', $workspace->id)
+                   ->first() !== NULL;
+    }
+
+
+    public function checkIsInRoomForReal() {
 
 
         if ($this->room_id === NULL) {
@@ -140,12 +137,12 @@ class User extends Authenticatable
 
     }
 
-    public function giveRole($role, $workspace_id, $attach = TRUE)
-    {
+    public function giveRole($role, $workspace_id, $attach = TRUE) {
 
 
         if (!$role instanceof Role) {
-            $role = Role::where('title', $role)->firstOrFail();
+            $role = Role::where('title', $role)
+                        ->firstOrFail();
 
         }
         $permissions = $role->permissions;
@@ -162,58 +159,62 @@ class User extends Authenticatable
 
 
         if ($attach) {
-            $this->roles()->attach($role, [
-                'workspace_id' => $workspace_id,
-                //                'room_id'      => $room?->id,
-            ]);
+            $this
+                ->roles()
+                ->attach($role, [
+                    'workspace_id' => $workspace_id,
+                    //                'room_id'      => $room?->id,
+                ]);
         }
     }
 
 
-    public function mentionedBy()
-    {
+    public function mentions() {
+        return $this->morphMany(Mention::class, 'mentionable');
+    }
+
+    public function mentionedBy() {
         return $this->username;
     }
 
-    public function isOwner($id): bool
-    {
-        return (int) $this->id === (int) $id;
+    public function isOwner($id): bool {
+        return (int)$this->id === (int)$id;
     }
 
-    public function reports()
-    {
+    public function reports() {
         return $this->hasMany(Report::class);
     }
 
-    public function createToken(string $name, $abilities = [], $expiresAt = NULL): NewAccessToken
-    {
+    public function createToken(string $name, $abilities = [], $expiresAt = NULL): NewAccessToken {
         $plainTextToken = $this->generateTokenString();
 
         $abilities = $this->getAbilities();
-        $token = $this->tokens()->create([
-                                             'name'       => $name,
-                                             'token'      => hash('sha256', $plainTextToken),
-                                             'abilities'  => $abilities,
-                                             'expires_at' => $expiresAt,
-                                         ]);
+        $token = $this
+            ->tokens()
+            ->create([
+                         'name'       => $name,
+                         'token'      => hash('sha256', $plainTextToken),
+                         'abilities'  => $abilities,
+                         'expires_at' => $expiresAt,
+                     ]);
 
         return new NewAccessToken($token, $token->getKey() . '|' . $plainTextToken);
     }
 
-    public function chats()
-    {
+    public function chats() {
         return $this->belongsToMany(Chat::class);
     }
 
-    public function lastActivity()
-    {
-        return $this->activities()->whereNull('left_at')->first();
+    public function lastActivity() {
+        return $this
+            ->activities()
+            ->whereNull('left_at')
+            ->first();
 
 
     }
 
-    public function left($data = NULL)
-    {
+    public function left($data = NULL) {
 
         $last_activity = $this->lastActivity();
         if ($last_activity !== NULL) {
@@ -227,9 +228,7 @@ class User extends Authenticatable
     }
 
 
-    public function getTime($period = NULL, $startAt = NULL, $endAt = NULL, bool|null $expanded = TRUE,
-                            $workspace = NULL)
-    {
+    public function getTime($period = NULL, $startAt = NULL, $endAt = NULL, bool|null $expanded = TRUE, $workspace = NULL) {
 
         $acts = $this->activities();
 
@@ -249,7 +248,9 @@ class User extends Authenticatable
 
         if ($period === 'yesterday') {
 
-            $acts = $acts->where('created_at', '>=', today()->subDay())->where('created_at', '<=', today());
+            $acts = $acts
+                ->where('created_at', '>=', today()->subDay())
+                ->where('created_at', '<=', today());
 
 
         }
@@ -283,9 +284,11 @@ class User extends Authenticatable
 
             $diff = $act->join_at->diffInMinutes($left_at);
             $sum_minutes += $diff;
-            $data[] = 'Joined: ' . $act->join_at->timezone('Asia/Tehran')
-                                                ->toDateTimeString() . ' Left: ' . $left_at->timezone('Asia/Tehran')
-                                                                                           ->toDateTimeString() . ' Diff: ' . $diff;
+            $data[] = 'Joined: ' . $act->join_at
+                    ->timezone('Asia/Tehran')
+                    ->toDateTimeString() . ' Left: ' . $left_at
+                          ->timezone('Asia/Tehran')
+                          ->toDateTimeString() . ' Diff: ' . $diff;
 
         }
         \Carbon\CarbonInterval::setCascadeFactors([
@@ -297,14 +300,21 @@ class User extends Authenticatable
             'user'        => $this,
             'count'       => $acts->count(),
             'sum_minutes' => $sum_minutes,
-            'sum_hours'   => \Carbon\CarbonInterval::minutes($sum_minutes)->cascade()->forHumans(),
+            'sum_hours'   => \Carbon\CarbonInterval::minutes($sum_minutes)
+                                                   ->cascade()
+                                                   ->forHumans(),
             'data'        => $expanded ? $data : [],
             'activities'  => $expanded ? $acts->map(function ($act) {
                 return [
                     'id'         => $act->id,
-                    'join_at'    => $act->join_at->timezone('Asia/Tehran')->toDayDateTimeString(),
-                    'left_at'    => $act->left_at?->timezone('Asia/Tehran')->toDayDateTimeString(),
-                    'created_at' => $act->created_at->timezone('Asia/Tehran')->toDayDateTimeString(),
+                    'join_at'    => $act->join_at
+                        ->timezone('Asia/Tehran')
+                        ->toDayDateTimeString(),
+                    'left_at'    => $act->left_at?->timezone('Asia/Tehran')
+                                                 ->toDayDateTimeString(),
+                    'created_at' => $act->created_at
+                        ->timezone('Asia/Tehran')
+                        ->toDayDateTimeString(),
                 ];
             }) : [],
         ];
@@ -312,18 +322,15 @@ class User extends Authenticatable
     }
 
 
-    public function schedules()
-    {
+    public function schedules() {
         return $this->hasMany(Schedule::class);
     }
 
-    public function talks()
-    {
+    public function talks() {
         return $this->hasMany(Talk::class);
     }
 
-    public function getAbilities(): array
-    {
+    public function getAbilities(): array {
 
         $abilities = [];
 

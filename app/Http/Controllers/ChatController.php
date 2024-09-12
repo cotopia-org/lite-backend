@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ChatResource;
+use App\Http\Resources\MessageResource;
 use App\Models\Chat;
 use App\Models\Workspace;
 use App\Utilities\Constants;
@@ -10,10 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
-class ChatController extends Controller
-{
-    public function create(Request $request)
-    {
+class ChatController extends Controller {
+    public function create(Request $request) {
         $request->validate([
                                'type'         => [
                                    'required',
@@ -33,7 +32,8 @@ class ChatController extends Controller
             asort($users);
             $title = implode('-', $users);
 
-            $chat = Chat::whereTitle($title)->first();
+            $chat = Chat::whereTitle($title)
+                        ->first();
             if ($chat !== NULL) {
                 return error('Chat exists!');
             }
@@ -44,6 +44,11 @@ class ChatController extends Controller
                                      'type'    => Constants::DIRECT,
                                      'user_id' => $user->id,
                                  ]);
+
+
+            $chat
+                ->users()
+                ->attach($users);
         }
 
 
@@ -75,7 +80,9 @@ class ChatController extends Controller
                 }
                 $participants[] = [$user->id, ['role' => 'super-admin']];
 
-                $chat->users()->attach($participants);
+                $chat
+                    ->users()
+                    ->attach($participants);
 
             }
 
@@ -98,7 +105,9 @@ class ChatController extends Controller
                                      'workspace_id' => $request->workspace_id,
                                  ]);
 
-            $chat->users()->attach($user->id, ['role', 'super-admin']);
+            $chat
+                ->users()
+                ->attach($user->id, ['role', 'super-admin']);
 
 
         }
@@ -107,6 +116,19 @@ class ChatController extends Controller
         /** @var Chat $chat */
         return api(ChatResource::make($chat));
 
+
+    }
+
+
+    public function messages(Chat $chat) {
+
+
+        $user = auth()->user();
+
+        $messages = $chat->unSeens($user, FALSE);
+
+
+        return api(MessageResource::collection($messages));
 
     }
 }

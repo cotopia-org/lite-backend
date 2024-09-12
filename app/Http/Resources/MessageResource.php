@@ -15,13 +15,11 @@ class MessageResource extends JsonResource {
 
         return [
             'id'         => $this->id,
-            'user'       => UserMinimalResource::make($this->user),
+            'user'       => $this->user_id,
             'text'       => $this->deleted_at === NULL ? $this->text : 'This message has been deleted',
             'files'      => FileResource::collection($this->files),
-            'room_id'    => $this->room_id,
-            'is_direct'  => $this->room->isDirectRoom(),
+            'chat_id'    => $this->chat_id,
             'seen'       => $this->saw(auth()->user()),
-            //TODO: has to have another req for seens
             'nonce_id'   => (int)$this->nonce_id,
             'is_edited'  => $this->is_edited,
             'is_pinned'  => $this->is_pinned,
