@@ -1,10 +1,6 @@
 <?php
 
-use Agence104\LiveKit\RoomServiceClient;
-use App\Utilities\Constants;
 use Illuminate\Support\Facades\Route;
-use PhpAmqpLib\Connection\AMQPStreamConnection;
-use PhpAmqpLib\Message\AMQPMessage;
 
 Route::get('/', function () {
     return redirect('https://lite.cotopia.social');
