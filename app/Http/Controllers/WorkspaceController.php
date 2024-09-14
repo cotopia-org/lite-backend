@@ -206,7 +206,7 @@ class WorkspaceController extends Controller
                                                       ]);
 
             $d[] = [
-                'user'        => $this,
+                'user'        => $user,
                 'sum_minutes' => $sum_minutes,
             ];
 
