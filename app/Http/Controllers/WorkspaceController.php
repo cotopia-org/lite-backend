@@ -184,7 +184,7 @@ class WorkspaceController extends Controller
 
             $sum_minutes = 0;
             $data = [];
-            $acts = $acts->get();
+//            $acts = $acts->get();
             foreach ($acts as $act) {
 
 
