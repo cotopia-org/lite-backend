@@ -21,7 +21,12 @@ class RoomController extends Controller {
         File::syncFile($request->background_id, $room, 'background');
         File::syncFile($request->logo_id, $room, 'logo');
 
-        sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
+        //        sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
+
+        if ($request->background_id) {
+            sendSocket(Constants::roomBackgroundChanged, $room->channel, RoomResource::make($room));
+
+        }
 
         return api(RoomResource::make($room));
 
