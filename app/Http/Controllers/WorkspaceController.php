@@ -153,7 +153,6 @@ class WorkspaceController extends Controller
                                                       'minute' => [60, 'seconds'],
                                                       'hour'   => [60, 'minutes'],
                                                   ]);
-        $n = now();
 
         foreach ($users as $user) {
             $acts = $acts->where('user_id', $user->id);
@@ -182,7 +181,6 @@ class WorkspaceController extends Controller
             ];
 
         }
-        logger($n->diffInMilliseconds(now()));
 
         return api(collect($d)->sortByDesc('sum_minutes')->values()->toArray());
 
