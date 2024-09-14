@@ -158,6 +158,7 @@ class WorkspaceController extends Controller
             $acts = $acts->where('user_id', $user->id);
 
             $sum_minutes = 0;
+            $n = now();
             foreach ($acts as $act) {
 
 
@@ -173,6 +174,7 @@ class WorkspaceController extends Controller
 //                                                                                               ->toDateTimeString() . ' Diff: ' . $diff;
 
             }
+            logger($n->diffInMilliseconds(now()));
 
 
             $d[] = [
