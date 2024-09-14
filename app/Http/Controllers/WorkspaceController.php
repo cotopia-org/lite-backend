@@ -9,6 +9,7 @@ use App\Http\Resources\RoomListResource;
 use App\Http\Resources\TagResource;
 use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\WorkspaceResource;
+use App\Models\Activity;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Workspace;
@@ -139,48 +140,49 @@ class WorkspaceController extends Controller
     {
 
 
-        $users = $workspace->users()->with('activities')->get();
+        $users = $workspace->users;
         $d = [];
         $period = request()->period;
         $startAt = request()->startAt;
         $endAt = request()->endAt;
+
+
+        $acts = Activity::query();
+
+
+        if ($period === 'today') {
+
+            $acts = $acts->where('created_at', '>=', today());
+
+
+        }
+
+
+        if ($period === 'yesterday') {
+
+            $acts = $acts->where('created_at', '>=', today()->subDay())->where('created_at', '<=', today());
+
+
+        }
+
+        if ($period === 'currentMonth') {
+
+            $acts = $acts->where('created_at', '>=', now()->firstOfMonth());
+
+
+        }
+        if ($startAt !== NULL) {
+            $acts = $acts->where('created_at', '>=', Carbon::createFromDate($startAt));
+
+        }
+
+        if ($endAt !== NULL) {
+            $acts = $acts->where('created_at', '<', Carbon::createFromDate($endAt));
+
+        }
+        $acts = $acts->get();
         foreach ($users as $user) {
-            $acts = $user->activities;
-
-
-            if ($workspace !== NULL) {
-                $acts->where('workspace_id', $workspace);
-            }
-            if ($period === 'today') {
-
-                $acts = $acts->where('created_at', '>=', today());
-
-
-            }
-
-
-            if ($period === 'yesterday') {
-
-                $acts = $acts->where('created_at', '>=', today()->subDay())->where('created_at', '<=', today());
-
-
-            }
-
-            if ($period === 'currentMonth') {
-
-                $acts = $acts->where('created_at', '>=', now()->firstOfMonth());
-
-
-            }
-            if ($startAt !== NULL) {
-                $acts = $acts->where('created_at', '>=', Carbon::createFromDate($startAt));
-
-            }
-
-            if ($endAt !== NULL) {
-                $acts = $acts->where('created_at', '<', Carbon::createFromDate($endAt));
-
-            }
+            $acts = $acts->where('user_id', $user->id);
 
             $sum_minutes = 0;
             $data = [];
