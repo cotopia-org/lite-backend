@@ -33,7 +33,7 @@ class Chat extends Model
 
     public function participants()
     {
-        if ($this->type === 'direct') {
+        if ($this->type === 'direct' && $this->workspace_id === NULL) {
             return User::find(explode('-', $this->title));
 
         }

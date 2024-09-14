@@ -44,6 +44,7 @@ class ChatController extends Controller
                                      'type'    => Constants::DIRECT,
                                      'user_id' => $user->id,
                                  ]);
+
         }
 
 
