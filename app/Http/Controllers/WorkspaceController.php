@@ -147,16 +147,17 @@ class WorkspaceController extends Controller
         $endAt = request()->endAt;
 
 
-//        $acts = Activity::where('created_at', '>=', now()->firstOfMonth())->get();
-        $acts = Activity::where('id', '>=', 5566)->get();
-
+        $acts = Activity::where('created_at', '>=', now()->firstOfMonth())->get();
+//        $acts = Activity::where('id', '>=', 5566)->get();
+        \Carbon\CarbonInterval::setCascadeFactors([
+                                                      'minute' => [60, 'seconds'],
+                                                      'hour'   => [60, 'minutes'],
+                                                  ]);
 
         foreach ($users as $user) {
             $acts = $acts->where('user_id', $user->id);
 
             $sum_minutes = 0;
-            $data = [];
-//            $acts = $acts->get();
             foreach ($acts as $act) {
 
 
@@ -167,15 +168,12 @@ class WorkspaceController extends Controller
 
                 $diff = $act->join_at->diffInMinutes($left_at);
                 $sum_minutes += $diff;
-                $data[] = 'Joined: ' . $act->join_at->timezone('Asia/Tehran')
-                                                    ->toDateTimeString() . ' Left: ' . $left_at->timezone('Asia/Tehran')
-                                                                                               ->toDateTimeString() . ' Diff: ' . $diff;
+//                $data[] = 'Joined: ' . $act->join_at->timezone('Asia/Tehran')
+//                                                    ->toDateTimeString() . ' Left: ' . $left_at->timezone('Asia/Tehran')
+//                                                                                               ->toDateTimeString() . ' Diff: ' . $diff;
 
             }
-            \Carbon\CarbonInterval::setCascadeFactors([
-                                                          'minute' => [60, 'seconds'],
-                                                          'hour'   => [60, 'minutes'],
-                                                      ]);
+
 
             $d[] = [
                 'user'        => $user,
