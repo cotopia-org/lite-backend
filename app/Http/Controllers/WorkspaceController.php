@@ -147,40 +147,10 @@ class WorkspaceController extends Controller
         $endAt = request()->endAt;
 
 
-        $acts = Activity::query();
+//        $acts = Activity::where('created_at', '>=', now()->firstOfMonth())->get();
+        $acts = Activity::where('id', '>=', 5566)->get();
 
 
-        if ($period === 'today') {
-
-            $acts = $acts->where('created_at', '>=', today());
-
-
-        }
-
-
-        if ($period === 'yesterday') {
-
-            $acts = $acts->where('created_at', '>=', today()->subDay())->where('created_at', '<=', today());
-
-
-        }
-
-        if ($period === 'currentMonth') {
-
-            $acts = $acts->where('created_at', '>=', now()->firstOfMonth());
-
-
-        }
-        if ($startAt !== NULL) {
-            $acts = $acts->where('created_at', '>=', Carbon::createFromDate($startAt));
-
-        }
-
-        if ($endAt !== NULL) {
-            $acts = $acts->where('created_at', '<', Carbon::createFromDate($endAt));
-
-        }
-        $acts = $acts->get();
         foreach ($users as $user) {
             $acts = $acts->where('user_id', $user->id);
 
