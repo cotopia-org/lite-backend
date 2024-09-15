@@ -9,12 +9,15 @@ Route::get('/', function () {
 
 
 Route::get('/tester', function () {
-    $now = now();
     $firstOfMonth = now()->firstOfMonth();
+
+    $now = now();
 
     $acts = Activity::where('created_at', '>=', $firstOfMonth)->forceIndex('activities_created_at_index')->get();
 
-    dd($now->diffInMilliseconds(now()));
+    logger($now->diffInMilliseconds(now()));
+
+    return $acts;
 
 });
 Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
