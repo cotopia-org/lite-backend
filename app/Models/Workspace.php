@@ -117,7 +117,7 @@ class Workspace extends Model
 
             }
 
-//TODO: workspace id for messages
+            //TODO: workspace id for messages
             $msg = Message::create([
                                        'text'     => $text,
                                        'reply_to' => $reply_to,

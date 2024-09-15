@@ -174,11 +174,13 @@ class WorkspaceController extends Controller
             } else {
                 $d[$act->user_id] = [
                     'sum_minutes' => $sum_minutes,
-                    'user'        => $act->user_id,
+                    'user'        => $act->user,
                 ];
             }
 
         }
+        return api($d);
+
         dd($d);
         foreach ($users as $user) {
 
