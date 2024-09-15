@@ -179,7 +179,7 @@ class WorkspaceController extends Controller
             }
 
         }
-        return api($d);
+        return api(array_values($d));
 
         dd($d);
         foreach ($users as $user) {
