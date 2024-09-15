@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Activity;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -8,9 +9,12 @@ Route::get('/', function () {
 
 
 Route::get('/tester', function () {
+    $now = now();
+    $firstOfMonth = now()->firstOfMonth();
 
-    $user = \App\Models\User::first();
-    return \App\Http\Resources\UserMinimalResource::make($user);
+    $acts = Activity::where('created_at', '>=', $firstOfMonth)->forceIndex('activities_created_at_index')->get();
+
+    dd($now->diffInMilliseconds(now()));
 
 });
 Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
