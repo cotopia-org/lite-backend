@@ -29,7 +29,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
 
-        return api(JobResource::collection($user->jobs()));
+        return api(JobResource::collection($user->jobs));
     }
 
 

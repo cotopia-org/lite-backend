@@ -48,7 +48,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/me', 'me');
         Route::get('/activities', 'activities');
         Route::get('/directs', 'directs');
-        Route::get('/jobs', 'directs');
+        Route::get('/jobs', 'jobs');
         Route::get('/schedules', 'schedules');
         Route::get('/talks', 'talks');
         Route::get('/unGhost', 'unGhost');
@@ -112,12 +112,6 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::put('/{message}', 'update');
         Route::delete('/{message}', 'delete');
     });
-
-
-
-
-
-
 
 
     Route::controller(JobController::class)->prefix('jobs')->group(function () {
