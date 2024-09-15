@@ -155,10 +155,9 @@ class WorkspaceController extends Controller
                                                   ]);
 
         foreach ($users as $user) {
-            $acts = $acts->where('user_id', $user->id);
 
             $sum_minutes = 0;
-            foreach ($acts as $act) {
+            foreach ($acts->where('user_id', $user->id) as $act) {
 
 
                 $left_at = now();
