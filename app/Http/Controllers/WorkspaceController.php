@@ -147,7 +147,7 @@ class WorkspaceController extends Controller
         $endAt = request()->endAt;
 
 
-        $acts = Activity::where('created_at', '>=', now()->firstOfMonth())->get();
+        $acts = Activity::where('created_at', '>=', now()->firstOfMonth())->with('user')->get();
 //        $acts = Activity::where('id', '>=', 5566)->get();
         \Carbon\CarbonInterval::setCascadeFactors([
                                                       'minute' => [60, 'seconds'],
