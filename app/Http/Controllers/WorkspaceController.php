@@ -140,14 +140,15 @@ class WorkspaceController extends Controller
     {
 
 
-        $users = $workspace->users;
+//        $users = $workspace->users;
         $d = [];
         $period = request()->period;
         $startAt = request()->startAt;
         $endAt = request()->endAt;
 
 
-        $acts = Activity::where('created_at', '>=', now()->firstOfMonth())->with('user')->get();
+        $acts = Activity::where('created_at', '>=', now()->firstOfMonth())->with('user')->orderBy('created_at', 'DESC')
+                        ->get();
 //        $acts = Activity::where('id', '>=', 5566)->get();
         \Carbon\CarbonInterval::setCascadeFactors([
                                                       'minute' => [60, 'seconds'],
