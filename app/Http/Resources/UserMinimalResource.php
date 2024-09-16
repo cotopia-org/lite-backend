@@ -14,7 +14,6 @@ class UserMinimalResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $last_login = $this->activities()->orderBy('id', 'DESC')->first();
         return [
             'id'          => $this->id,
             'name'        => $this->name,
@@ -22,7 +21,7 @@ class UserMinimalResource extends JsonResource
             'status'      => $this->status,
             'avatar'      => FileResource::make($this->avatar),
             'coordinates' => $this->coordinates,
-            'last_login'  => $last_login?->join_at,
+            'last_login'  => $this->updated_at,
             'verified'    => $this->verified ?? FALSE,
 
 
