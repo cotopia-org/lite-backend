@@ -15,9 +15,11 @@ Route::get('/tester', function () {
                   'user_id',
                   DB::raw('SUM(TIMESTAMPDIFF(MINUTE, join_at, IFNULL(left_at, NOW()))) as sum_minutes')
               )
+              ->whereMonth('created_at', now()->month)
+              ->whereYear('created_at', now()->year)
               ->groupBy('user_id')
               ->get();
-
+    dd($acts);
     return $acts;
 
 });
