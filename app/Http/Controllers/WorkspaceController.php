@@ -198,7 +198,7 @@ class WorkspaceController extends Controller
         $d = [];
         foreach ($acts as $act) {
             $d[] = [
-                'sum_minutes' => $act->sum_minutes,
+                'sum_minutes' => (int) $act->sum_minutes,
                 'user'        => $users->find($act->user_id),
             ];
         }
