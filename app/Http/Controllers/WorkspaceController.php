@@ -148,7 +148,7 @@ class WorkspaceController extends Controller
 //        $endAt = request()->endAt;
 //
 //
-//        $firstOfMonth = now()->firstOfMonth();
+        $firstOfMonth = now()->firstOfMonth();
 //        $acts = Activity::select('id', 'join_at', 'left_at', 'user_id', 'workspace_id', 'created_at')
 //                        ->where('created_at', '>=', $firstOfMonth)->forceIndex('idx_activities_created_at_optimized')
 //                        ->with('user')->get();
@@ -190,9 +190,7 @@ class WorkspaceController extends Controller
                   ->select(
                       'user_id',
                       DB::raw('SUM(TIMESTAMPDIFF(MINUTE, join_at, IFNULL(left_at, NOW()))) as sum_minutes')
-                  )
-                  ->whereMonth('created_at', now()->month)
-                  ->whereYear('created_at', now()->year)
+                  )->where('created_at', '>=', $firstOfMonth)
                   ->groupBy('user_id')
                   ->get();
         $d = [];
