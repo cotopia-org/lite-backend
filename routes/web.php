@@ -19,7 +19,7 @@ Route::get('/tester', function () {
               ->whereYear('created_at', now()->year)
               ->groupBy('user_id')
               ->get();
-    dd($acts);
+    dd($acts->sortByDesc('sum_minutes'));
     return $acts;
 
 });
