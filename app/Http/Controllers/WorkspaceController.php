@@ -140,50 +140,9 @@ class WorkspaceController extends Controller
     public function leaderboard(Workspace $workspace)
     {
 
-//
-////        $users = $workspace->users;
-//        $d = [];
-//        $period = request()->period;
-//        $startAt = request()->startAt;
-//        $endAt = request()->endAt;
-//
-//
+
         $firstOfMonth = now()->firstOfMonth();
-//        $acts = Activity::select('id', 'join_at', 'left_at', 'user_id', 'workspace_id', 'created_at')
-//                        ->where('created_at', '>=', $firstOfMonth)->forceIndex('idx_activities_created_at_optimized')
-//                        ->with('user')->get();
-//
-////        $acts = Activity::where('id', '>=', 5566)->get();
-//        \Carbon\CarbonInterval::setCascadeFactors([
-//                                                      'minute' => [60, 'seconds'],
-//                                                      'hour'   => [60, 'minutes'],
-//                                                  ]);
-//
-//
-//        foreach ($acts as $act) {
-//            $sum_minutes = 0;
-//
-//            $left_at = now();
-//            if ($act->left_at !== NULL) {
-//                $left_at = $act->left_at;
-//            }
-//
-//            $diff = $act->join_at->diffInMinutes($left_at);
-//            $sum_minutes += $diff;
-////                $data[] = 'Joined: ' . $act->join_at->timezone('Asia/Tehran')
-////                                                    ->toDateTimeString() . ' Left: ' . $left_at->timezone('Asia/Tehran')
-////                                                                                               ->toDateTimeString() . ' Diff: ' . $diff;
-//            if (isset($d[$act->user_id])) {
-//
-//                $d[$act->user_id]['sum_minutes'] += $sum_minutes;
-//            } else {
-//                $d[$act->user_id] = [
-//                    'sum_minutes' => $sum_minutes,
-//                    'user'        => $act->user,
-//                ];
-//            }
-//
-//        }
+
 
         $users = $workspace->users;
         $acts = DB::table('activities')
@@ -200,40 +159,11 @@ class WorkspaceController extends Controller
                 continue;
             }
             $d[] = [
-                'sum_minutes' => (int) $act->sum_minutes,
+                'sum_minutes' => (float) $act->sum_minutes,
                 'user'        => $user,
             ];
         }
         return api(array_values($d));
-
-        foreach ($users as $user) {
-
-            $sum_minutes = 0;
-            foreach ($acts->where('user_id', $user->id) as $act) {
-
-
-                $left_at = now();
-                if ($act->left_at !== NULL) {
-                    $left_at = $act->left_at;
-                }
-
-                $diff = $act->join_at->diffInMinutes($left_at);
-                $sum_minutes += $diff;
-//                $data[] = 'Joined: ' . $act->join_at->timezone('Asia/Tehran')
-//                                                    ->toDateTimeString() . ' Left: ' . $left_at->timezone('Asia/Tehran')
-//                                                                                               ->toDateTimeString() . ' Diff: ' . $diff;
-
-            }
-
-
-            $d[] = [
-                'user'        => $user,
-                'sum_minutes' => $sum_minutes,
-            ];
-
-        }
-
-        return api(collect($d)->sortByDesc('sum_minutes')->values()->toArray());
 
 
     }
