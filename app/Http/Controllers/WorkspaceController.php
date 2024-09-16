@@ -197,9 +197,13 @@ class WorkspaceController extends Controller
                   ->get();
         $d = [];
         foreach ($acts as $act) {
+            $user = $users->find($act->user_id);
+            if ($user === NULL) {
+                continue;
+            }
             $d[] = [
                 'sum_minutes' => (int) $act->sum_minutes,
-                'user'        => $users->find($act->user_id),
+                'user'        => $user,
             ];
         }
         return api(array_values($d));
