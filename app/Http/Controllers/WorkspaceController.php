@@ -150,7 +150,6 @@ class WorkspaceController extends Controller
                       'user_id',
                       DB::raw('SUM(TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60) as sum_minutes')
                   )->where('created_at', '>=', $firstOfMonth)
-            ->forceIndex('activities_created_at_index')
                   ->groupBy('user_id')
                   ->get();
         $d = [];
