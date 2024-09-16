@@ -17,6 +17,7 @@ use App\Notifications\WorkspaceCreatedNotification;
 use App\Notifications\WorkspaceJoinedNotification;
 use App\Utilities\Constants;
 use Carbon\Carbon;
+use DB;
 use Illuminate\Http\Request;
 
 class WorkspaceController extends Controller
@@ -139,53 +140,70 @@ class WorkspaceController extends Controller
     public function leaderboard(Workspace $workspace)
     {
 
+//
+////        $users = $workspace->users;
+//        $d = [];
+//        $period = request()->period;
+//        $startAt = request()->startAt;
+//        $endAt = request()->endAt;
+//
+//
+//        $firstOfMonth = now()->firstOfMonth();
+//        $acts = Activity::select('id', 'join_at', 'left_at', 'user_id', 'workspace_id', 'created_at')
+//                        ->where('created_at', '>=', $firstOfMonth)->forceIndex('idx_activities_created_at_optimized')
+//                        ->with('user')->get();
+//
+////        $acts = Activity::where('id', '>=', 5566)->get();
+//        \Carbon\CarbonInterval::setCascadeFactors([
+//                                                      'minute' => [60, 'seconds'],
+//                                                      'hour'   => [60, 'minutes'],
+//                                                  ]);
+//
+//
+//        foreach ($acts as $act) {
+//            $sum_minutes = 0;
+//
+//            $left_at = now();
+//            if ($act->left_at !== NULL) {
+//                $left_at = $act->left_at;
+//            }
+//
+//            $diff = $act->join_at->diffInMinutes($left_at);
+//            $sum_minutes += $diff;
+////                $data[] = 'Joined: ' . $act->join_at->timezone('Asia/Tehran')
+////                                                    ->toDateTimeString() . ' Left: ' . $left_at->timezone('Asia/Tehran')
+////                                                                                               ->toDateTimeString() . ' Diff: ' . $diff;
+//            if (isset($d[$act->user_id])) {
+//
+//                $d[$act->user_id]['sum_minutes'] += $sum_minutes;
+//            } else {
+//                $d[$act->user_id] = [
+//                    'sum_minutes' => $sum_minutes,
+//                    'user'        => $act->user,
+//                ];
+//            }
+//
+//        }
 
-//        $users = $workspace->users;
+        $users = $workspace->users;
+        $acts = DB::table('activities')
+                  ->select(
+                      'user_id',
+                      DB::raw('SUM(TIMESTAMPDIFF(MINUTE, join_at, IFNULL(left_at, NOW()))) as sum_minutes')
+                  )
+                  ->whereMonth('created_at', now()->month)
+                  ->whereYear('created_at', now()->year)
+                  ->groupBy('user_id')
+                  ->get();
         $d = [];
-        $period = request()->period;
-        $startAt = request()->startAt;
-        $endAt = request()->endAt;
-
-
-        $firstOfMonth = now()->firstOfMonth();
-        $acts = Activity::select('id', 'join_at', 'left_at', 'user_id', 'workspace_id', 'created_at')
-                        ->where('created_at', '>=', $firstOfMonth)->forceIndex('idx_activities_created_at_optimized')
-                        ->with('user')->get();
-
-//        $acts = Activity::where('id', '>=', 5566)->get();
-        \Carbon\CarbonInterval::setCascadeFactors([
-                                                      'minute' => [60, 'seconds'],
-                                                      'hour'   => [60, 'minutes'],
-                                                  ]);
-
-
         foreach ($acts as $act) {
-            $sum_minutes = 0;
-
-            $left_at = now();
-            if ($act->left_at !== NULL) {
-                $left_at = $act->left_at;
-            }
-
-            $diff = $act->join_at->diffInMinutes($left_at);
-            $sum_minutes += $diff;
-//                $data[] = 'Joined: ' . $act->join_at->timezone('Asia/Tehran')
-//                                                    ->toDateTimeString() . ' Left: ' . $left_at->timezone('Asia/Tehran')
-//                                                                                               ->toDateTimeString() . ' Diff: ' . $diff;
-            if (isset($d[$act->user_id])) {
-
-                $d[$act->user_id]['sum_minutes'] += $sum_minutes;
-            } else {
-                $d[$act->user_id] = [
-                    'sum_minutes' => $sum_minutes,
-                    'user'        => $act->user,
-                ];
-            }
-
+            $d[] = [
+                'sum_minutes' => $act->sum_minutes,
+                'user'        => $users->find($act->user_id),
+            ];
         }
-        return api(array_values($d));
+        return api($d);
 
-        dd($d);
         foreach ($users as $user) {
 
             $sum_minutes = 0;
