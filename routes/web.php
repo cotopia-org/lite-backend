@@ -13,7 +13,8 @@ Route::get('/tester', function () {
 
     $now = now();
 
-    $acts = Activity::where('created_at', '>=', $firstOfMonth)->forceIndex('activities_created_at_index')->get();
+    $acts = Activity::select('id', 'join_at', 'left_at', 'user_id', 'workspace_id', 'created_at')
+                    ->where('created_at', '>=', $firstOfMonth)->forceIndex('activities_created_at_index')->get();
 
     logger($now->diffInMilliseconds(now()));
 
