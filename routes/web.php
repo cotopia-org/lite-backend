@@ -16,7 +16,6 @@ Route::get('/tester', function () {
                   DB::raw('SUM(TIMESTAMPDIFF(MINUTE, join_at, IFNULL(left_at, NOW()))) as sum_minutes')
               )
               ->groupBy('user_id')
-              ->with('user')  // Load related user data (if there's a relationship set up)
               ->get();
 
     return $acts;
