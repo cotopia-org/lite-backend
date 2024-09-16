@@ -49,7 +49,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/activities', 'activities');
         Route::get('/directs', 'directs');
         Route::get('/jobs', 'jobs');
-        Route::get('/schedules', 'schedules');
+        Route::get('/{user}/schedules', 'schedules');
         Route::get('/talks', 'talks');
         Route::get('/unGhost', 'unGhost');
         Route::get('/', 'all');

@@ -144,9 +144,16 @@ class UserController extends Controller
         return api(TalkResource::collection(auth()->user()->talks));
     }
 
-    public function schedules()
+    public function schedules($user)
     {
-        return api(ScheduleResource::collection(auth()->user()->schedules));
+        if ($user === 'me') {
+            $user = auth()->user();
+        } else {
+            $user = User::findOrFail($user);
+        }
+
+
+        return api(ScheduleResource::collection($user->schedules));
     }
 
 
