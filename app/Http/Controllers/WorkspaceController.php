@@ -148,7 +148,7 @@ class WorkspaceController extends Controller
 
 
         $firstOfMonth = now()->firstOfMonth();
-        $acts = Activity::where('created_at', '>=', $firstOfMonth)->forceIndex('activities_created_at_index')
+        $acts = Activity::where('created_at', '>=', $firstOfMonth)->forceIndex('idx_activities_created_at_optimized')
                         ->with('user')->get();
 
 //        $acts = Activity::where('id', '>=', 5566)->get();
