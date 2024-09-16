@@ -10,6 +10,7 @@ Route::get('/', function () {
 
 Route::get('/tester', function () {
 
+    $users = \App\Models\User::all();
     $acts = DB::table('activities')
               ->select(
                   'user_id',
@@ -19,7 +20,14 @@ Route::get('/tester', function () {
               ->whereYear('created_at', now()->year)
               ->groupBy('user_id')
               ->get();
-    dd($acts->sortByDesc('sum_minutes'));
+    $d = [];
+    foreach ($acts as $act) {
+        $d[] = [
+            'sum_minutes' => $act->sum_minutes,
+            'user'        => $users->find($act->user_id),
+        ];
+    }
+    return $d;
     return $acts;
 
 });
