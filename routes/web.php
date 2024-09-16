@@ -9,15 +9,15 @@ Route::get('/', function () {
 
 
 Route::get('/tester', function () {
-    $firstOfMonth = now()->firstOfMonth();
 
-    $now = now();
-
-    $acts = Activity::select('id', 'join_at', 'left_at', 'user_id', 'workspace_id', 'created_at')
-                    ->where('created_at', '>=', $firstOfMonth)->forceIndex('idx_activities_created_at_optimized')
-                    ->get();
-
-    logger($now->diffInMilliseconds(now()));
+    $acts = DB::table('activities')
+              ->select(
+                  'user_id',
+                  DB::raw('SUM(TIMESTAMPDIFF(MINUTE, join_at, IFNULL(left_at, NOW()))) as sum_minutes')
+              )
+              ->groupBy('user_id')
+              ->with('user')  // Load related user data (if there's a relationship set up)
+              ->get();
 
     return $acts;
 
