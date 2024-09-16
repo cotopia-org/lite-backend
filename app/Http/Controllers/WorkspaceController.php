@@ -202,7 +202,7 @@ class WorkspaceController extends Controller
                 'user'        => $users->find($act->user_id),
             ];
         }
-        return api($d);
+        return api(array_values($d));
 
         foreach ($users as $user) {
 
