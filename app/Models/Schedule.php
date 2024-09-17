@@ -18,6 +18,7 @@ class Schedule extends Model {
         'recurrence_start_at',
         'recurrence_end_at',
         'timezone',
+        'workspace_id',
     ];
 
     //    protected $casts = [
@@ -29,6 +30,9 @@ class Schedule extends Model {
         return $this->belongsTo(User::class);
     }
 
+    public function workspace() {
+        return $this->belongsTo(Workspace::class);
+    }
 
     protected function availabilityType(): Attribute {
         return Attribute::make(get: fn($value) => json_decode($value),//            set: fn($value) => json_encode($value),

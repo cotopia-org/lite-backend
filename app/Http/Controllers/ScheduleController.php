@@ -36,6 +36,7 @@ class ScheduleController extends Controller {
         $request->validate([
 
                                "availability_type" => ["required", Rule::in($types)],
+                               'workspace_id'      => 'required'
                                //                               "days"              => 'required|array',
                                //                               "days.*"            => Rule::in($days),
 
@@ -50,6 +51,7 @@ class ScheduleController extends Controller {
                                                             'recurrence_start_at' => $request->recurrence_start_at ?? now()->timezone($timezone),
                                                             'recurrence_end_at'   => $request->recurrence_end_at,
                                                             'timezone'            => $timezone,
+                                                            'workspace_id'        => $request->workspace_id,
                                                         ]);
 
 
@@ -70,6 +72,8 @@ class ScheduleController extends Controller {
                                   'recurrence_start_at' => $request->recurrence_start_at ?? now()->timezone($timezone),
                                   'recurrence_end_at'   => $request->recurrence_end_at,
                                   'timezone'            => $timezone,
+                                  'workspace_id'        => $request->workspace_id,
+                              
                               ]);
         }
 
