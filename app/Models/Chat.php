@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Chat extends Model {
+class Chat extends Model
+{
 
 
     protected $fillable = [
@@ -17,9 +18,10 @@ class Chat extends Model {
     ];
 
 
-    public function lastMessage() {
-        return $this
-            ->messages()->orderByDesc('id')->first();
+    public function lastMessage()
+    {
+        return $this->messages()->orderByDesc('id')
+                    ->first();
 
     }
 
@@ -28,8 +30,9 @@ class Chat extends Model {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function participants() {
-        if ($this->type === 'direct') {
+    public function participants()
+    {
+        if ($this->type === 'direct' && $this->workspace_id === NULL) {
             return User::find(explode('-', $this->title));
 
         }

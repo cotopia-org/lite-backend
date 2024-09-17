@@ -25,11 +25,14 @@ class UserController extends Controller
         return api(UserResource::make(auth()->user()));
     }
 
-    public function jobs()
+    public function jobs(Request $request)
     {
         $user = auth()->user();
-
-        return api(JobResource::collection($user->jobs()));
+        $jobs = $user->jobs();
+        if ($request->workspace_id) {
+            $jobs = $jobs->where('workspace_id', $request->workspace_id);
+        }
+        return api(JobResource::collection($jobs->get()));
     }
 
 
@@ -141,9 +144,16 @@ class UserController extends Controller
         return api(TalkResource::collection(auth()->user()->talks));
     }
 
-    public function schedules()
+    public function schedules($user)
     {
-        return api(ScheduleResource::collection(auth()->user()->schedules));
+        if ($user === 'me') {
+            $user = auth()->user();
+        } else {
+            $user = User::findOrFail($user);
+        }
+
+
+        return api(ScheduleResource::collection($user->schedules));
     }
 
 

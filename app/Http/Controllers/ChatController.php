@@ -11,8 +11,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
-class ChatController extends Controller {
-    public function create(Request $request) {
+class ChatController extends Controller
+{
+    public function create(Request $request)
+    {
         $request->validate([
                                'type'         => [
                                    'required',
