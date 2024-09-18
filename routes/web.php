@@ -10,20 +10,20 @@ Route::get('/', function () {
 
 Route::get('/tester', function () {
 
-    $notifUser = \App\Models\User::create([
-                                              'name'     => 'Lite Notifications',
-                                              'username' => 'lite_notifications',
-                                              'email'    => 'notifications@cotopia.social',
-                                              'password' => Hash::make('123123'),
-                                              'active'   => TRUE,
-                                              'status'   => 'online',
-                                              'bio'      => 'Im handling the notifications! :)',
-                                              'is_bot'   => TRUE,
-                                              'verified' => TRUE,
-                                          ]);
-
-
-    return $notifUser;
+//    $notifUser = \App\Models\User::create([
+//                                              'name'     => 'Lite Notifications',
+//                                              'username' => 'lite_notifications',
+//                                              'email'    => 'notifications@cotopia.social',
+//                                              'password' => Hash::make('123123'),
+//                                              'active'   => TRUE,
+//                                              'status'   => 'online',
+//                                              'bio'      => 'Im handling the notifications! :)',
+//                                              'is_bot'   => TRUE,
+//                                              'verified' => TRUE,
+//                                          ]);
+//
+//
+//    return $notifUser;
 
 });
 Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
