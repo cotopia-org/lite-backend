@@ -48,7 +48,7 @@ class JobController extends Controller
 
         if ($request->status === 'in_progress') {
             Job::whereStatus('in_progress')->update([
-                                                        'status' => 'todo'
+                                                        'status' => 'paused'
                                                     ]);
         }
 
@@ -75,8 +75,6 @@ class JobController extends Controller
 
         return api(TRUE);
     }
-
-
 
 
     public function removeUser(Job $job, Request $request)
