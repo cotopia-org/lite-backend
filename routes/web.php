@@ -22,6 +22,9 @@ Route::get('/tester', function () {
                                               'verified' => TRUE,
                                           ]);
 
+
+    return $notifUser;
+
 });
 Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
 
