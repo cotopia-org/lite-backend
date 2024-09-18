@@ -13,6 +13,7 @@ class Job extends Model
         'in_progress',
         'paused',
         'completed',
+        'todo',
     ];
 
     protected $fillable = [

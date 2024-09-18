@@ -12,10 +12,10 @@ class JobController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'title'        => 'required',
-            'description'  => 'required',
-            'workspace_id' => 'required|exists:workspaces,id',
-        ]);
+                               'title'        => 'required',
+                               'description'  => 'required',
+                               'workspace_id' => 'required|exists:workspaces,id',
+                           ]);
 
         $user = auth()->user();
         $job = Job::create($request->all());
@@ -28,7 +28,7 @@ class JobController extends Controller
     public function get(Job $job)
     {
         $user = auth()->user();
-        if (! $user->jobs->contains($job)) {
+        if (!$user->jobs->contains($job)) {
             abort(404);
         }
         //TODO: code upper, need to changed to user->can('update-job-1') method.
@@ -41,38 +41,52 @@ class JobController extends Controller
     {
         $user = auth()->user();
 
-        if (! $user->jobs->contains($job)) {
+        if (!$user->jobs->contains($job)) {
             abort(404);
         }
         //TODO: code upper, need to changed to user->can('update-job-1') method.
 
+        if ($request->status === 'in_progress') {
+            Job::whereStatus('in_progress')->update([
+                                                        'status' => 'todo'
+                                                    ]);
+        }
+
+
         $job->update($request->all());
 
-        return api(JobResource::make($job));
+        $jobResource = JobResource::make($job);
+
+        sendSocket('jobUpdated', $job->workspace->channel, $jobResource);
+
+        return api($jobResource);
     }
 
     public function delete(Job $job)
     {
         $user = auth()->user();
 
-        if (! $user->jobs->contains($job)) {
+        if (!$user->jobs->contains($job)) {
             abort(404);
         }
         //TODO: code upper, need to changed to user->can('update-job-1') method.
         $job->users()->detach();
         $job->delete();
 
-        return api(true);
+        return api(TRUE);
     }
+
+
+
 
     public function removeUser(Job $job, Request $request)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
-        ]);
+                               'user_id' => 'required|exists:users,id',
+                           ]);
 
         $user = auth()->user();
-        if (! $user->jobs->contains($job)) {
+        if (!$user->jobs->contains($job)) {
             abort(404);
         }
 
