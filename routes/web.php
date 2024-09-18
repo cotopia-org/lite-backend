@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Activity;
+use App\Notifications\newNotification;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -9,21 +10,27 @@ Route::get('/', function () {
 
 
 Route::get('/tester', function () {
+    $users = \App\Models\User::find([1, 2]);
 
-//    $notifUser = \App\Models\User::create([
-//                                              'name'     => 'Lite Notifications',
-//                                              'username' => 'lite_notifications',
-//                                              'email'    => 'notifications@cotopia.social',
-//                                              'password' => Hash::make('123123'),
-//                                              'active'   => TRUE,
-//                                              'status'   => 'online',
-//                                              'bio'      => 'Im handling the notifications! :)',
-//                                              'is_bot'   => TRUE,
-//                                              'verified' => TRUE,
-//                                          ]);
+
+    dd(Notification::send($users, new NewNotification('Tester')));
 //
 //
-//    return $notifUser;
+//    dd($user->notify(new NewNotification('Tester')));
+    $notifUser = \App\Models\User::create([
+                                              'name'     => 'Lite Notifications',
+                                              'username' => 'lite_notifications',
+                                              'email'    => 'notifications@cotopia.social',
+                                              'password' => Hash::make('123123'),
+                                              'active'   => TRUE,
+                                              'status'   => 'online',
+                                              'bio'      => 'Im handling the notifications! :)',
+                                              'is_bot'   => TRUE,
+                                              'verified' => TRUE,
+                                          ]);
+
+
+    return $notifUser;
 
 });
 Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
