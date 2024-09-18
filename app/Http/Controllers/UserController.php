@@ -25,9 +25,13 @@ class UserController extends Controller
         return api(UserResource::make(auth()->user()));
     }
 
-    public function jobs(Request $request)
+    public function jobs(Request $request, $user)
     {
-        $user = auth()->user();
+        if ($user === 'me') {
+            $user = auth()->user();
+        } else {
+            $user = User::findOrFail($user);
+        }
         $jobs = $user->jobs();
         if ($request->workspace_id) {
             $jobs = $jobs->where('workspace_id', $request->workspace_id);
