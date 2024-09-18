@@ -45,6 +45,8 @@ class User extends Authenticatable
         'is_megaphone',
         'socket_id',
         'avatar',
+        'is_bot',
+        'verified',
     ];
 
     /**

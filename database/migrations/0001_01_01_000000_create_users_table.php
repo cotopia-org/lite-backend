@@ -34,6 +34,8 @@ return new class () extends Migration {
 
 
             $table->string('socket_id')->nullable();
+            $table->boolean('verified')->default(FALSE);
+            $table->boolean('is_bot')->default(FALSE);
 
 
             $table->rememberToken();
