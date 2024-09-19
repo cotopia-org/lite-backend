@@ -47,9 +47,9 @@ class JobController extends Controller
         //TODO: code upper, need to changed to user->can('update-job-1') method.
 
         if ($request->status === 'in_progress') {
-            Job::whereStatus('in_progress')->update([
-                                                        'status' => 'paused'
-                                                    ]);
+            $user->jobs()->whereStatus('in_progress')->update([
+                                                                  'status' => 'paused'
+                                                              ]);
         }
 
 
