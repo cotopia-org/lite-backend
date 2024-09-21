@@ -128,7 +128,8 @@ class ChatController extends Controller {
                                         ->first()->pivot->last_message_seen_id ?? 0;
 
 
-            $messages = $chat->messages()->where('id', '<=', $last_message_seen_id)->paginate($request->perPage ?? 50);
+            $messages = $chat->messages()->orderBy('id', 'DESC')->where('id', '<=', $last_message_seen_id)
+                             ->paginate($request->perPage ?? 50);
 
         } else {
             $messages = $chat->unSeens($user, FALSE);
