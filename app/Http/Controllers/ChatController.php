@@ -11,10 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
-class ChatController extends Controller
-{
-    public function create(Request $request)
-    {
+class ChatController extends Controller {
+    public function create(Request $request) {
         $request->validate([
                                'type'         => [
                                    'required',
@@ -34,8 +32,7 @@ class ChatController extends Controller
             asort($users);
             $title = implode('-', $users);
 
-            $chat = Chat::whereTitle($title)
-                        ->first();
+            $chat = Chat::whereTitle($title)->first();
             if ($chat !== NULL) {
                 return error('Chat exists!');
             }
@@ -49,8 +46,7 @@ class ChatController extends Controller
 
 
             $chat
-                ->users()
-                ->attach($users);
+                ->users()->attach($users);
         }
 
 
@@ -83,8 +79,7 @@ class ChatController extends Controller
                 $participants[] = [$user->id, ['role' => 'super-admin']];
 
                 $chat
-                    ->users()
-                    ->attach($participants);
+                    ->users()->attach($participants);
 
             }
 
@@ -108,8 +103,7 @@ class ChatController extends Controller
                                  ]);
 
             $chat
-                ->users()
-                ->attach($user->id, ['role', 'super-admin']);
+                ->users()->attach($user->id, ['role', 'super-admin']);
 
 
         }
@@ -127,7 +121,19 @@ class ChatController extends Controller
 
         $user = auth()->user();
 
-        $messages = $chat->unSeens($user, FALSE);
+        $request = request();
+        if ($request->page) {
+            $last_message_seen_id = $this
+                                        ->users()->where('user_id', $user->id)
+                                        ->first()->pivot->last_message_seen_id ?? 0;
+
+
+            $messages = $chat->messages()->where('id', '<=', $last_message_seen_id)->paginate($request->perPage ?? 50);
+
+        } else {
+            $messages = $chat->unSeens($user, FALSE);
+
+        }
 
 
         return api(MessageResource::collection($messages));
