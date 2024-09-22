@@ -64,7 +64,8 @@ class checkUsersInSocketCommand extends Command
                     sendSocket(Constants::workspaceRoomUpdated, $room->workspace->channel, RoomResource::make($room));
 
 
-                    disconnectLivekitJob::dispatch($room, $user);
+                    disconnectLivekitJob::dispatch($room, $user)->delay(10);
+
 
                 }
                 $user->left();

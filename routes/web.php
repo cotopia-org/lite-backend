@@ -14,8 +14,8 @@ Route::get('/tester', function () {
 
 //    $socket_users = collect(Http::get('https://ls.cotopia.social/sockets')->json());
 
-    $online_users = \App\Models\User::whereStatus('online')->get();
-    dd($online_users);
+//    $online_users = \App\Models\User::whereStatus('online')->get();
+//    dd($online_users);
 
 //    $users = \App\Models\User::find([1, 2]);
 //
