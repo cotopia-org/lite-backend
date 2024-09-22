@@ -10,27 +10,34 @@ Route::get('/', function () {
 
 
 Route::get('/tester', function () {
-    $users = \App\Models\User::find([1, 2]);
 
 
-    dd(Notification::send($users, new NewNotification('Tester')));
+//    $socket_users = collect(Http::get('https://ls.cotopia.social/sockets')->json());
+
+    $online_users = \App\Models\User::whereStatus('online')->get();
+    dd($online_users);
+
+//    $users = \App\Models\User::find([1, 2]);
 //
 //
-//    dd($user->notify(new NewNotification('Tester')));
-    $notifUser = \App\Models\User::create([
-                                              'name'     => 'Lite Notifications',
-                                              'username' => 'lite_notifications',
-                                              'email'    => 'notifications@cotopia.social',
-                                              'password' => Hash::make('123123'),
-                                              'active'   => TRUE,
-                                              'status'   => 'online',
-                                              'bio'      => 'Im handling the notifications! :)',
-                                              'is_bot'   => TRUE,
-                                              'verified' => TRUE,
-                                          ]);
+//    dd(Notification::send($users, new NewNotification('Tester')));
+////
+////
+////    dd($user->notify(new NewNotification('Tester')));
+//    $notifUser = \App\Models\User::create([
+//                                              'name'     => 'Lite Notifications',
+//                                              'username' => 'lite_notifications',
+//                                              'email'    => 'notifications@cotopia.social',
+//                                              'password' => Hash::make('123123'),
+//                                              'active'   => TRUE,
+//                                              'status'   => 'online',
+//                                              'bio'      => 'Im handling the notifications! :)',
+//                                              'is_bot'   => TRUE,
+//                                              'verified' => TRUE,
+//                                          ]);
 
 
-    return $notifUser;
+//    return $notifUser;
 
 });
 Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
