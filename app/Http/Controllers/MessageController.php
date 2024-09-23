@@ -16,10 +16,8 @@ use App\Models\Workspace;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
 
-class MessageController extends Controller
-{
-    public function send(Request $request)
-    {
+class MessageController extends Controller {
+    public function send(Request $request) {
         $request->validate(['text' => 'required']);
 
         $user = auth()->user();
@@ -77,8 +75,8 @@ class MessageController extends Controller
 
         $messageResponse = MessageResource::make($message);
         //EMIT TO USER
-//        sendSocket($room->isDirectRoom() ? Constants::directMessages : Constants::roomMessages, $room->channel,
-//                   $messageResponse);
+        //        sendSocket($room->isDirectRoom() ? Constants::directMessages : Constants::roomMessages, $room->channel,
+        //                   $messageResponse);
 
         //Commened due changed to socket.
 
@@ -101,8 +99,7 @@ class MessageController extends Controller
 
     }
 
-    public function seen(Message $message)
-    {
+    public function seen(Message $message) {
         $user = auth()->user();
         $room = $message->room;
         //        if (!$room->participants()->contains('id', $user->id)) {
@@ -119,8 +116,7 @@ class MessageController extends Controller
 
     }
 
-    public function searchMention(Request $request)
-    {
+    public function searchMention(Request $request) {
 
         $users = User::where('username', 'LIKE', $request->q . '%')->get();
         $workspaces = Workspace::where('title', 'LIKE', $request->q . '%')->get();
@@ -134,8 +130,7 @@ class MessageController extends Controller
 
     }
 
-    public function get(Room $room)
-    {
+    public function get(Room $room) {
         $user = auth()->user();
         //TODO check if user is in room
 
@@ -145,8 +140,7 @@ class MessageController extends Controller
 
     }
 
-    public function pin(Message $message)
-    {
+    public function pin(Message $message) {
         //TODO: check user can pin message in this room
 
         $message->update(['is_pinned' => TRUE]);
@@ -155,8 +149,7 @@ class MessageController extends Controller
 
     }
 
-    public function unPin(Message $message)
-    {
+    public function unPin(Message $message) {
         //TODO: check user can pin message in this room
 
         $message->update(['is_pinned' => FALSE]);
@@ -166,8 +159,7 @@ class MessageController extends Controller
     }
 
 
-    public function delete(Message $message)
-    {
+    public function delete(Message $message) {
         //TODO: check user owned msg
         $message->delete();
 
@@ -180,8 +172,7 @@ class MessageController extends Controller
 
     }
 
-    public function update(Message $message, Request $request)
-    {
+    public function update(Message $message, Request $request) {
         //        $user = auth()->user();
 
         //TODO: check user owned msg
