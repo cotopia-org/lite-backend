@@ -48,7 +48,7 @@ class SocketController extends Controller
 
                 if ($event->event === Constants::LEFT) {
 
-                    $user->left(json_encode($request->all()));
+                    DisconnectUserJob::dispatch($user, FALSE, FALSE);
 
 
                 }
