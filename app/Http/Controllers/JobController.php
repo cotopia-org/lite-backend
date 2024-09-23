@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\JobResource;
 use App\Models\Job;
 use App\Models\User;
+use App\Utilities\Constants;
 use Illuminate\Http\Request;
 
 class JobController extends Controller
@@ -18,7 +19,16 @@ class JobController extends Controller
                            ]);
 
         $user = auth()->user();
+
+
         $job = Job::create($request->all());
+
+        if ($job->status === Constants::IN_PROGRESS) {
+            $user->jobs()->where('id', '!=', $job->id)->whereStatus(Constants::IN_PROGRESS)->update([
+                                                                                                        'status' => Constants::PAUSED
+                                                                                                    ]);
+        }
+
 
         $user->jobs()->attach($job, ['role' => 'owner']);
 
@@ -46,10 +56,10 @@ class JobController extends Controller
         }
         //TODO: code upper, need to changed to user->can('update-job-1') method.
 
-        if ($request->status === 'in_progress') {
-            $user->jobs()->whereStatus('in_progress')->update([
-                                                                  'status' => 'paused'
-                                                              ]);
+        if ($request->status === Constants::IN_PROGRESS) {
+            $user->jobs()->whereStatus(Constants::IN_PROGRESS)->update([
+                                                                           'status' => Constants::PAUSED
+                                                                       ]);
         }
 
 

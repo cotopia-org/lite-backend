@@ -8,6 +8,7 @@ use App\Http\Resources\RoomResource;
 use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\UserResource;
 use App\Jobs\disconnectLivekitJob;
+use App\Jobs\DisconnectUserJob;
 use App\Models\Activity;
 use App\Models\Message;
 use App\Models\Room;
@@ -17,8 +18,10 @@ use App\Utilities\Constants;
 use App\Utilities\EventType;
 use Illuminate\Http\Request;
 
-class SocketController extends Controller {
-    public function connected(Request $request) {
+class SocketController extends Controller
+{
+    public function connected(Request $request)
+    {
 
         $user = auth()->user();
         $user->update([
@@ -31,8 +34,11 @@ class SocketController extends Controller {
     }
 
 
-    public function events(Request $request) {
+    public function events(Request $request)
+    {
 
+
+        return TRUE;
         try {
 
             $event = new EventType($request->all());
@@ -101,7 +107,8 @@ class SocketController extends Controller {
     }
 
 
-    public function updateCoordinates(Request $request) {
+    public function updateCoordinates(Request $request)
+    {
 
         $user = auth()->user();
 
@@ -115,45 +122,18 @@ class SocketController extends Controller {
 
     }
 
-    public function disconnected() {
+    public function disconnected()
+    {
 
         $user = auth()->user();
         $request = \request();
 
 
-        $room_id = $user->room_id;
-
-        $user->update([
-                          'socket_id'    => $request->offline ? NULL : $user->socket_id,
-                          'status'       => $request->offline ? Constants::OFFLINE : $user->status,
-                          'room_id'      => NULL,
-                          'workspace_id' => NULL,
-
-                      ]);
-
-        $room = Room::find($room_id);
-
-
-        if ($room !== NULL) {
-
-
-            sendSocket(Constants::userLeftFromRoom, $room->workspace->channel, [
-                'room_id' => $room_id,
-                'user'    => UserMinimalResource::make($user)
-            ]);
-
-            sendSocket(Constants::workspaceRoomUpdated, $room->workspace->channel, RoomResource::make($room));
-
-
-            disconnectLivekitJob::dispatch($room, $user);
-
-        }
-        $user->left();
+        DisconnectUserJob::dispatch($user, $request->offline, FALSE);
 
 
         return TRUE;
 
-        //        return api(UserResource::make(auth()->user()));
     }
 
 

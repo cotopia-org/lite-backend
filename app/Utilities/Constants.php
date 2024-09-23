@@ -44,7 +44,9 @@ class Constants
     const API_SUCCESS_MSG = 'success';
     const API_FAILED_MSG = 'failed';
 
-    const joinedRoom = 'joinedRoom';
+    const IN_PROGRESS = 'in_progress';
+    const PAUSED = 'paused';
+    const COMPLETED = 'joinedRoom';
     const userUpdated = 'userUpdated';
     const workspaceUpdated = 'workspaceUpdated';
     const roomUpdated = 'roomUpdated';
@@ -66,5 +68,9 @@ class Constants
 
     const userLeftFromRoom = 'userLeftFromRoom';
     const userJoinedToRoom = 'userJoinedToRoom';
+
+
+    const livekitDisconnected = 'livekitDisconnected';
+
 
 }

@@ -85,6 +85,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/{room}/join', 'join');
         Route::get('/{room}/messages', 'messages');
         Route::get('/leave', 'leave');
+        Route::delete('/{room}', 'delete');
 
     });
 

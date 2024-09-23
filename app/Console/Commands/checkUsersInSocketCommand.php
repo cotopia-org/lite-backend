@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Http\Resources\RoomResource;
 use App\Http\Resources\UserMinimalResource;
 use App\Jobs\disconnectLivekitJob;
+use App\Jobs\DisconnectUserJob;
 use App\Models\Room;
 use App\Utilities\Constants;
 use Illuminate\Console\Command;
@@ -41,35 +42,14 @@ class checkUsersInSocketCommand extends Command
             $socket_user = $socket_users->where('username', $user->username)->first();
             if ($socket_user === NULL) {
 
-                $room_id = $user->room_id;
-                $user->update([
-                                  'socket_id'    => NULL,
-                                  'status'       => Constants::OFFLINE,
-                                  'room_id'      => NULL,
-                                  'workspace_id' => NULL,
+                DisconnectUserJob::dispatch($user, TRUE, TRUE)->delay(15);
 
-                              ]);
-
-                $room = Room::find($room_id);
-
-
-                if ($room !== NULL) {
-
-
-                    sendSocket(Constants::userLeftFromRoom, $room->workspace->channel, [
-                        'room_id' => $room_id,
-                        'user'    => UserMinimalResource::make($user)
-                    ]);
-
-                    sendSocket(Constants::workspaceRoomUpdated, $room->workspace->channel, RoomResource::make($room));
-
-
-                    disconnectLivekitJob::dispatch($room, $user)->delay(10);
-
-
-                }
-                $user->left();
             }
+            if (!$user->isInLk()) {
+                sendSocket(Constants::livekitDisconnected, $user->room->channel, UserMinimalResource::make($user));
+            }
+
+
         }
     }
 }

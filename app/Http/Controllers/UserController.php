@@ -34,7 +34,7 @@ class UserController extends Controller
         }
         $jobs = $user->jobs();
         if ($request->workspace_id) {
-            $jobs = $jobs->where('workspace_id', $request->workspace_id);
+            $jobs = $jobs->orderBy('updated_at', 'DESC')->where('workspace_id', $request->workspace_id);
         }
         return api(JobResource::collection($jobs->get()));
     }
@@ -116,7 +116,10 @@ class UserController extends Controller
     {
         $user = auth()->user();
         $user->update([
-                          'name' => $request->name ?? $user->name,
+                          'name'              => $request->name ?? $user->name,
+                          'voice_status'      => $request->voice_status ?? $user->voice_status,
+                          'video_status'      => $request->video_status ?? $user->video_status,
+                          'livekit_connected' => $request->livekit_connected ?? $user->livekit_connected,
                       ]);
 
         File::syncFile($request->avatar_id, $user, 'avatar');

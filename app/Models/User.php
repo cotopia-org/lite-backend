@@ -47,6 +47,7 @@ class User extends Authenticatable
         'avatar',
         'is_bot',
         'verified',
+        'livekit_connected',
     ];
 
     /**
@@ -87,6 +88,15 @@ class User extends Authenticatable
     public function workspaces()
     {
         return $this->belongsToMany(Workspace::class)->withPivot('role', 'tag_id');
+    }
+
+    public function isInLk()
+    {
+        if ($this->room !== NULL) {
+            return $this->room->isUserInLk($this);
+        }
+
+        return FALSE;
     }
 
     public function room()

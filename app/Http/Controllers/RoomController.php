@@ -6,6 +6,7 @@ use Agence104\LiveKit\RoomServiceClient;
 use App\Http\Resources\MessageResource;
 use App\Http\Resources\RoomResource;
 use App\Http\Resources\UserMinimalResource;
+use App\Jobs\disconnectLivekitJob;
 use App\Models\File;
 use App\Models\Room;
 use App\Models\Seen;
@@ -79,15 +80,9 @@ class RoomController extends Controller
         $before_room = $user->room_id;
 
 
-        if ($user->room_id !== NULL) {
-            try {
-                $host = config('livekit.host');
-                $svc = new RoomServiceClient($host, config('livekit.apiKey'), config('livekit.apiSecret'));
-                $svc->removeParticipant("$user->room_id", $user->username);
-            } catch (\Exception $e) {
-
-            }
-
+        if ($before_room !== NULL) {
+            disconnectLivekitJob::dispatch($room, $user);
+            $user->left();
         }
 
         $room = $room->joinUser($user);
@@ -117,6 +112,15 @@ class RoomController extends Controller
         ]);
 
 
+        $user->activities()->create([
+                                        'join_at'      => now(),
+                                        'left_at'      => NULL,
+                                        'workspace_id' => $room->workspace->id,
+                                        'room_id'      => $room->id,
+                                        'data'         => NULL,
+                                    ]);
+
+
         return api($res);
 
     }
@@ -134,6 +138,38 @@ class RoomController extends Controller
 
 
         return api(MessageResource::collection($messages));
+    }
+
+
+    public function delete(Room $room)
+    {
+        //TODO CHECK PERMISSION
+
+
+        foreach ($room->users as $user) {
+            $user->update([
+                              'room_id'      => NULL,
+                              'workspace_id' => NULL,
+                          ]);
+
+            sendSocket(Constants::userLeftFromRoom, $room->workspace->channel, [
+                'room_id' => $room->id,
+                'user'    => UserMinimalResource::make($user)
+            ]);
+
+            sendSocket(Constants::workspaceRoomUpdated, $room->workspace->channel, RoomResource::make($room));
+
+            disconnectLivekitJob::dispatch($room, $user);
+            $user->left();
+
+        }
+
+
+        $room->delete();
+
+        return api(TRUE);
+
+
     }
 
 
