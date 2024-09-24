@@ -40,7 +40,8 @@ class checkUsersInSocketCommand extends Command {
             $socket_user = $socket_users->where('username', $user->username)->first();
             if ($socket_user === NULL) {
 
-                DisconnectUserJob::dispatch($user, TRUE, TRUE)->delay(15);
+                DisconnectUserJob::dispatch($user, TRUE, TRUE, 'Disconnected From Command checkUsersInSocket')
+                                 ->delay(15);
 
             }
             if (!$user->isInLk() && $user->room_id !== NULL) {

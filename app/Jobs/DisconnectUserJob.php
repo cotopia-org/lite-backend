@@ -19,7 +19,7 @@ class DisconnectUserJob implements ShouldQueue {
     /**
      * Create a new job instance.
      */
-    public function __construct(public User $user, public bool $offline = FALSE, public bool $checkIsInRoom = FALSE) {
+    public function __construct(public User $user, public bool $offline = FALSE, public bool $checkIsInRoom = FALSE, public ?string $data) {
         //
     }
 
@@ -35,7 +35,7 @@ class DisconnectUserJob implements ShouldQueue {
             $socket_user = $socket_users->where('username', $user->username)->first();
             if ($socket_user === NULL) {
 
-                self::dispatch($user, TRUE, FALSE);
+                self::dispatch($user, TRUE, FALSE, $this->data);
             }
         }
 
@@ -67,7 +67,7 @@ class DisconnectUserJob implements ShouldQueue {
             disconnectLivekitJob::dispatch($room, $user);
 
         }
-        $user->left();
+        $user->left($this->data);
 
     }
 }

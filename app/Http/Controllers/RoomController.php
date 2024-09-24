@@ -77,8 +77,7 @@ class RoomController extends Controller {
 
 
         if ($before_room !== NULL) {
-            disconnectLivekitJob::dispatch($room, $user);
-            $user->left();
+            DisconnectUserJob::dispatch($room, $user, FALSE, FALSE, 'Disconnected From RoomController Join method Due Change Room');
         }
 
         $room = $room->joinUser($user);
@@ -112,7 +111,7 @@ class RoomController extends Controller {
                                         'left_at'      => NULL,
                                         'workspace_id' => $room->workspace->id,
                                         'room_id'      => $room->id,
-                                        'data'         => NULL,
+                                        'data'         => 'Connected From RoomController Join Method',
                                     ]);
 
 
@@ -140,20 +139,7 @@ class RoomController extends Controller {
 
 
         foreach ($room->users as $user) {
-            $user->update([
-                              'room_id'      => NULL,
-                              'workspace_id' => NULL,
-                          ]);
-
-            sendSocket(Constants::userLeftFromRoom, $room->workspace->channel, [
-                'room_id' => $room->id,
-                'user'    => UserMinimalResource::make($user)
-            ]);
-
-            sendSocket(Constants::workspaceRoomUpdated, $room->workspace->channel, RoomResource::make($room));
-
-            disconnectLivekitJob::dispatch($room, $user);
-            $user->left();
+            DisconnectUserJob::dispatch($room, $user, FALSE, FALSE, 'Disconnected From RoomController Delete Method');
 
         }
 
@@ -171,7 +157,7 @@ class RoomController extends Controller {
         $request = \request();
 
 
-        DisconnectUserJob::dispatch($user, FALSE, FALSE);
+        DisconnectUserJob::dispatch($user, FALSE, FALSE, 'Disconnected From RoomController Leave Method');
 
 
         return TRUE;
