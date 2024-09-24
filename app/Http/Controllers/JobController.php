@@ -23,10 +23,10 @@ class JobController extends Controller {
 
         if ($job->status === Constants::IN_PROGRESS) {
 
-            Job::where('user_id', $user->id)->where('id', '!=', $job->id)->whereStatus(Constants::IN_PROGRESS)->update([
-                                                                                                                           'status' => Constants::PAUSED
-                                                                                                                       ]);
 
+            $user->jobs()->where('jobs.id', '!=', $job->id)->whereStatus(Constants::IN_PROGRESS)->update([
+                                                                                                        'status' => Constants::PAUSED
+                                                                                                    ]);
         }
 
 
