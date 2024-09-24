@@ -13,37 +13,33 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class DisconnectUserJob implements ShouldQueue
-{
+class DisconnectUserJob implements ShouldQueue {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(public User $user, public bool $offline = FALSE, public bool $checkIsInRoom = FALSE)
-    {
+    public function __construct(public User $user, public bool $offline = FALSE, public bool $checkIsInRoom = FALSE) {
         //
     }
 
     /**
      * Execute the job.
      */
-    public function handle(): void
-    {
+    public function handle(): void {
+        $user = $this->user;
 
         if ($this->checkIsInRoom) {
-            $user = $this->user;
             $socket_users = collect(\Http::get('http://localhost:3010/sockets')->json());
 
             $socket_user = $socket_users->where('username', $user->username)->first();
             if ($socket_user === NULL) {
 
-                DisconnectUserJob::dispatch($user, TRUE, FALSE);
+                self::dispatch($user, TRUE, FALSE);
             }
         }
 
 
-        $user = $this->user;
         $room_id = $user->room_id;
 
         $user->update([
