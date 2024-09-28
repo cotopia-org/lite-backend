@@ -131,7 +131,13 @@ class ChatController extends Controller
                 ->first()->pivot->last_message_seen_id ?? 0;
 
 
-            $messages = $chat->messages()->orderBy('id', 'DESC')->where('id', '<=', $last_message_seen_id)
+            $messages = $chat->messages()->orderBy('id', 'DESC')->withTrashed()->with([
+                                                                                          'links',
+                                                                                          'mentions',
+                                                                                          'user',
+                                                                                          'files',
+                                                                                      ])
+                             ->where('id', '<=', $last_message_seen_id)
                              ->paginate($request->perPage ?? 50);
 
         } else {
