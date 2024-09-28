@@ -10,25 +10,8 @@ Route::get('/', function () {
 
 Route::get('/tester', function () {
 
-    $users = \App\Models\User::all();
-    $acts = DB::table('activities')
-              ->select(
-                  'user_id',
-                  DB::raw('SUM(TIMESTAMPDIFF(MINUTE, join_at, IFNULL(left_at, NOW()))) as sum_minutes')
-              )
-              ->whereMonth('created_at', now()->month)
-              ->whereYear('created_at', now()->year)
-              ->groupBy('user_id')
-              ->get();
-    $d = [];
-    foreach ($acts as $act) {
-        $d[] = [
-            'sum_minutes' => $act->sum_minutes,
-            'user'        => $users->find($act->user_id),
-        ];
-    }
-    return $d;
-    return $acts;
+    $user = \App\Models\User::first();
+    dd($user->channels());
 
 });
 Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
