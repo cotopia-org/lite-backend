@@ -8,8 +8,7 @@ return new class () extends Migration {
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
+    public function up(): void {
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
 
@@ -21,13 +20,15 @@ return new class () extends Migration {
             $table->time('end_time')->default('18:00:00');
 
 
-
-
-            $table->boolean('is_recurrence')->default(false);
+            $table->boolean('is_recurrence')->default(FALSE);
 
             $table->timestamp('recurrence_start_at')->default(now());
             $table->timestamp('recurrence_end_at')->nullable();
             $table->string('timezone')->default('Asia/Tehran');
+
+
+            $table->foreignId('workspace_id')->constrained('workspaces');
+
 
             $table->timestamps();
         });
@@ -36,8 +37,7 @@ return new class () extends Migration {
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('schedules');
     }
 };

@@ -70,7 +70,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/{workspace}/jobs', 'jobs');
         Route::get('/{workspace}/users', 'users');
         Route::get('/{workspace}/leaderboard', 'leaderboard');
-        Route::get('/{workspace}/calendars', 'calendars');
+        Route::get('/{workspace}/schedules', 'schedules');
         Route::get('/{workspace}/tags', 'tags');
         Route::post('/{workspace}/addRole', 'addRole');
         Route::post('/{workspace}/addTag', 'addTag');
@@ -85,6 +85,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/{room}/join', 'join');
         Route::get('/{room}/messages', 'messages');
         Route::get('/leave', 'leave');
+        Route::delete('/{room}', 'delete');
 
     });
 

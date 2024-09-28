@@ -8,6 +8,7 @@ use App\Http\Resources\RoomResource;
 use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\UserResource;
 use App\Jobs\disconnectLivekitJob;
+use App\Jobs\DisconnectUserJob;
 use App\Models\Activity;
 use App\Models\Message;
 use App\Models\Room;
@@ -33,39 +34,20 @@ class SocketController extends Controller {
 
     public function events(Request $request) {
 
+
         try {
 
             $event = new EventType($request->all());
             $user = $event->user();
-            $room = $event->room();
+            //            $room = $event->room();
             if ($user !== NULL) {
 
 
-                if ($event->event === Constants::JOINED || $event->event === Constants::LEFT) {
-                    $last_activity = $user->activities()->whereNull('left_at')->first();
-                    if ($last_activity !== NULL) {
-                        $last_activity->update([
-                                                   'left_at' => now(),
-                                                   'data'    => json_encode($request->all()),
+                if ($event->event === Constants::LEFT) {
 
-                                               ]);
-                    }
-
-                    $user->left(json_encode($request->all()));
-
-                    if ($event->event === Constants::JOINED) {
+                    DisconnectUserJob::dispatch($user, FALSE, FALSE, 'Disconnected From SocketController Events Method');
 
 
-                        $event->user()->activities()->create([
-                                                                 'join_at'      => now(),
-                                                                 'left_at'      => NULL,
-                                                                 'workspace_id' => $room->workspace->id,
-                                                                 'room_id'      => $room->id,
-                                                                 'data'         => json_encode($request->all()),
-                                                             ]);
-
-
-                    }
                 }
 
             }
@@ -121,39 +103,11 @@ class SocketController extends Controller {
         $request = \request();
 
 
-        $room_id = $user->room_id;
-
-        $user->update([
-                          'socket_id'    => $request->offline ? NULL : $user->socket_id,
-                          'status'       => $request->offline ? Constants::OFFLINE : $user->status,
-                          'room_id'      => NULL,
-                          'workspace_id' => NULL,
-
-                      ]);
-
-        $room = Room::find($room_id);
-
-
-        if ($room !== NULL) {
-
-
-            sendSocket(Constants::userLeftFromRoom, $room->workspace->channel, [
-                'room_id' => $room_id,
-                'user'    => UserMinimalResource::make($user)
-            ]);
-
-            sendSocket(Constants::workspaceRoomUpdated, $room->workspace->channel, RoomResource::make($room));
-
-
-            disconnectLivekitJob::dispatch($room, $user);
-
-        }
-        $user->left();
+        DisconnectUserJob::dispatch($user, $request->offline !== NULL, FALSE, 'Disconnected From SocketController Disconnected Method');
 
 
         return TRUE;
 
-        //        return api(UserResource::make(auth()->user()));
     }
 
 

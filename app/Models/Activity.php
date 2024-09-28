@@ -4,8 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Activity extends Model
-{
+class Activity extends Model {
     protected $fillable = [
         'join_at',
         'left_at',
@@ -21,19 +20,16 @@ class Activity extends Model
         'left_at' => 'datetime',
     ];
 
-    public function user()
-    {
+    public function user() {
         return $this->belongsTo(User::class);
     }
 
-    public function workspace()
-    {
+    public function workspace() {
         return $this->belongsTo(Workspace::class);
 
     }
 
-    public function room()
-    {
+    public function room() {
         return $this->belongsTo(Room::class);
 
     }

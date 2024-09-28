@@ -23,6 +23,7 @@ class UserMinimalResource extends JsonResource
             'coordinates' => $this->coordinates,
             'last_login'  => $this->updated_at,
             'verified'    => $this->verified ?? FALSE,
+            'is_bot'      => $this->is_bot,
 
 
         ];

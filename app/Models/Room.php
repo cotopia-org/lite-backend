@@ -12,8 +12,7 @@ use App\Utilities\Constants;
 use App\Utilities\Settingable;
 use Illuminate\Database\Eloquent\Model;
 
-class Room extends Model
-{
+class Room extends Model {
     use Settingable;
 
 
@@ -33,34 +32,28 @@ class Room extends Model
         'channel'
     ];
 
-    public function mentionedBy()
-    {
+    public function mentionedBy() {
         return $this->title;
     }
 
-    public function workspace()
-    {
+    public function workspace() {
         return $this->belongsTo(Workspace::class);
     }
 
-    public function files()
-    {
+    public function files() {
         return $this->morphMany(File::class, 'fileable');
     }
 
-    public function background()
-    {
+    public function background() {
         return $this->files->where('type', 'background')->last();
     }
 
 
-    public function isDirectRoom()
-    {
+    public function isDirectRoom() {
         return $this->workspace_id === NULL;
     }
 
-    public function participants()
-    {
+    public function participants() {
         if ($this->workspace_id === NULL) {
             return User::find(explode('-', $this->title));
 
@@ -71,8 +64,7 @@ class Room extends Model
 
     }
 
-    public function logo()
-    {
+    public function logo() {
         return $this->files->where('type', 'logo')->last();
     }
 
@@ -83,30 +75,25 @@ class Room extends Model
 
     }
 
-    public function users()
-    {
+    public function users() {
         return $this->hasMany(User::class);
     }
 
-    public function user()
-    {
+    public function user() {
         return $this->belongsTo(User::class);
     }
 
-    public function seens()
-    {
+    public function seens() {
         return $this->hasMany(Seen::class);
     }
 
-    public function unseens($user)
-    {
+    public function unseens($user) {
 
         return $this->messages_count - $this->seens->where('user_id', $user->id)->count();
 
     }
 
-    public function joinUser($user, $joinLivekit = TRUE)
-    {
+    public function joinUser($user, $joinLivekit = TRUE) {
         $workspace = $this->workspace;
         //        $workspace = $user->workspaces->find($workspace->id);
         //        if ($workspace === NULL) {
@@ -129,9 +116,7 @@ class Room extends Model
 
             $videoGrant = (new VideoGrant())->setRoomJoin()->setRoomName($roomName);
 
-            $token = (new AccessToken(config('livekit.apiKey'), config('livekit.apiSecret')))->init($tokenOptions)
-                                                                                             ->setGrant($videoGrant)
-                                                                                             ->toJwt();
+            $token = (new AccessToken(config('livekit.apiKey'), config('livekit.apiSecret')))->init($tokenOptions)->setGrant($videoGrant)->toJwt();
 
             //TODO: Socket, user joined to room.
 
@@ -147,8 +132,7 @@ class Room extends Model
     }
 
 
-    public function lkUsers()
-    {
+    public function lkUsers() {
         //        return [];
         $host = config('livekit.host');
         $svc = new RoomServiceClient($host, config('livekit.apiKey'), config('livekit.apiSecret'));
@@ -157,8 +141,7 @@ class Room extends Model
 
     }
 
-    public function isUserInLk($user)
-    {
+    public function isUserInLk($user) {
 
         foreach ($this->lkUsers() as $lkUser) {
             if ($lkUser->getIdentity() === $user->username) {
@@ -168,8 +151,7 @@ class Room extends Model
         return FALSE;
     }
 
-    public function messages()
-    {
+    public function messages() {
         return $this->hasMany(Message::class);
     }
 }

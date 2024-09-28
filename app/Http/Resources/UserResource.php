@@ -5,8 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
-{
+class UserResource extends JsonResource {
     /**
      * Transform the resource into an array.
      *
@@ -15,7 +14,6 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
 
-        $last_login = $this->activities()->orderBy('id', 'DESC')->first();
         return [
             'id'                      => $this->id,
             'name'                    => $this->name,
@@ -36,8 +34,9 @@ class UserResource extends JsonResource
             'screenshare_size'        => $this->screenshare_size,
             'video_coordinates'       => $this->video_coordinates,
             'video_size'              => $this->video_size,
-            'last_login'              => $last_login?->join_at,
-            'channels'                => $this->channels()
+            'channels'                => $this->channels(),
+            'last_login'              => $this->updated_at,
+            'is_bot'                  => $this->is_bot,
         ];
     }
 }

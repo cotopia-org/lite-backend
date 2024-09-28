@@ -3,8 +3,11 @@
 namespace App\Jobs;
 
 use Agence104\LiveKit\RoomServiceClient;
+use App\Http\Resources\RoomResource;
+use App\Http\Resources\UserMinimalResource;
 use App\Models\Room;
 use App\Models\User;
+use App\Utilities\Constants;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -27,6 +30,7 @@ class disconnectLivekitJob implements ShouldQueue {
      */
     public function handle(): void {
 
+
         $room_id = $this->room->id;
         if ($this->room->isUserInLk($this->user)) {
             try {
@@ -34,7 +38,7 @@ class disconnectLivekitJob implements ShouldQueue {
                 $svc = new RoomServiceClient($host, config('livekit.apiKey'), config('livekit.apiSecret'));
                 $svc->removeParticipant("$room_id", $this->user->username);
             } catch (\Exception $e) {
-                logger($e);
+                //                logger($e);
             }
         }
     }

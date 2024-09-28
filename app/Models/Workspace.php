@@ -23,6 +23,10 @@ class Workspace extends Model
         'channel'
     ];
 
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class);
+    }
 
     public function logo()
     {
