@@ -216,10 +216,14 @@ class User extends Authenticatable
     {
         $workspaces = $this->workspaces->pluck('channel');
         $chats = $this->chats->pluck('channel');
-        $room = $this->room->channel;
+        $arr = $workspaces->merge($chats);
+        if ($this->room !== NULL) {
+            $room = $this->room->channel;
+            $arr->merge($room);
+        }
 
 
-        return $workspaces->merge($chats)->merge($room)->values()->toArray();
+        return $arr->values()->toArray();
     }
 
     public function chats()
