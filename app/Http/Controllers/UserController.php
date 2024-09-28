@@ -134,23 +134,9 @@ class UserController extends Controller {
     public function chats(Request $request) {
 
         $user = auth()->user();
-        $chats = $user->chats;
 
 
-        $workspaces = $user->workspaces();
-
-        if ($request->workspace_id) {
-            $workspaces = $workspaces->find($request->workspace_id);
-            $chats->merge($workspaces->chats);
-        } else {
-            $workspaceChats = $workspaces->get()->map(function ($workspace) use ($chats) {
-                $chats = $chats->merge($workspace->chats);
-            });
-
-        }
-
-
-        return api(ChatResource::collection($chats));
+        return api(ChatResource::collection($user->real_chats()));
     }
 
 
