@@ -224,9 +224,7 @@ class User extends Authenticatable {
 
 
         }
-        if ($chats === NULL) {
-            dd('Here');
-        }
+
         return $chats;
     }
 
