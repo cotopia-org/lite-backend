@@ -23,7 +23,7 @@ class User extends Authenticatable {
      */
 
 
-    protected $with = ['avatar', 'workspaces'];
+    protected $with = ['avatar'];
     protected $fillable = [
         'name',
         'username',
@@ -193,8 +193,9 @@ class User extends Authenticatable {
     }
 
     public function channels() {
-        $workspaces = $this->workspaces->pluck('channel');
-        $chats = $this->real_chats()->pluck('channel');
+        $workspaces = $this->workspaces;
+        $workspaces = $workspaces->pluck('channel');
+        $chats = $this->real_chats($workspaces, NULL)->pluck('channel');
         $arr = $workspaces->merge($chats);
         if ($this->room !== NULL) {
             $room = $this->room->channel;
@@ -206,11 +207,13 @@ class User extends Authenticatable {
     }
 
 
-    public function real_chats($workspace_id = NULL) {
+    public function real_chats($workspaces = NULL, $workspace_id = NULL) {
         $chats = $this->chats;
 
+        if ($workspaces === NULL) {
+            $workspaces = $this->workspaces();
 
-        $workspaces = $this->workspaces();
+        }
 
         if ($workspace_id !== NULL) {
             $workspaces = $workspaces->find($workspace_id);
