@@ -39,7 +39,7 @@ class WorkspaceController extends Controller {
 
     public function jobs(Workspace $workspace) {
 
-        return api(JobResource::collection($workspace->jobs));
+        return api(JobResource::collection($workspace->jobs()->with('users')->get()));
     }
 
     public function users(Workspace $workspace) {
