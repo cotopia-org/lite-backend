@@ -136,7 +136,7 @@ class UserController extends Controller {
         $user = auth()->user();
 
 
-        return api(ChatResource::collection($user->real_chats()));
+        return api(ChatResource::collection($user->real_chats($request->workspace_id)));
     }
 
 

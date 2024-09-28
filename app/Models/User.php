@@ -195,7 +195,6 @@ class User extends Authenticatable {
     public function channels() {
         $workspaces = $this->workspaces->pluck('channel');
         $chats = $this->real_chats()->pluck('channel');
-        dd($chats);
         $arr = $workspaces->merge($chats);
         if ($this->room !== NULL) {
             $room = $this->room->channel;
@@ -217,12 +216,9 @@ class User extends Authenticatable {
             $workspaces = $workspaces->find($workspace_id);
             $chats->merge($workspaces->chats);
         } else {
-            if ($workspaces->get() === NULL) {
-                dd($workspaces);
-            }
+
             foreach ($workspaces->get() as $workspace) {
                 $chats = $chats->merge($workspace->chats);
-                dd($chats);
 
             }
 
