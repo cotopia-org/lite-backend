@@ -17,16 +17,13 @@ use App\Models\Workspace;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
-{
-    public function me()
-    {
+class UserController extends Controller {
+    public function me() {
 
         return api(UserResource::make(auth()->user()));
     }
 
-    public function jobs(Request $request, $user)
-    {
+    public function jobs(Request $request, $user) {
         if ($user === 'me') {
             $user = auth()->user();
         } else {
@@ -40,26 +37,24 @@ class UserController extends Controller
     }
 
 
-    public function workspaces()
-    {
+    public function workspaces() {
         $user = auth()->user();
 
         return api(JobResource::collection($user->workspaces()));
     }
 
-    public function search(Request $request)
-    {
+    public function search(Request $request) {
         //TODO: have to use meiliserach instead
         $search = $request->search;
         $users = User::where(function ($query) use ($search) {
-            $query->where('name', 'LIKE', $search . '%')->orWhere('username', 'LIKE', $search . '%')
-                  ->orWhere('email', 'LIKE', $search . '%');
+            $query
+                ->where('name', 'LIKE', $search . '%')->orWhere('username', 'LIKE', $search . '%')
+                ->orWhere('email', 'LIKE', $search . '%');
         })->get();
         return api(UserMinimalResource::collection($users));
     }
 
-    public function updateCoordinates(Request $request)
-    {
+    public function updateCoordinates(Request $request) {
         $user = auth()->user();
         $request->validate([
                                'coordinates' => 'required'
@@ -79,8 +74,7 @@ class UserController extends Controller
 
     }
 
-    public function toggleMegaphone()
-    {
+    public function toggleMegaphone() {
         $user = auth()->user();
 
 
@@ -99,8 +93,7 @@ class UserController extends Controller
     }
 
 
-    public function unGhost()
-    {
+    public function unGhost() {
         $user = auth()->user();
         $user->update([
                           'status' => Constants::ONLINE,
@@ -112,8 +105,7 @@ class UserController extends Controller
 
     }
 
-    public function update(Request $request)
-    {
+    public function update(Request $request) {
         $user = auth()->user();
         $user->update([
                           'name'              => $request->name ?? $user->name,
@@ -134,34 +126,39 @@ class UserController extends Controller
         return api($response);
     }
 
-    public function activities(Request $request)
-    {
+    public function activities(Request $request) {
 
         return api(auth()->user()->getTime($request->period)['sum_minutes']);
     }
 
-    public function chats(Request $request)
-    {
+    public function chats(Request $request) {
 
         $user = auth()->user();
-        $chats = $user->chats();
+        $chats = $user->chats;
 
+
+        $workspaces = $user->workspaces();
 
         if ($request->workspace_id) {
-            $chats->where('workspace_id', $request->workspace_id)->orWhereNull('workspace_id');
+            $workspaces = $workspaces->find($request->workspace_id);
+            $chats->merge($workspaces->chats);
+        } else {
+            $workspaceChats = $workspaces->get()->map(function ($workspace) use ($chats) {
+                $chats = $chats->merge($workspace->chats);
+            });
+
         }
 
-        return api(ChatResource::collection($chats->get()));
+
+        return api(ChatResource::collection($chats));
     }
 
 
-    public function talks()
-    {
+    public function talks() {
         return api(TalkResource::collection(auth()->user()->talks));
     }
 
-    public function schedules($user)
-    {
+    public function schedules($user) {
         if ($user === 'me') {
             $user = auth()->user();
         } else {
