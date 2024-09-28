@@ -34,7 +34,7 @@ class UserResource extends JsonResource {
             'screenshare_size'        => $this->screenshare_size,
             'video_coordinates'       => $this->video_coordinates,
             'video_size'              => $this->video_size,
-            'channels'                => $this->channels(),
+            'channels'                => auth()->user()->channels(),
             'last_login'              => $this->updated_at,
             'is_bot'                  => $this->is_bot,
         ];
