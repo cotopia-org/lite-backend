@@ -117,7 +117,7 @@ class WorkspaceController extends Controller {
     public function schedules(Workspace $workspace) {
 
 
-        return api(ScheduleResource::collection($workspace->schedules));
+        return api(ScheduleResource::collection($workspace->schedules()->with('user')->get()));
     }
 
     public function addTag(Workspace $workspace, Request $request) {
