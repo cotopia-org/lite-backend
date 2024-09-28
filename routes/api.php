@@ -47,7 +47,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
     Route::controller(UserController::class)->prefix('users')->group(function () {
         Route::get('/me', 'me');
         Route::get('/activities', 'activities');
-        Route::get('/directs', 'directs');
+        Route::get('/chats', 'chats');
         Route::get('/jobs', 'jobs');
         Route::get('/{user}/schedules', 'schedules');
         Route::get('/talks', 'talks');

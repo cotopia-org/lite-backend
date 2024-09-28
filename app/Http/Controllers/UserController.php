@@ -133,9 +133,18 @@ class UserController extends Controller
         return api(auth()->user()->getTime($request->period)['sum_minutes']);
     }
 
-    public function directs()
+    public function chats(Request $request)
     {
-        return api(RoomResource::collection(auth()->user()->directs()));
+
+        $user = auth()->user();
+        $chats = $user->chats();
+
+
+        if ($request->workspace_id) {
+            $chats->where('workspace_id', $request->workspace_id)->orWhereNull('workspace_id');
+        }
+
+        return api(ChatResource::collection($chats->get()));
     }
 
 
@@ -156,10 +165,5 @@ class UserController extends Controller
         return api(ScheduleResource::collection($user->schedules));
     }
 
-
-    public function chats()
-    {
-        return ChatResource::collection(auth()->user()->chats);
-    }
 
 }

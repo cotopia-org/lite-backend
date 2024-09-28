@@ -19,7 +19,6 @@ return new class () extends Migration {
             $table->integer('reply_to')->nullable();
 
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignId('room_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('chat_id')->nullable()->constrained()->onDelete('cascade')->onUpdate('cascade');
 
 

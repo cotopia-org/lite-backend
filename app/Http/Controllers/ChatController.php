@@ -11,8 +11,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
-class ChatController extends Controller {
-    public function create(Request $request) {
+class ChatController extends Controller
+{
+    public function create(Request $request)
+    {
         $request->validate([
                                'type'         => [
                                    'required',
@@ -116,7 +118,8 @@ class ChatController extends Controller {
     }
 
 
-    public function messages(Chat $chat) {
+    public function messages(Chat $chat)
+    {
 
 
         $user = auth()->user();
@@ -124,15 +127,15 @@ class ChatController extends Controller {
         $request = request();
         if ($request->page) {
             $last_message_seen_id = $this
-                                        ->users()->where('user_id', $user->id)
-                                        ->first()->pivot->last_message_seen_id ?? 0;
+                ->users()->where('user_id', $user->id)
+                ->first()->pivot->last_message_seen_id ?? 0;
 
 
             $messages = $chat->messages()->orderBy('id', 'DESC')->where('id', '<=', $last_message_seen_id)
                              ->paginate($request->perPage ?? 50);
 
         } else {
-            $messages = $chat->unSeens($user, FALSE);
+            $messages = $chat->unSeens($user);
 
         }
 
