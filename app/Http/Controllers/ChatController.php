@@ -11,17 +11,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
-class ChatController extends Controller
-{
-    public function create(Request $request)
-    {
+class ChatController extends Controller {
+    public function create(Request $request) {
         $request->validate([
                                'type'         => [
                                    'required',
                                    Rule::in([Constants::GROUP, Constants::CHANNEL, Constants::DIRECT])
                                ],
                                'title'        => 'required_if:type,group',
-                               'participants' => 'required_if:type,group|required_if:workspace_id,null',
+                               'participants' => 'required_if:type,group|required_without:workspace_id',
                                'user_id'      => 'required_if:type,direct',
                            ]);
 
@@ -118,8 +116,7 @@ class ChatController extends Controller
     }
 
 
-    public function messages(Chat $chat)
-    {
+    public function messages(Chat $chat) {
 
 
         $user = auth()->user();
@@ -127,18 +124,18 @@ class ChatController extends Controller
         $request = request();
         if ($request->page) {
             $last_message_seen_id = $this
-                ->users()->where('user_id', $user->id)
-                ->first()->pivot->last_message_seen_id ?? 0;
+                                        ->users()->where('user_id', $user->id)
+                                        ->first()->pivot->last_message_seen_id ?? 0;
 
 
-            $messages = $chat->messages()->orderBy('id', 'DESC')->withTrashed()->with([
-                                                                                          'links',
-                                                                                          'mentions',
-                                                                                          'user',
-                                                                                          'files',
-                                                                                      ])
-                             ->where('id', '<=', $last_message_seen_id)
-                             ->paginate($request->perPage ?? 50);
+            $messages = $chat
+                ->messages()->orderBy('id', 'DESC')->withTrashed()->with([
+                                                                             'links',
+                                                                             'mentions',
+                                                                             'user',
+                                                                             'files',
+                                                                         ])->where('id', '<=', $last_message_seen_id)
+                ->paginate($request->perPage ?? 50);
 
         } else {
             $messages = $chat->unSeens($user);
