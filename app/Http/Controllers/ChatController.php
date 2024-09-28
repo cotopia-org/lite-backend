@@ -14,13 +14,13 @@ use Illuminate\Validation\Rule;
 class ChatController extends Controller {
     public function create(Request $request) {
         $request->validate([
-                               'type'         => [
+                               'type'    => [
                                    'required',
                                    Rule::in([Constants::GROUP, Constants::CHANNEL, Constants::DIRECT])
                                ],
-                               'title'        => 'required_if:type,group',
-                               'participants' => 'required_if:type,group|required_without:workspace_id',
-                               'user_id'      => 'required_if:type,direct',
+                               'title'   => 'required_if:type,group',
+                               //                               'participants' => 'required_if:type,group|required_without:workspace_id',
+                               'user_id' => 'required_if:type,direct',
                            ]);
 
 
@@ -58,7 +58,13 @@ class ChatController extends Controller {
 
                 //TODO: has to check user has permission to add group to workspace or not.
 
+
                 $hasToAddParticipants = FALSE;
+            } else {
+                $request->validate([
+                                       'participants' => 'required',
+                                   ]);
+
             }
 
             $chat = Chat::create([
