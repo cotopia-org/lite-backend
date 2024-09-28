@@ -7,8 +7,7 @@ use App\Utilities\Constants;
 use App\Utilities\Settingable;
 use Illuminate\Database\Eloquent\Model;
 
-class Workspace extends Model
-{
+class Workspace extends Model {
 
     use Settingable;
 
@@ -23,54 +22,48 @@ class Workspace extends Model
         'channel'
     ];
 
-    public function schedules()
-    {
+    public function chats() {
+        return $this->hasMany(Chat::class);
+    }
+
+    public function schedules() {
         return $this->hasMany(Schedule::class);
     }
 
-    public function logo()
-    {
+    public function logo() {
         return $this->morphOne(File::class, 'fileable');
     }
 
-    public function rooms()
-    {
+    public function rooms() {
         return $this->hasMany(Room::class);
     }
 
-    public function messages()
-    {
+    public function messages() {
         return $this->hasMany(Message::class);
     }
 
-    public function jobs()
-    {
+    public function jobs() {
         return $this->hasMany(Job::class);
     }
 
-    public function users()
-    {
+    public function users() {
         return $this->belongsToMany(User::class)->withPivot('role');
     }
 
-    public function calendars()
-    {
+    public function calendars() {
         return $this->hasMany(Calendar::class);
     }
 
-    public function tags()
-    {
+    public function tags() {
         return $this->hasMany(Tag::class);
     }
 
-    public function hasUser($user)
-    {
+    public function hasUser($user) {
         return $this->users->contains($user->id);
     }
 
     // TODO - This should be deleted because assigning roles must be done by admins not by just joining to a workspace. Actually if the user has member permission should be able to join to any workspace.
-    public function joinUser($user, $role = 'member', $tag = NULL)
-    {
+    public function joinUser($user, $role = 'member', $tag = NULL) {
         if (!$this->users->contains($user->id)) {
             $this->users()->attach($user, ['role' => $role, 'tag_id' => $tag]);
             $user->update([
@@ -86,25 +79,21 @@ class Workspace extends Model
 
     }
 
-    public function mentionedBy()
-    {
+    public function mentionedBy() {
         return $this->title;
     }
 
-    public function getChannelAttribute($value)
-    {
+    public function getChannelAttribute($value) {
         return 'workspace-' . $this->id;
 
     }
 
-    public function settings()
-    {
+    public function settings() {
         return $this->hasMany(Setting::class);
     }
 
 
-    public function sendMessageToAll($text, $reply_to = NULL)
-    {
+    public function sendMessageToAll($text, $reply_to = NULL) {
 
         foreach ($this->users as $user) {
 
