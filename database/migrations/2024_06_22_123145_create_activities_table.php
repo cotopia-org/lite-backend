@@ -19,7 +19,7 @@ return new class () extends Migration {
             $table->foreignId('room_id')->nullable()->constrained()->onDelete('cascade')->onUpdate('cascade');
 
 
-            $table->json('data')->nullable();
+            $table->longText('data')->nullable();
 
             $table->timestamps();
         });

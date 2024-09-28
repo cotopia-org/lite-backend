@@ -77,7 +77,7 @@ class RoomController extends Controller {
 
 
         if ($before_room !== NULL) {
-            DisconnectUserJob::dispatch($room, $user, FALSE, FALSE, 'Disconnected From RoomController Join method Due Change Room');
+            DisconnectUserJob::dispatch($user, $room, FALSE, FALSE, 'Disconnected From RoomController Join method Due Change Room');
         }
 
         $room = $room->joinUser($user);
