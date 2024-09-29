@@ -136,6 +136,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::post('/', 'create');
 
     });
+
     Route::controller(SettingController::class)->prefix('settings')->group(function () {
         Route::post('/', 'set');
 
