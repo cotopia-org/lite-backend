@@ -7,6 +7,7 @@ use App\Http\Resources\ChatResource;
 use App\Http\Resources\JobResource;
 use App\Http\Resources\RoomResource;
 use App\Http\Resources\ScheduleResource;
+use App\Http\Resources\SettingResource;
 use App\Http\Resources\TalkResource;
 use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\UserResource;
@@ -21,6 +22,11 @@ class UserController extends Controller {
     public function me() {
 
         return api(UserResource::make(auth()->user()));
+    }
+
+
+    public function settings() {
+        SettingResource::make(auth()->user()->settings);
     }
 
     public function jobs(Request $request, $user) {

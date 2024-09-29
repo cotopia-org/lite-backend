@@ -58,6 +58,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/toggleMegaphone', 'toggleMegaphone');
         Route::post('/search', 'search');
         Route::put('/update', 'update');
+        Route::get('/settings', 'settings');
     });
 
     Route::controller(WorkspaceController::class)->prefix('workspaces')->group(function () {

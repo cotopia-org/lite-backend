@@ -31,7 +31,6 @@ class SocketController extends Controller {
         return api(UserResource::make(auth()->user()));
     }
 
-
     public function events(Request $request) {
 
 
@@ -81,7 +80,6 @@ class SocketController extends Controller {
 
 
     }
-
 
     public function updateCoordinates(Request $request) {
 

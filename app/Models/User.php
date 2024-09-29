@@ -118,9 +118,6 @@ class User extends Authenticatable {
         return $this->belongsToMany(Role::class)->withPivot('workspace_id', 'room_id');
     }
 
-    public function directs() {
-        return Room::where('title', 'regexp', "[[:<:]]$this->id[[:>:]]")->get();
-    }
 
 
     public function isSuperAdmin($workspace) {
@@ -220,7 +217,7 @@ class User extends Authenticatable {
             $chats->merge($workspaces->chats);
         } else {
 
-            foreach ($workspaces->get() as $workspace) {
+            foreach ($workspaces->with('chats')->get() as $workspace) {
                 $chats = $chats->merge($workspace->chats);
 
             }
