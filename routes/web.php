@@ -44,7 +44,7 @@ Route::get('/acts', function () {
             $d[] = collect($user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded,
                                           $request->workspace));
         }
-        return collect($d)->sortByDesc('sum_minutes')->values()->toArray();
+        return collect($d)->sortByDesc('sum_minutes')->get(['user.username', 'sum_minutes'])->values()->toArray();
     }
     $user = \App\Models\User::find($request->user_id);
     return $user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded,
