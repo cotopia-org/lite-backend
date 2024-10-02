@@ -342,19 +342,19 @@ class User extends Authenticatable
                                                   ]);
 
         return [
-            'user'        => $this,
-            'count'       => $acts->count(),
+            'user'        => $this->username,
+            //            'count'       => $acts->count(),
             'sum_minutes' => $sum_minutes,
             'sum_hours'   => \Carbon\CarbonInterval::minutes($sum_minutes)->cascade()->forHumans(),
-            'data'        => $expanded ? $data : [],
-            'activities'  => $expanded ? $acts->map(function ($act) {
-                return [
-                    'id'         => $act->id,
-                    'join_at'    => $act->join_at->timezone('Asia/Tehran')->toDayDateTimeString(),
-                    'left_at'    => $act->left_at?->timezone('Asia/Tehran')->toDayDateTimeString(),
-                    'created_at' => $act->created_at->timezone('Asia/Tehran')->toDayDateTimeString(),
-                ];
-            }) : [],
+            //            'data'        => $expanded ? $data : [],
+            //            'activities'  => $expanded ? $acts->map(function ($act) {
+            //                return [
+            //                    'id'         => $act->id,
+            //                    'join_at'    => $act->join_at->timezone('Asia/Tehran')->toDayDateTimeString(),
+            //                    'left_at'    => $act->left_at?->timezone('Asia/Tehran')->toDayDateTimeString(),
+            //                    'created_at' => $act->created_at->timezone('Asia/Tehran')->toDayDateTimeString(),
+            //                ];
+            //            }) : [],
         ];
 
     }
