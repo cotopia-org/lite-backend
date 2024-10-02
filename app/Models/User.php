@@ -360,6 +360,28 @@ class User extends Authenticatable
     }
 
 
+    public function getScheduledHoursInWeek()
+    {
+        \Carbon\CarbonInterval::setCascadeFactors([
+                                                      'minute' => [60, 'seconds'],
+                                                      'hour'   => [60, 'minutes'],
+                                                  ]);
+        $minutes = 0;
+        foreach ($this->schedules as $schedule) {
+            foreach ($schedule->days as $day) {
+                foreach ($day->times as $time) {
+                    $end = now()->setTimeFromTimeString($time->end);
+                    $start = now()->setTimeFromTimeString($time->start);
+                    $minutes += $start->diffInMinutes($end);
+                }
+            }
+        }
+        return [
+            'minutes' => $minutes,
+            'hours'   => \Carbon\CarbonInterval::minutes($minutes)->cascade()->forHumans(),
+        ];
+    }
+
     public function schedules()
     {
         return $this->hasMany(Schedule::class);

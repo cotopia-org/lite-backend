@@ -1,5 +1,6 @@
 <?php
 
+use Agence104\LiveKit\RoomServiceClient;
 use App\Models\Activity;
 use Illuminate\Support\Facades\Route;
 
@@ -10,22 +11,18 @@ Route::get('/', function () {
 
 Route::get('/tester', function () {
 
-    $chat = \App\Models\Chat::first();
-    dd($chat->workspace->users);
+    $firstOfMonth = today()->firstOfMonth();
+    $user = \App\Models\User::find(1);
+    $activities = $user->activities()->where('created_at', '>=', $firstOfMonth)->get();
+    $schedules = $user->schedules;
+    foreach ($activities as $activity) {
+        $dayOfWeek = $activity->created_at->dayOfWeek();
 
-    $users = \App\Models\User::all();
-    $acts = DB::table('activities')
-              ->select('user_id', DB::raw('SUM(TIMESTAMPDIFF(MINUTE, join_at, IFNULL(left_at, NOW()))) as sum_minutes'))
-              ->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year)->groupBy('user_id')->get();
-    $d = [];
-    foreach ($acts as $act) {
-        $d[] = [
-            'sum_minutes' => $act->sum_minutes,
-            'user'        => $users->find($act->user_id),
-        ];
+        $schedules;
     }
-    return $d;
-    return $acts;
+
+
+    dd();
 
 });
 Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
