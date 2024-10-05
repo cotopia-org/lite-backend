@@ -163,6 +163,10 @@ class User extends Authenticatable {
     }
 
 
+    public function mentions() {
+        return $this->morphMany(Mention::class, 'mentionable');
+    }
+
     public function mentionedBy() {
         return $this->username;
     }
