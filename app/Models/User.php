@@ -434,6 +434,26 @@ class User extends Authenticatable {
         return $this->hasMany(Talk::class);
     }
 
+
+    public function canDo($ability, $workspace_id) {
+        $user_in_workspace = $this->workspaces->find($workspace_id);
+        if ($user_in_workspace === NULL) {
+            return error('You cant do this.');
+        }
+        $role = $user_in_workspace->pivot->role;
+
+        if ($role === 'super-admin') {
+            return error('You cant do this.');
+        }
+        $permissions = Constants::ROLE_PERMISSIONS[$role];
+
+        if (!in_array($ability, $permissions, TRUE)) {
+            return error('You cant do this.');
+
+        }
+
+    }
+
     public function getAbilities(): array {
 
         $abilities = [];
