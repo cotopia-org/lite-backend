@@ -29,12 +29,6 @@ Route::controller(AuthController::class)->prefix('auth')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(callback: function () {
-    Route::apiResource('notifications', NotificationController::class);
-
-    Route::apiResource('calendars', CalendarController::class);
-    Route::prefix('calendars')->controller(CalendarController::class)->group(function () {
-        Route::get('{calendar}/schedules', 'schedules');
-    });
 
 
     Route::controller(ScheduleController::class)->prefix('schedules')->group(function () {
