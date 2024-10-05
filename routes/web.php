@@ -11,6 +11,9 @@ Route::get('/', function () {
 
 Route::get('/tester', function () {
 
+    $user = \App\Models\User::find(1);
+
+    dd($user->real_chats(NULL));
     dd('Tester');
 
 });

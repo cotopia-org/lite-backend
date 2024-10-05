@@ -221,6 +221,7 @@ class User extends Authenticatable {
                 $workspaces = $this->workspaces()->with('chats')->get();
 
             }
+            dd($workspaces);
             foreach ($workspaces as $workspace) {
                 $chats = $chats->merge($workspace->chats);
 
