@@ -74,6 +74,12 @@ class Workspace extends Model {
 
             //            $user->giveRole($role, $this);
 
+
+            foreach ($this->chats as $chat) {
+                $chat->users()->attach($user, ['role' => 'member']);
+
+            }
+
         }
         return $this;
 

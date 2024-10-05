@@ -38,16 +38,7 @@ class Chat extends Model {
     }
 
     public function participants() {
-        if ($this->type === 'direct' && $this->workspace_id === NULL) {
-            return User::find(explode('-', $this->title));
 
-        }
-
-
-        if ($this->type === 'group' && $this->workspace_id !== NULL) {
-            return $this->workspace->users;
-
-        }
 
         return $this->users;
     }

@@ -11,6 +11,8 @@ Route::get('/', function () {
 
 Route::get('/tester', function () {
 
+    $w = \App\Models\Workspace::first();
+    dd($w->users->pluck('id'));
     $user = \App\Models\User::find(1);
 
     dd($user->real_chats(NULL, 3));
