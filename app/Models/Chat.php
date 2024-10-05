@@ -63,7 +63,7 @@ class Chat extends Model {
         $messagesIds = $this
             ->unSeens($user, FALSE)->pluck('id');
         return $user
-            ->mentions()->where('chat_id', $this->id)->whereIn('id', $messagesIds)->get();
+            ->mentions()->whereIn('id', $messagesIds)->get();
     }
 
     public function unSeens($user) {
