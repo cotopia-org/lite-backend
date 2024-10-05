@@ -212,16 +212,15 @@ class User extends Authenticatable {
     public function real_chats($workspaces = NULL, $workspace_id = NULL) {
         $chats = $this->chats;
 
+        if ($workspaces === NULL && $workspace_id === NULL) {
+            $workspaces = $this->workspaces()->with('chats')->get();
 
+        }
         if ($workspace_id !== NULL) {
-            $workspaces = $workspaces->find($workspace_id);
-            $chats->merge($workspaces->chats);
-        } else {
-            if ($workspaces === NULL) {
-                $workspaces = $this->workspaces()->with('chats')->get();
 
-            }
-            dd($workspaces);
+            $chats = $chats->merge($this->workspaces()->findOrFail($workspace_id)->chats);
+        } else {
+
             foreach ($workspaces as $workspace) {
                 $chats = $chats->merge($workspace->chats);
 
