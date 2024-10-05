@@ -214,14 +214,14 @@ class User extends Authenticatable {
         $chats = $this->chats()->with('messages', 'users')->get();
 
         if ($workspaces === NULL && $workspace_id === NULL) {
-            $workspaces = $this->workspaces()->with('chats', 'chats.messages', 'chats.users', 'chat.workspace')->get();
+            $workspaces = $this->workspaces()->with('chats', 'chats.messages', 'chats.users', 'chats.workspace')->get();
 
         }
         if ($workspace_id !== NULL) {
 
             $chats = $chats->merge($this
-                                       ->workspaces()->findOrFail($workspace_id)->chats()
-                                       ->with('chats', 'chats.messages', 'chats.users', 'chat.workspace')->get());
+                                       ->workspaces()->with('chats', 'chats.messages', 'chats.users', 'chats.workspace')
+                                       ->findOrFail($workspace_id)->chats);
         } else {
 
             foreach ($workspaces as $workspace) {
