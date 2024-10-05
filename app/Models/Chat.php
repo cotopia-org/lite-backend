@@ -63,8 +63,7 @@ class Chat extends Model {
         // Message that user mentioned and not seen
 
 
-        $last_message_seen_id = $this
-                                    ->users()->where('user_id', $user->id)->first()->pivot->last_message_seen_id ?? 0;
+        $last_message_seen_id = $this->users->where('user_id', $user->id)->first()->pivot->last_message_seen_id ?? 0;
 
 
         return $this
