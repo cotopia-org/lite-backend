@@ -210,10 +210,11 @@ class User extends Authenticatable {
 
 
     public function real_chats($workspaces = NULL, $workspace_id = NULL) {
+
         $chats = $this->chats()->with('messages', 'users')->get();
 
         if ($workspaces === NULL && $workspace_id === NULL) {
-            $workspaces = $this->workspaces()->with('chats')->get();
+            $workspaces = $this->workspaces()->with('chats', 'chats.messages', 'chats.users')->get();
 
         }
         if ($workspace_id !== NULL) {
@@ -224,7 +225,7 @@ class User extends Authenticatable {
         } else {
 
             foreach ($workspaces as $workspace) {
-                $chats = $chats->merge($workspace->chats()->with('messages', 'users')->get());
+                $chats = $chats->merge($workspace->chats);
 
             }
 
