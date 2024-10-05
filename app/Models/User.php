@@ -210,7 +210,7 @@ class User extends Authenticatable {
 
 
     public function real_chats($workspaces = NULL, $workspace_id = NULL) {
-        $chats = $this->chats;
+        $chats = $this->chats()->with('messages', 'users')->get();
 
         if ($workspaces === NULL && $workspace_id === NULL) {
             $workspaces = $this->workspaces()->with('chats')->get();
