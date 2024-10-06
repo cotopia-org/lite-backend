@@ -44,7 +44,6 @@ class RoomController extends Controller {
 
     public function create(Request $request) {
 
-
         $request->validate([
                                'workspace_id' => 'required',
                                'title'        => 'required',
