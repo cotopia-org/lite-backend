@@ -44,7 +44,7 @@ class Chat extends Model {
 
 
     public function pinnedMessages() {
-        return $this->messages->where('is_pinned', TRUE)->get();
+        return $this->messages->where('is_pinned', TRUE);
     }
 
     public function mentionedMessages($user) {
