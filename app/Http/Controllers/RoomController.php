@@ -61,8 +61,10 @@ class RoomController extends Controller {
                                                 'user_id' => $user->id
                                             ]);
 
+        $res = RoomResource::make($room);
 
-        return api(RoomResource::make($room));
+        sendSocket(Constants::roomCreated, $workspace->channel, $res);
+        return api($res);
 
     }
 

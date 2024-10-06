@@ -48,6 +48,7 @@ class Constants {
     const COMPLETED = 'joinedRoom';
     const userUpdated = 'userUpdated';
     const workspaceUpdated = 'workspaceUpdated';
+    const roomCreated = 'roomCreated';
     const roomUpdated = 'roomUpdated';
     const roomMessages = 'roomMessages';
     const directMessages = 'directMessages';

@@ -44,7 +44,7 @@ class SocketController extends Controller {
 
                 if ($event->event === Constants::LEFT) {
 
-                    DisconnectUserJob::dispatch($user, FALSE, FALSE, 'Disconnected From SocketController Events Method');
+                    //                    DisconnectUserJob::dispatch($user, FALSE, FALSE, 'Disconnected From SocketController Events Method');
 
 
                 }
