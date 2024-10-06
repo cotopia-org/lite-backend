@@ -443,7 +443,7 @@ class User extends Authenticatable {
         $role = $user_in_workspace->pivot->role;
 
         if ($role === 'super-admin') {
-            return error('You cant do this.');
+            return TRUE;
         }
         $permissions = Constants::ROLE_PERMISSIONS[$role];
 

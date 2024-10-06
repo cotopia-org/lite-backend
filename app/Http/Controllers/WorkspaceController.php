@@ -74,7 +74,7 @@ class WorkspaceController extends Controller {
                                     ]);
 
 
-        $user->notify(new WorkspaceCreatedNotification($workspace));
+        //        $user->notify(new WorkspaceCreatedNotification($workspace));
 
         return api(WorkspaceResource::make($workspace));
     }
