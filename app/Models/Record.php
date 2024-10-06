@@ -12,4 +12,9 @@ class Record extends Model
     protected $fillable = [
         'name', 'egress_id', 'room_id', 'is_audio', 'is_video', 'url', 'status', 'type', 'started_at', 'ended_at',
     ];
+
+    protected $casts = [
+        'started_at' => 'datetime',
+        'ended_at'   => 'datetime',
+    ];
 }

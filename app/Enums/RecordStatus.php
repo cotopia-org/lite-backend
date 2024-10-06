@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum RoomRecordStatus: int
+enum RecordStatus: int
 {
     case IN_PROGRESS = 0;
 
