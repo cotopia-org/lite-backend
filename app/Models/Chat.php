@@ -27,7 +27,7 @@ class Chat extends Model {
     }
 
     public function lastMessage() {
-        return $this->messages->orderByDesc('id')->first();
+        return $this->messages->sortByDesc('id')->first();
 
     }
 
