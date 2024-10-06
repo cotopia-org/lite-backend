@@ -27,8 +27,7 @@ class Chat extends Model {
     }
 
     public function lastMessage() {
-        return $this
-            ->messages()->orderByDesc('id')->first();
+        return $this->messages->orderByDesc('id')->first();
 
     }
 
@@ -45,17 +44,14 @@ class Chat extends Model {
 
 
     public function pinnedMessages() {
-        return $this
-            ->messages()->where('is_pinned', TRUE)->get();
+        return $this->messages->where('is_pinned', TRUE)->get();
     }
 
     public function mentionedMessages($user) {
 
 
-        $messagesIds = $this
-            ->unSeens($user, FALSE)->pluck('id');
-        return $user
-            ->mentions()->whereIn('id', $messagesIds)->get();
+        $messagesIds = $this->unSeens($user, FALSE)->pluck('id');
+        return $user->mentions()->whereIn('id', $messagesIds)->get();
     }
 
     public function unSeens($user) {
@@ -66,8 +62,7 @@ class Chat extends Model {
         $last_message_seen_id = $this->users->where('user_id', $user->id)->first()->pivot->last_message_seen_id ?? 0;
 
 
-        return $this
-            ->messages()->where('id', '>', $last_message_seen_id);
+        return $this->messages->where('id', '>', $last_message_seen_id);
 
     }
 
