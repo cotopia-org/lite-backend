@@ -10,14 +10,19 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('room_records', function (Blueprint $table) {
+        Schema::create('records', function (Blueprint $table) {
             $table->id();
 
             $table->string('name');
             $table->boolean('is_audio');
             $table->boolean('is_video');
-            $table->string('url');
+            $table->string('url')->nullable();
+            $table->string('egress_id')->nullable();
+            $table->string('room_id')->nullable();
             $table->tinyInteger('status');
+            $table->tinyInteger('type');
+            $table->timestamp('started_at')->nullable();
+            $table->timestamp('ended_at')->nullable();
 
             $table->timestamps();
         });

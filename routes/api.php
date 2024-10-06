@@ -8,6 +8,7 @@ use App\Http\Controllers\JobController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PostmanExportController;
+use App\Http\Controllers\RecordController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\ScheduleController;
@@ -149,9 +150,15 @@ Route::middleware('auth:sanctum')->group(callback: function () {
 
     });
 
+    Route::controller(RecordController::class)->prefix('records')->group(function () {
+        Route::get('/', 'index');
+        Route::post('/start', 'start');
+        Route::get('/{record}', 'show');
+        Route::post('/{record}/stop', 'stop');
+    });
 });
 
 
 Route::get('export-postman', PostmanExportController::class)->name('postman');
 
-require __DIR__ . '/socket.php';
+require __DIR__.'/socket.php';
