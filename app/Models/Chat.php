@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Chat extends Model {
 
+    protected $with = ['messages', 'users', 'workspace'];
 
     protected $fillable = [
         'title',
@@ -37,16 +38,7 @@ class Chat extends Model {
     }
 
     public function participants() {
-        if ($this->type === 'direct' && $this->workspace_id === NULL) {
-            return User::find(explode('-', $this->title));
 
-        }
-
-
-        if ($this->type === 'group' && $this->workspace_id !== NULL) {
-            return $this->workspace->users;
-
-        }
 
         return $this->users;
     }
@@ -63,7 +55,7 @@ class Chat extends Model {
         $messagesIds = $this
             ->unSeens($user, FALSE)->pluck('id');
         return $user
-            ->mentions()->where('chat_id', $this->id)->whereIn('id', $messagesIds)->get();
+            ->mentions()->whereIn('id', $messagesIds)->get();
     }
 
     public function unSeens($user) {
@@ -71,8 +63,7 @@ class Chat extends Model {
         // Message that user mentioned and not seen
 
 
-        $last_message_seen_id = $this
-                                    ->users()->where('user_id', $user->id)->first()->pivot->last_message_seen_id ?? 0;
+        $last_message_seen_id = $this->users->where('user_id', $user->id)->first()->pivot->last_message_seen_id ?? 0;
 
 
         return $this

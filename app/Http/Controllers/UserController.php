@@ -18,22 +18,18 @@ use App\Models\Workspace;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
-{
-    public function me()
-    {
+class UserController extends Controller {
+    public function me() {
 
         return api(UserResource::make(auth()->user()));
     }
 
 
-    public function settings()
-    {
+    public function settings() {
         return SettingResource::collection(auth()->user()->settings);
     }
 
-    public function jobs(Request $request, $user)
-    {
+    public function jobs(Request $request, $user) {
         if ($user === 'me') {
             $user = auth()->user();
         } else {
@@ -46,16 +42,60 @@ class UserController extends Controller
         return api(JobResource::collection($jobs->get()));
     }
 
+    public function scheduleFulfillment(Request $request, $user) {
+        if ($user === 'me') {
+            $user = auth()->user();
+        } else {
+            $user = User::findOrFail($user);
+        }
 
-    public function workspaces()
-    {
+
+        $firstOfMonth = today()->firstOfMonth();
+
+
+        //
+        $activities = $user->activities()->where('created_at', '>=', $firstOfMonth)->get();
+
+        $schedules = $user->thisWeekSchedules();
+
+        $sum_minutes = 0;
+        $schedule_total = $user->getScheduledHoursInWeek();
+        foreach ($schedules as $schedule) {
+            $acts = $activities->where('left_at', '>=', $schedule['start'])->where('join_at', '<=', $schedule['end']);
+
+
+            if (count($acts) > 0) {
+                $left_at = now();
+
+                foreach ($acts as $act) {
+                    if ($act->left_at !== NULL) {
+                        $left_at = $act->left_at;
+                    }
+
+                    $diff = $act->join_at->diffInMinutes($left_at);
+                    $sum_minutes += $diff;
+
+                }
+            }
+
+        }
+        return api([
+                       'total_week_schedules'               => $schedule_total['minutes'],
+                       'total_week_activities_in_schedules' => $sum_minutes,
+                       'percentage'                         => ($sum_minutes / $schedule_total['minutes']) * 100,
+                   ]);
+
+
+    }
+
+
+    public function workspaces() {
         $user = auth()->user();
 
         return api(JobResource::collection($user->workspaces()));
     }
 
-    public function search(Request $request)
-    {
+    public function search(Request $request) {
         //TODO: have to use meiliserach instead
         $search = $request->search;
         $users = User::where(function ($query) use ($search) {
@@ -66,8 +106,7 @@ class UserController extends Controller
         return api(UserMinimalResource::collection($users));
     }
 
-    public function updateCoordinates(Request $request)
-    {
+    public function updateCoordinates(Request $request) {
         $user = auth()->user();
         $request->validate([
                                'coordinates' => 'required'
@@ -87,8 +126,7 @@ class UserController extends Controller
 
     }
 
-    public function toggleMegaphone()
-    {
+    public function toggleMegaphone() {
         $user = auth()->user();
 
 
@@ -107,8 +145,7 @@ class UserController extends Controller
     }
 
 
-    public function unGhost()
-    {
+    public function unGhost() {
         $user = auth()->user();
         $user->update([
                           'status' => Constants::ONLINE,
@@ -120,8 +157,7 @@ class UserController extends Controller
 
     }
 
-    public function update(Request $request)
-    {
+    public function update(Request $request) {
         $user = auth()->user();
         $user->update([
                           'name'              => $request->name ?? $user->name,
@@ -142,29 +178,25 @@ class UserController extends Controller
         return api($response);
     }
 
-    public function activities(Request $request)
-    {
+    public function activities(Request $request) {
 
         return api(auth()->user()->getTime($request->period)['sum_minutes']);
     }
 
-    public function chats(Request $request)
-    {
+    public function chats(Request $request) {
 
         $user = auth()->user();
 
 
-        return api(ChatResource::collection($user->real_chats($request->workspace_id)));
+        return api(ChatResource::collection($user->chats));
     }
 
 
-    public function talks()
-    {
+    public function talks() {
         return api(TalkResource::collection(auth()->user()->talks));
     }
 
-    public function schedules($user)
-    {
+    public function schedules($user) {
         if ($user === 'me') {
             $user = auth()->user();
         } else {

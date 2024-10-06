@@ -16,15 +16,11 @@ class RoomResource extends JsonResource {
             'id'           => $this->id,
             'title'        => $this->title,
             'token'        => $this->token,
-            'is_private'   => $this->is_private,
             'workspace_id' => $this->workspace_id,
             'participants' => UserMinimalResource::collection($this->participants()),
             'landing_spot' => $this->landing_spot,
             'background'   => FileResource::make($this->background()),
-            //TODO: has to have another req for seens
 
-            'last_message' => $this->isDirectRoom() ? MessageResource::make($this->messages()->orderByDesc('id')->first()) : NULL,
-            'unseens'      => 0,
         ];
     }
 }

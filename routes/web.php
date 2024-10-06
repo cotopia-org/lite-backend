@@ -1,5 +1,6 @@
 <?php
 
+use Agence104\LiveKit\RoomServiceClient;
 use App\Models\Activity;
 use Illuminate\Support\Facades\Route;
 
@@ -10,22 +11,12 @@ Route::get('/', function () {
 
 Route::get('/tester', function () {
 
-    $chat = \App\Models\Chat::first();
-    dd($chat->workspace->users);
+    $w = \App\Models\Workspace::first();
+    dd($w->users->pluck('id'));
+    $user = \App\Models\User::find(1);
 
-    $users = \App\Models\User::all();
-    $acts = DB::table('activities')
-              ->select('user_id', DB::raw('SUM(TIMESTAMPDIFF(MINUTE, join_at, IFNULL(left_at, NOW()))) as sum_minutes'))
-              ->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year)->groupBy('user_id')->get();
-    $d = [];
-    foreach ($acts as $act) {
-        $d[] = [
-            'sum_minutes' => $act->sum_minutes,
-            'user'        => $users->find($act->user_id),
-        ];
-    }
-    return $d;
-    return $acts;
+    dd($user->real_chats(NULL, 3));
+    dd('Tester');
 
 });
 Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
@@ -41,14 +32,12 @@ Route::get('/acts', function () {
         $d = [];
         foreach ($users as $user) {
 
-            $d[] = collect($user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded,
-                                          $request->workspace));
+            $d[] = collect($user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded, $request->workspace));
         }
         return collect($d)->sortByDesc('sum_minutes')->values()->toArray();
     }
     $user = \App\Models\User::find($request->user_id);
-    return $user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded,
-                          $request->workspace);
+    return $user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded, $request->workspace);
 
 
 });
@@ -62,8 +51,7 @@ Route::get('/scoreboard', function () {
     $d = [];
     foreach ($users as $user) {
 
-        $d[] = collect($user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded,
-                                      $request->workspace));
+        $d[] = collect($user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded, $request->workspace));
     }
     return collect($d)->sortByDesc('sum_minutes')->pluck('sum_hours', 'user.username')->all();
 
