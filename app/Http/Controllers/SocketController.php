@@ -34,6 +34,7 @@ class SocketController extends Controller {
     public function events(Request $request) {
 
 
+        return TRUE;
         try {
 
             $event = new EventType($request->all());
