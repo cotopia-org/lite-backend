@@ -68,8 +68,7 @@ class Room extends Model {
         return $this->files->where('type', 'logo')->last();
     }
 
-    public function getChannelAttribute($value)
-    {
+    public function getChannelAttribute($value) {
 
         return 'room-' . $this->id;
 
@@ -116,9 +115,10 @@ class Room extends Model {
 
             $videoGrant = (new VideoGrant())->setRoomJoin()->setRoomName($roomName);
 
-            $token = (new AccessToken(config('livekit.apiKey'), config('livekit.apiSecret')))->init($tokenOptions)->setGrant($videoGrant)->toJwt();
+            $token = (new AccessToken(config('livekit.apiKey'), config('livekit.apiSecret')))->init($tokenOptions)
+                                                                                             ->setGrant($videoGrant)
+                                                                                             ->toJwt();
 
-            //TODO: Socket, user joined to room.
 
             $this->token = $token;
         }
