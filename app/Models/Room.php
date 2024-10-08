@@ -82,15 +82,9 @@ class Room extends Model {
         return $this->belongsTo(User::class);
     }
 
-    public function seens() {
-        return $this->hasMany(Seen::class);
-    }
 
-    public function unseens($user) {
 
-        return $this->messages_count - $this->seens->where('user_id', $user->id)->count();
 
-    }
 
     public function joinUser($user, $joinLivekit = TRUE) {
         $workspace = $this->workspace;
