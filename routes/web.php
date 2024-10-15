@@ -34,8 +34,8 @@ Route::get('/tester', function () {
             }
             if ($activity->join_at <= $prev->left_at) {
                 $data[] = [
+                    'before' => $prev,
                     'after'  => $activity,
-                    'before' => $prev
                 ];
             }
 
