@@ -24,6 +24,7 @@ class sendSocketJob implements ShouldQueue {
      */
     public function handle(): void {
 
+        dd('Tester');
         try {
 
             Http::post(env('SOCKET_URL', 'http://localhost:3010') . '/emit', $this->data);

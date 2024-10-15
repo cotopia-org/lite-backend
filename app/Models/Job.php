@@ -5,8 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Job extends Model
-{
+class Job extends Model {
     use HasFactory;
 
     public const STATUSES = [
@@ -27,9 +26,19 @@ class Job extends Model
         'end_at' => 'datetime',
     ];
 
-    public function joinUser($user, $role = 'developer')
-    {
-        if (! $this->users->contains($user->id)) {
+    public function activities() {
+        return $this->hasMany(Activity::class);
+    }
+
+
+    public function lastActivity() {
+
+        return $this->activities()->whereNull('left_at')->first();
+
+    }
+
+    public function joinUser($user, $role = 'developer') {
+        if (!$this->users->contains($user->id)) {
             $this->users()->attach($user, ['role' => $role]);
             //TODO: Socket, user joined to job.
 
@@ -39,13 +48,11 @@ class Job extends Model
 
     }
 
-    public function users()
-    {
+    public function users() {
         return $this->belongsToMany(User::class)->withPivot('role');
     }
 
-    public function workspace()
-    {
+    public function workspace() {
         return $this->belongsTo(Workspace::class);
     }
 }

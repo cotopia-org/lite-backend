@@ -33,15 +33,14 @@ class checkUsersInSocketCommand extends Command {
         $socket_users = collect(\Http::get('http://localhost:3010/sockets')->json());
 
 
-        $online_users = \App\Models\User::whereStatus('online')->get();
+        $online_users = \App\Models\User::whereStatus('online')->whereNotNull('room_id')->get();
         foreach ($online_users as $user) {
 
 
             $socket_user = $socket_users->where('username', $user->username)->first();
             if ($socket_user === NULL) {
 
-                DisconnectUserJob::dispatch($user, TRUE, TRUE, 'Disconnected From Command checkUsersInSocket')
-                                 ->delay(15);
+                DisconnectUserJob::dispatch($user, TRUE, TRUE, 'Disconnected From Command checkUsersInSocket');
 
             }
             if (!$user->isInLk() && $user->room_id !== NULL) {

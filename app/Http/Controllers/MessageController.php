@@ -66,7 +66,9 @@ class MessageController extends Controller {
 
             }
         }
-
+        DB::table('chat_user')->where('user_id', $user->id)->where('chat_id', $message->chat_id)->update([
+                                                                                                             'last_message_seen_id' => $message->id
+                                                                                                         ]);
 
         return api(MessageResource::make($message));
 

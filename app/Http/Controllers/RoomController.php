@@ -92,7 +92,7 @@ class RoomController extends Controller {
 
 
         if ($before_room !== NULL) {
-            DisconnectUserJob::dispatch($user, FALSE, FALSE, 'Disconnected From RoomController Join method Due Change Room');
+            disconnectLivekitJob::dispatch($before_room, $user);
         }
 
         $room = $room->joinUser($user);
@@ -121,13 +121,17 @@ class RoomController extends Controller {
         ]);
 
 
-        $user->activities()->create([
-                                        'join_at'      => now(),
-                                        'left_at'      => NULL,
-                                        'workspace_id' => $room->workspace->id,
-                                        'room_id'      => $room->id,
-                                        'data'         => 'Connected From RoomController Join Method',
-                                    ]);
+        if ($user->lastActivity() === NULL) {
+            $user->activities()->create([
+                                            'join_at'      => now(),
+                                            'left_at'      => NULL,
+                                            'workspace_id' => $room->workspace->id,
+                                            'room_id'      => $room->id,
+                                            'job_id'       => $user->active_job_id,
+                                            'data'         => 'Connected From RoomController Join Method',
+                                        ]);
+
+        }
 
 
         return api($res);

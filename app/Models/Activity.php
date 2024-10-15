@@ -11,6 +11,7 @@ class Activity extends Model {
         'user_id',
         'workspace_id',
         'room_id',
+        'job_id',
         'data',
     ];
 
@@ -31,6 +32,11 @@ class Activity extends Model {
 
     public function room() {
         return $this->belongsTo(Room::class);
+
+    }
+
+    public function job() {
+        return $this->belongsTo(Job::class);
 
     }
 }

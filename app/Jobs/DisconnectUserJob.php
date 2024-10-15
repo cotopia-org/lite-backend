@@ -27,9 +27,11 @@ class DisconnectUserJob implements ShouldQueue {
      * Execute the job.
      */
     public function handle(): void {
+
         $user = $this->user;
 
         if ($this->checkIsInRoom) {
+            sleep(15);
             $socket_users = collect(\Http::get('http://localhost:3010/sockets')->json());
 
             $socket_user = $socket_users->where('username', $user->username)->first();
@@ -37,37 +39,39 @@ class DisconnectUserJob implements ShouldQueue {
 
                 self::dispatch($user, TRUE, FALSE, $this->data);
             }
+
+        } else {
+
+            $room_id = $user->room_id;
+
+            $user->update([
+                              'socket_id'    => $this->offline ? NULL : $user->socket_id,
+                              'status'       => $this->offline ? Constants::OFFLINE : $user->status,
+                              'room_id'      => NULL,
+                              'workspace_id' => NULL,
+
+                          ]);
+
+            $room = Room::find($room_id);
+
+
+            if ($room !== NULL) {
+
+
+                sendSocket(Constants::userLeftFromRoom, $room->workspace->channel, [
+                    'room_id' => $room_id,
+                    'user'    => UserMinimalResource::make($user)
+                ]);
+
+                sendSocket(Constants::workspaceRoomUpdated, $room->workspace->channel, RoomResource::make($room));
+
+
+                disconnectLivekitJob::dispatch($room, $user);
+
+            }
+            $user->left($this->data);
         }
 
-
-        $room_id = $user->room_id;
-
-        $user->update([
-                          'socket_id'    => $this->offline ? NULL : $user->socket_id,
-                          'status'       => $this->offline ? Constants::OFFLINE : $user->status,
-                          'room_id'      => NULL,
-                          'workspace_id' => NULL,
-
-                      ]);
-
-        $room = Room::find($room_id);
-
-
-        if ($room !== NULL) {
-
-
-            sendSocket(Constants::userLeftFromRoom, $room->workspace->channel, [
-                'room_id' => $room_id,
-                'user'    => UserMinimalResource::make($user)
-            ]);
-
-            sendSocket(Constants::workspaceRoomUpdated, $room->workspace->channel, RoomResource::make($room));
-
-
-            disconnectLivekitJob::dispatch($room, $user);
-
-        }
-        $user->left($this->data);
 
     }
 }
