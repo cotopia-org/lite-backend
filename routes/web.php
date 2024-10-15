@@ -15,8 +15,8 @@ Route::get('/tester', function () {
 
     $data = [];
     foreach ($users as $user) {
-        $activities = Activity::where('created_at', '>=', '2024-10-01 00:00:00')->orderBy('id', 'ASC')
-                              ->where('user_id', $user->id)->get();
+        $activities = Activity::where('created_at', '>=', \Carbon\Carbon::make('2024-10-01 00:00:00'))
+                              ->orderBy('id', 'ASC')->where('user_id', $user->id)->get();
 
 
         $prev = NULL;
