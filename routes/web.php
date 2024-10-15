@@ -31,8 +31,8 @@ Route::get('/tester', function () {
                         'after'  => $activity,
                     ];
                 }
-                $prev = $activity;
             }
+            $prev = $activity;
 
 
         }
