@@ -12,15 +12,9 @@ Route::get('/', function () {
 Route::get('/tester', function () {
 
 
-    \App\Jobs\sendSocketJob::dispatch(['test'])->delay(15)->onConnection('redis');
-    dd('HERE');
+    $activities = Activity::where('created_at', '>=', '2024-10-01 00:00:00')->get();
+    dd($activities);
 
-    $w = \App\Models\Workspace::first();
-    dd($w->users->pluck('id'));
-    $user = \App\Models\User::find(1);
-
-    dd($user->real_chats(NULL, 3));
-    dd('Tester');
 
 });
 Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);

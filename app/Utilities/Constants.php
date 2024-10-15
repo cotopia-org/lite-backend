@@ -45,7 +45,7 @@ class Constants {
 
     const IN_PROGRESS = 'in_progress';
     const PAUSED = 'paused';
-    const COMPLETED = 'joinedRoom';
+    const COMPLETED = 'COMPLETED';
     const userUpdated = 'userUpdated';
     const workspaceUpdated = 'workspaceUpdated';
     const roomCreated = 'roomCreated';
