@@ -91,9 +91,9 @@ class RoomController extends Controller {
         $before_room = $user->room_id;
 
 
-//        if ($before_room !== NULL) {
-//            disconnectLivekitJob::dispatch(Room::find($before_room), $user);
-//        }
+        //        if ($before_room !== NULL) {
+        //            disconnectLivekitJob::dispatch(Room::find($before_room), $user);
+        //        }
 
         $room = $room->joinUser($user);
 
@@ -102,18 +102,12 @@ class RoomController extends Controller {
 
         if ($before_room !== NULL) {
             $before_room = Room::find($before_room);
-            sendSocket(Constants::roomUpdated, $before_room->channel, RoomResource::make($before_room));
-            sendSocket(Constants::workspaceRoomUpdated, $before_room->workspace->channel, RoomResource::make($before_room));
 
             sendSocket(Constants::userLeftFromRoom, $before_room->workspace->channel, [
                 'room_id' => $before_room->id,
                 'user'    => UserMinimalResource::make($user)
             ]);
         }
-
-        sendSocket(Constants::roomUpdated, $room->channel, $res);
-        sendSocket(Constants::workspaceRoomUpdated, $room->workspace->channel, $res);
-
 
         sendSocket(Constants::userJoinedToRoom, $room->workspace->channel, [
             'room_id' => $room->id,
