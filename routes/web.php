@@ -19,16 +19,21 @@ Route::get('/tester', function () {
                               ->where('user_id', $user->id)->get();
 
 
-        $left_at = NULL;
+        $prev = NULL;
 
         foreach ($activities as $activity) {
-            if ($left_at === NULL) {
-                $left_at = $activity->left_at;
+            if ($prev === NULL) {
+
+                $prev = $activity;
+
 
                 continue;
             }
-            if ($activity->left_at <= $left_at) {
-                $data[] = $activity;
+            if ($activity->left_at <= $prev->left_at) {
+                $data[] = [
+                    'after'  => $activity,
+                    'before' => $prev
+                ];
             }
 
 
