@@ -48,6 +48,7 @@ class User extends Authenticatable {
         'is_bot',
         'verified',
         'livekit_connected',
+        'active_job_id'
     ];
 
     /**
