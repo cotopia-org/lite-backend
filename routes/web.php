@@ -11,9 +11,31 @@ Route::get('/', function () {
 
 Route::get('/tester', function () {
 
+    $users = \App\Models\User::all();
 
-    $activities = Activity::where('created_at', '>=', '2024-10-01 00:00:00')->get();
-    dd($activities);
+    $data = [];
+    foreach ($users as $user) {
+        $activities = Activity::where('created_at', '>=', '2024-10-01 00:00:00')->orderBy('id', 'ASC')
+                              ->where('user_id', $user->id)->get();
+
+
+        $left_at = NULL;
+
+        foreach ($activities as $activity) {
+            if ($left_at === NULL) {
+                $left_at = $activity->left_at;
+
+                continue;
+            }
+            if ($activity->left_at <= $left_at) {
+                $data[] = $activity;
+            }
+
+
+        }
+    }
+
+    return $data;
 
 
 });
