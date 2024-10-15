@@ -91,9 +91,9 @@ class RoomController extends Controller {
         $before_room = $user->room_id;
 
 
-        if ($before_room !== NULL) {
-            disconnectLivekitJob::dispatch(Room::find($before_room), $user);
-        }
+//        if ($before_room !== NULL) {
+//            disconnectLivekitJob::dispatch(Room::find($before_room), $user);
+//        }
 
         $room = $room->joinUser($user);
 

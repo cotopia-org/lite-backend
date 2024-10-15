@@ -41,6 +41,7 @@ class DisconnectUserJob implements ShouldQueue {
             }
 
         } else {
+            $user->left($this->data);
 
             $room_id = $user->room_id;
 
@@ -69,7 +70,6 @@ class DisconnectUserJob implements ShouldQueue {
                 disconnectLivekitJob::dispatch($room, $user);
 
             }
-            $user->left($this->data);
         }
 
 
