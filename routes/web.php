@@ -22,6 +22,9 @@ Route::get('/tester', function () {
         $prev = NULL;
 
         foreach ($activities as $activity) {
+            if ($activity->left_at === NULL) {
+                continue;
+            }
             if ($prev === NULL) {
 
                 $prev = $activity;
@@ -29,7 +32,7 @@ Route::get('/tester', function () {
 
                 continue;
             }
-            if ($activity->left_at <= $prev->left_at) {
+            if ($activity->join_at <= $prev->left_at) {
                 $data[] = [
                     'after'  => $activity,
                     'before' => $prev
