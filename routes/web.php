@@ -25,7 +25,7 @@ Route::get('/tester', function () {
 
             if ($prev !== NULL) {
 
-                if ($activity->join_at->lte($prev->left_at)) {
+                if ($activity->join_at->lt($prev->left_at)) {
                     $data[] = [
                         'before' => $prev,
                         'after'  => $activity,
