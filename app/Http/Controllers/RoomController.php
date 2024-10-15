@@ -92,7 +92,7 @@ class RoomController extends Controller {
 
 
         if ($before_room !== NULL) {
-            disconnectLivekitJob::dispatch($before_room, $user);
+            disconnectLivekitJob::dispatch(Room::find($before_room), $user);
         }
 
         $room = $room->joinUser($user);
