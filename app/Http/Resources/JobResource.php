@@ -21,6 +21,7 @@ class JobResource extends JsonResource
             'description'  => $this->description,
             'status'       => $this->status,
             'end_at'       => $this->end_at,
+            'total_hours'       => $this->getTime(auth()->user()),
             'members'      => UserMinimalResource::collection($this->users),
         ];
     }

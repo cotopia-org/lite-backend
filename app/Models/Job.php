@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -31,6 +32,38 @@ class Job extends Model {
         return $this->hasMany(Activity::class);
     }
 
+    public function getTime($user) {
+        $acts = $this->activities()->where('user_id', $user->id);
+
+
+        $sum_minutes = 0;
+        $data = [];
+        $acts = $acts->get();
+        foreach ($acts as $act) {
+
+
+            $left_at = now();
+            if ($act->left_at !== NULL) {
+                $left_at = $act->left_at;
+            }
+
+            $diff = $act->join_at->diffInMinutes($left_at);
+            $sum_minutes += $diff;
+
+
+        }
+        \Carbon\CarbonInterval::setCascadeFactors([
+                                                      'minute' => [60, 'seconds'],
+                                                      'hour'   => [60, 'minutes'],
+                                                  ]);
+
+        return [
+            'job'         => $this,
+            'sum_minutes' => $sum_minutes,
+            'sum_hours'   => \Carbon\CarbonInterval::minutes($sum_minutes)->cascade()->forHumans(),
+
+        ];
+    }
 
     public function lastActivity() {
 
