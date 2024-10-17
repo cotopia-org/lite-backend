@@ -251,7 +251,7 @@ class User extends Authenticatable {
         $room = $user->room;
 
 
-        $user->left();
+        $user->left('Left Refreshed By RefreshActivity in User');
         $user->activities()->create([
                                         'join_at'      => now(),
                                         'left_at'      => NULL,
