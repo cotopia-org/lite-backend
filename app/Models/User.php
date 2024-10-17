@@ -240,6 +240,30 @@ class User extends Authenticatable {
         return $this->belongsToMany(Chat::class);
     }
 
+    public function updateActiveJob($job_id = NULL) {
+
+        $this->update(['active_job_id' => $job_id]);
+        $this->refreshActivity();
+    }
+
+    public function refreshActivity() {
+        $user = $this;
+        $room = $user->room;
+
+
+        $user->left();
+        $user->activities()->create([
+                                        'join_at'      => now(),
+                                        'left_at'      => NULL,
+                                        'workspace_id' => $room->workspace->id,
+                                        'room_id'      => $room->id,
+                                        'job_id'       => $user->active_job_id,
+                                        'data'         => 'Refreshed By RefreshActivity in User',
+                                    ]);
+
+
+    }
+
     public function lastActivity() {
         return $this->activities()->whereNull('left_at')->first();
 

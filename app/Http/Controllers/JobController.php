@@ -28,8 +28,7 @@ class JobController extends Controller {
                                                                                                              'status' => Constants::PAUSED
                                                                                                          ]);
 
-
-            $user->update(['active_job_id' => $job->id]);
+            $user->updateActiveJob($job->id);
 
 
         }
@@ -65,10 +64,13 @@ class JobController extends Controller {
                                                                        ]);
 
 
-            $user->update(['active_job_id' => $job->id]);
+            $user->updateActiveJob($job->id);
+
+
+        } elseif ($job->id === $user->active_job_id) {
+            $user->updateActiveJob();
 
         }
-
 
         $job->update($request->all());
 

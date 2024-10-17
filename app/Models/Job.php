@@ -20,6 +20,7 @@ class Job extends Model {
         'description',
         'status',
         'end_at',
+        'estimate'
     ];
 
     protected $casts = [

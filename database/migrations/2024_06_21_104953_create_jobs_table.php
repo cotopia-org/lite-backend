@@ -8,8 +8,7 @@ return new class () extends Migration {
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
+    public function up(): void {
         Schema::create('jobs', function (Blueprint $table) {
             $table->id();
             $table->string('title');
@@ -17,6 +16,7 @@ return new class () extends Migration {
             $table->enum('status', \App\Models\Job::STATUSES)->default('in_progress');
             $table->timestamp('end_at')->nullable();
 
+            $table->integer('estimate');
             $table->foreignId('workspace_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
 
             $table->timestamps();
@@ -26,8 +26,7 @@ return new class () extends Migration {
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('jobs');
     }
 };
