@@ -5,15 +5,13 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class JobResource extends JsonResource
-{
+class JobResource extends JsonResource {
     /**
      * Transform the resource into an array.
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
-    {
+    public function toArray(Request $request): array {
         return [
             'id'           => $this->id,
             'workspace_id' => $this->workspace_id,
@@ -21,7 +19,7 @@ class JobResource extends JsonResource
             'description'  => $this->description,
             'status'       => $this->status,
             'end_at'       => $this->end_at,
-            'total_hours'       => $this->getTime(auth()->user()),
+            'total_hours'  => $this->getTime(auth()->user())['sum_hours'],
             'members'      => UserMinimalResource::collection($this->users),
         ];
     }
