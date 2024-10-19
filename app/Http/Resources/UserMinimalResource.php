@@ -25,7 +25,7 @@ class UserMinimalResource extends JsonResource
             'last_login'  => $this->updated_at,
             'verified'    => $this->verified ?? FALSE,
             'is_bot'      => $this->is_bot,
-            'active_job'  => JobResource::make($this->jobs->find($this->active_job_id))
+            //            'active_job'  => JobResource::make($this->jobs->find($this->active_job_id))
 
 
         ];
