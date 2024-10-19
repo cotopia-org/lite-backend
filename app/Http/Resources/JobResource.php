@@ -22,7 +22,10 @@ class JobResource extends JsonResource
             'status'       => $this->status,
             'end_at'       => $this->end_at,
             'total_hours'  => $this->users->map(function ($user) {
-                return $this->getTime($user)['sum_hours'];
+                return [
+                    'user_id' => $user->id,
+                    'hours'   => $this->getTime($user)['sum_hours']
+                ];
             }),
             'members'      => UserMinimalResource::collection($this->users),
         ];
