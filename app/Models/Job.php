@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Job extends Model {
+class Job extends Model
+{
     use HasFactory;
 
     public const STATUSES = [
@@ -28,16 +30,17 @@ class Job extends Model {
         'end_at' => 'datetime',
     ];
 
-    public function activities() {
+    public function activities()
+    {
         return $this->hasMany(Activity::class);
     }
 
-    public function getTime($user) {
+    public function getTime($user)
+    {
         $acts = $this->activities()->where('user_id', $user->id);
 
 
         $sum_minutes = 0;
-        $data = [];
         $acts = $acts->get();
         foreach ($acts as $act) {
 
@@ -52,26 +55,28 @@ class Job extends Model {
 
 
         }
-        \Carbon\CarbonInterval::setCascadeFactors([
-                                                      'minute' => [60, 'seconds'],
-                                                      'hour'   => [60, 'minutes'],
-                                                  ]);
+        CarbonInterval::setCascadeFactors([
+                                              'minute' => [60, 'seconds'],
+                                              'hour'   => [60, 'minutes'],
+                                          ]);
 
         return [
             'job'         => $this,
             'sum_minutes' => $sum_minutes,
-            'sum_hours'   => \Carbon\CarbonInterval::minutes($sum_minutes)->cascade()->forHumans(),
+            'sum_hours'   => CarbonInterval::minutes($sum_minutes)->cascade()->forHumans(),
 
         ];
     }
 
-    public function lastActivity() {
+    public function lastActivity()
+    {
 
         return $this->activities()->whereNull('left_at')->first();
 
     }
 
-    public function joinUser($user, $role = 'developer') {
+    public function joinUser($user, $role = 'developer')
+    {
         if (!$this->users->contains($user->id)) {
             $this->users()->attach($user, ['role' => $role]);
             //TODO: Socket, user joined to job.
@@ -82,11 +87,13 @@ class Job extends Model {
 
     }
 
-    public function users() {
+    public function users()
+    {
         return $this->belongsToMany(User::class)->withPivot('role');
     }
 
-    public function workspace() {
+    public function workspace()
+    {
         return $this->belongsTo(Workspace::class);
     }
 }
