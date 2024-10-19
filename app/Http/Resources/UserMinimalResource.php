@@ -25,6 +25,7 @@ class UserMinimalResource extends JsonResource {
             'is_bot'      => $this->is_bot,
 
 
+
         ];
     }
 }

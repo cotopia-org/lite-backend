@@ -14,6 +14,7 @@ class JobResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $users = $this->users;
         return [
             'id'           => $this->id,
             'workspace_id' => $this->workspace_id,
@@ -21,13 +22,13 @@ class JobResource extends JsonResource
             'description'  => $this->description,
             'status'       => $this->status,
             'end_at'       => $this->end_at,
-            'total_hours'  => $this->users->map(function ($user) {
+            'total_hours'  => $users->map(function ($user) {
                 return [
                     'user_id' => $user->id,
                     'hours'   => $this->getTime($user)['sum_hours']
                 ];
             }),
-            'members'      => UserMinimalResource::collection($this->users),
+            'members'      => UserMinimalResource::collection($users),
         ];
     }
 }
