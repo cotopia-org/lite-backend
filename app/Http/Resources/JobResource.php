@@ -22,11 +22,8 @@ class JobResource extends JsonResource
             'description'  => $this->description,
             'status'       => $this->status,
             'end_at'       => $this->end_at,
-            'total_hours'  => $users->map(function ($user) {
-                return [
-                    'user_id' => $user->id,
-                    'hours'   => $this->getTime($user)['sum_hours']
-                ];
+            'total_hours'  => $this->whenPivotLoaded('job_user', function () {
+                return $this->getTime($this->pivot->user_id)['sum_hours'];
             }),
             'members'      => UserMinimalResource::collection($users),
         ];

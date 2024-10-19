@@ -35,8 +35,9 @@ class Job extends Model
         return $this->hasMany(Activity::class);
     }
 
-    public function getTime($user)
+    public function getTime(User $user)
     {
+
         $acts = $this->activities()->where('user_id', $user->id);
 
 

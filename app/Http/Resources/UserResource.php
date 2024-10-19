@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Job;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -38,6 +39,7 @@ class UserResource extends JsonResource
             'channels'                => $this->channels(),
             'last_login'              => $this->updated_at,
             'is_bot'                  => $this->is_bot,
+            'active_job'              => JobResource::make($this->jobs->find($this->active_job))
         ];
     }
 }
