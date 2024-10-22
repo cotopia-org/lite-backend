@@ -32,7 +32,6 @@ class DisconnectUserJob implements ShouldQueue
     public function handle(): void
     {
 
-        logger('check DC USRES');
         $user = $this->user;
 
         if ($this->checkIsInRoom) {

@@ -33,7 +33,7 @@ class checkUsersInSocketCommand extends Command
     {
 
         $socket_users = collect(\Http::get('http://localhost:3010/sockets')->json());
-        logger('check DC COMMAND');
+
 
 
         $online_users = \App\Models\User::whereStatus('online')->whereNotNull('room_id')->get();
@@ -53,8 +53,7 @@ class checkUsersInSocketCommand extends Command
 
 
         }
-        logger('Finished');
-        logger('Tester');
+
 
     }
 }
