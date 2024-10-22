@@ -41,6 +41,7 @@ class checkUsersInSocketCommand extends Command
 
 
             $socket_user = $socket_users->where('username', $user->username)->first();
+            logger($socket_user);
             if ($socket_user === NULL) {
 
                 DisconnectUserJob::dispatch($user, TRUE, TRUE, 'Disconnected From Command checkUsersInSocket');
@@ -53,6 +54,7 @@ class checkUsersInSocketCommand extends Command
 
         }
         logger('Finished');
+        logger('Tester');
 
     }
 }
