@@ -1,12 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\MessageController;
-use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PostmanExportController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoomController;
@@ -26,6 +24,15 @@ Route::controller(AuthController::class)->prefix('auth')->group(function () {
     Route::post('/login', 'login');
     Route::post('/register', 'register');
     Route::post('/checkUsername', 'checkUsername');
+});
+
+Route::controller(InviteController::class)->prefix('invites')->group(function () {
+    Route::post('/', 'invite')->middleware('auth:sanctum');
+    Route::get('/{code}/join', 'join')->middleware('auth:sanctum');
+    Route::get('/{code}/decline', 'decline')->middleware('auth:sanctum');
+
+    Route::get('/{code}', 'get');
+
 });
 
 Route::middleware('auth:sanctum')->group(callback: function () {
@@ -80,14 +87,6 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::put('/{room}/', 'update');
         Route::get('/{room}/join', 'join');
         Route::delete('/{room}', 'delete');
-
-    });
-
-    Route::controller(InviteController::class)->prefix('invites')->group(function () {
-        Route::post('/', 'invite');
-        Route::get('/{code}/', 'get');
-        Route::get('/{code}/join', 'join');
-        Route::get('/{code}/decline', 'decline');
 
     });
 
@@ -148,4 +147,4 @@ Route::middleware('auth:sanctum')->group(callback: function () {
 
 Route::get('export-postman', PostmanExportController::class)->name('postman');
 
-require __DIR__ . '/socket.php';
+require __DIR__.'/socket.php';

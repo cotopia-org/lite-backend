@@ -15,7 +15,7 @@ class InviteController extends Controller
     {
         $user = auth()->user();
         $request->validate([
-            'user_id'  => 'required|integer|exists:users,id',
+            'user_id'  => 'nullable|integer|exists:users,id',
             'model_id' => 'required|integer',
             'model'    => 'required',
         ]);
@@ -41,12 +41,13 @@ class InviteController extends Controller
 
     public function get($code)
     {
+        /** @var Invite $invite */
         $invite = Invite::findByCode($code);
+
         $user = auth()->user();
+        if ($invite->user_id && ! $invite->isForUser($user)) {
 
-        if ($invite->user_id !== $user->id) {
             return error('Invite code expired');
-
         }
 
         return api(InviteResource::make($invite));
@@ -55,28 +56,35 @@ class InviteController extends Controller
 
     public function decline($code)
     {
+        /** @var Invite $invite */
         $invite = Invite::findByCode($code);
         $user = auth()->user();
-        if ($invite->user_id === $user->id) {
-            $invite->status = 'declined';
-            $invite->save();
+        if ($invite->user_id && $invite->isForUser($user)) {
+
+            return error('Invite code expired');
         }
+
+        $invite->status = 'declined';
+        $invite->save();
 
         return api(InviteResource::make($invite));
     }
 
     public function join($code)
     {
+        /** @var Invite $invite */
         $invite = Invite::findByCode($code);
+
         $user = auth()->user();
-        if ($invite->status !== 'pending' || $invite->user_id !== $user->id) {
+        if ($invite->status !== 'pending' || ($invite->user_id && $invite->isForUser($user))) {
+
             return error('Invite code expired');
         }
-        if ($invite->inviteable instanceof Room) {
-            $invite->inviteable->workspace->joinUser($invite->user);
-        }
 
-        $inviteable = $invite->inviteable->joinUser($invite->user);
+        if ($invite->inviteable instanceof Room) {
+            $invite->inviteable->workspace->joinUser($user);
+        }
+        $inviteable = $invite->inviteable->joinUser($user);
         $invite->status = 'joined';
         $invite->save();
 
