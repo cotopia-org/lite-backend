@@ -22,10 +22,10 @@ class JobResource extends JsonResource
             'description'  => $this->description,
             'status'       => $this->status,
             'estimate'     => $this->estimate,
-            'total_hours' => $this->whenPivotLoaded('job_user', function () {
+            'total_hours'  => $this->whenPivotLoaded('job_user', function () {
                 return $this->getTime($this->pivot->user_id)['sum_hours'];
             }),
-//            'members'      => UserMinimalResource::collection($users),
+            'members'      => UserMinimalResource::collection($users),
         ];
     }
 }
