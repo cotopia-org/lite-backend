@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\JobCreated;
 use App\Http\Resources\JobResource;
 use App\Models\Job;
 use App\Models\User;
@@ -35,6 +36,8 @@ class JobController extends Controller {
 
 
         $user->jobs()->attach($job, ['role' => 'owner']);
+
+        event(new JobCreated($job));
 
         return api(JobResource::make($job));
     }
