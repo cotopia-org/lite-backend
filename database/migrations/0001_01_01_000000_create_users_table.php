@@ -8,7 +8,8 @@ return new class () extends Migration {
     /**
      * Run the migrations.
      */
-    public function up(): void {
+    public function up(): void
+    {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
@@ -24,6 +25,7 @@ return new class () extends Migration {
             $table->integer('room_id')->nullable();
             $table->string('voice_status')->nullable();
             $table->string('video_status')->nullable();
+            $table->string('screenshare_status')->nullable();
             $table->string('coordinates')->nullable();
             $table->string('screenshare_coordinates')->nullable();
             $table->string('screenshare_size')->nullable();
@@ -62,7 +64,8 @@ return new class () extends Migration {
     /**
      * Reverse the migrations.
      */
-    public function down(): void {
+    public function down(): void
+    {
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
