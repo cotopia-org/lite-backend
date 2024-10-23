@@ -20,20 +20,20 @@ class Github
 
         /** @var Response $response */
         $response = \Http::withHeaders([
-            'Accept'               => 'application/vnd.github+json',
-            'Authorization'        => 'Bearer '.$this->token,
-            'X-GitHub-Api-Version' => $this->version,
-        ])->post($url, [
+                                           'Accept'               => 'application/vnd.github+json',
+                                           'Authorization'        => 'Bearer ' . $this->token,
+                                           'X-GitHub-Api-Version' => $this->version,
+                                       ])->post($url, [
             'title'     => $params['title'],
             'body'      => $params['description'],
             'assignees' => [],
-            'milestone' => 1,
+            'milestone' => NULL,
             'labels'    => [],
         ]);
 
-        if (! $response->successful()) {
+        if (!$response->successful()) {
 
-            throw new \Exception('Github: Could not create issues'.$response->body());
+            throw new \Exception('Github: Could not create issues' . $response->body());
         }
     }
 }
