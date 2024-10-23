@@ -7,7 +7,8 @@ use App\Models\Setting;
 trait Codeable {
 
 
-    protected function getArrayableAppends() {
+    protected function getArrayableAppends(): array
+    {
         $this->appends = array_unique(array_merge($this->appends, ['code']));
 
         return parent::getArrayableAppends();
@@ -18,7 +19,8 @@ trait Codeable {
 
     }
 
-    public static function findByCode($value) {
+    public static function findByCode($value): array|\App\Models\Invite|\LaravelIdea\Helper\App\Models\_IH_Invite_C
+    {
         return self::findOrFail(10000000 - base_convert($value, 36, 10));
 
     }
