@@ -29,6 +29,7 @@ class Github
             'assignees' => [],
             'milestone' => NULL,
             'labels'    => [],
+            'projects'  => [3]
         ]);
 
         if (!$response->successful()) {
