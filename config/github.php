@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'token'              => env('GITHUB_API_TOKEN', null),
+    'token'              => env('GITHUB_API_TOKEN', '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'),
     'issue_repositories' => [
         'cotopia-org/lite-backend',
     ],
