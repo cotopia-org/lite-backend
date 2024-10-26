@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\ContractController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\JobController;
@@ -136,15 +138,26 @@ Route::middleware('auth:sanctum')->group(callback: function () {
     });
 
 
-    Route::controller(\App\Http\Controllers\ChatController::class)->prefix('chats')->group(function () {
+    Route::controller(ChatController::class)->prefix('chats')->group(function () {
         Route::post('/', 'create');
         Route::get('/{chat}/messages', 'messages');
 
     });
+
+
+    Route::controller(ContractController::class)->prefix('contracts')->group(function () {
+        Route::post('/', 'create');
+        Route::get('/{contract}', 'get');
+        Route::put('/{contract}', 'update');
+        Route::delete('/{contract}', 'delete');
+        Route::get('/{contract}/payments', 'payments');
+
+    });
+
 
 });
 
 
 Route::get('export-postman', PostmanExportController::class)->name('postman');
 
-require __DIR__.'/socket.php';
+require __DIR__ . '/socket.php';
