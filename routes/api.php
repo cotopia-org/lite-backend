@@ -7,6 +7,7 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PostmanExportController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoomController;
@@ -146,11 +147,20 @@ Route::middleware('auth:sanctum')->group(callback: function () {
 
 
     Route::controller(ContractController::class)->prefix('contracts')->group(function () {
+        Route::get('/', 'all');
         Route::post('/', 'create');
         Route::get('/{contract}', 'get');
         Route::put('/{contract}', 'update');
-        Route::delete('/{contract}', 'delete');
         Route::get('/{contract}/payments', 'payments');
+
+    });
+
+
+    Route::controller(PaymentController::class)->prefix('payments')->group(function () {
+        Route::get('/', 'all');
+        Route::post('/', 'create');
+        Route::get('/{payment}', 'get');
+        Route::put('/{payment}', 'update');
 
     });
 
