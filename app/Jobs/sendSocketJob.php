@@ -30,8 +30,8 @@ class sendSocketJob implements ShouldQueue
 
         try {
 
-//            Http::post(env('SOCKET_URL', 'http://localhost:3010') . '/emit', $this->data);
-            Redis::publish('test-channel', $this->data);
+            Http::post(env('SOCKET_URL', 'http://localhost:3010') . '/emit', $this->data);
+//            Redis::publish('test-channel', $this->data);
         } catch (\Exception $e) {
             logger($e);
         }
