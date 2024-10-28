@@ -6,7 +6,8 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-function getPhoneNumber($phone) {
+function getPhoneNumber($phone)
+{
     if ($phone === NULL) {
         return NULL;
     }
@@ -28,7 +29,8 @@ function getPhoneNumber($phone) {
     return $phone;
 }
 
-function sendSocket($eventName, $channel, $data) {
+function sendSocket($eventName, $channel, $data)
+{
     if ($channel !== NULL) {
         sendSocketJob::dispatch([
                                     'eventName' => $eventName,
@@ -40,7 +42,21 @@ function sendSocket($eventName, $channel, $data) {
 
 }
 
-function sendSms($phone, $code) {
+
+function joinUserToSocketRoom($user_id, $room_id)
+{
+    return Http::post(env('SOCKET_URL', 'http://localhost:3010') . '/joinToRoom', [
+        'data' => [
+            'user_id' => $user_id,
+            'room_id' => $room_id
+        ]
+    ])->json();
+
+}
+
+
+function sendSms($phone, $code)
+{
     return Http::asForm()->withHeader('apikey', '001a87a26baf886222895114bff20fcde5a54706f09e22487645b422fbd4dd15')
                ->post('https://api.ghasedak.me/v2/verification/send/simple', [
                    'param1'   => $code,
@@ -52,13 +68,16 @@ function sendSms($phone, $code) {
     //TODO: // Have to go in queue.
 }
 
-function get_enum_values($cases, $key = FALSE): array {
+function get_enum_values($cases, $key = FALSE): array
+{
     return array_column($cases, 'value', $key ? 'name' : NULL);
 }
 
 /*---------------------------------------------------------------------API--------------------------------------------------------------------------------------------*/
 
-function api($data = NULL, $message = Constants::API_SUCCESS_MSG, $code = 1000, $http_code = 200): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory {
+function api($data = NULL, $message = Constants::API_SUCCESS_MSG, $code = 1000,
+             $http_code = 200): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
+{
     if ($message === Constants::API_SUCCESS_MSG) {
         $status = Constants::API_SUCCESS_MSG;
     } else {
@@ -77,21 +96,24 @@ function api($data = NULL, $message = Constants::API_SUCCESS_MSG, $code = 1000, 
     return response($response, $http_code);
 }
 
-function api_gateway_error($message = Constants::API_FAILED_MSG) {
+function api_gateway_error($message = Constants::API_FAILED_MSG)
+{
     return api(NULL, Constants::API_FAILED_MSG, 0, Response::HTTP_INTERNAL_SERVER_ERROR);
 }
 
 /**
  * @throws Exception
  */
-function error($message, $code = 400) {
+function error($message, $code = 400)
+{
 
     throw new RuntimeException($message, $code);
     //    throw new HttpException($code, $message, NULL, [], $code);
 
 }
 
-function convert($value): array|string {
+function convert($value): array|string
+{
     $western = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
     $eastern = ['۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹', '۰'];
 
@@ -99,7 +121,8 @@ function convert($value): array|string {
 }
 
 
-function unConvert($value): array|string {
+function unConvert($value): array|string
+{
     $western = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
     $eastern = ['۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹', '۰'];
 
