@@ -36,7 +36,7 @@ return [
             'url'                     => env('DB_URL'),
             'database'                => env('DB_DATABASE', database_path('database.sqlite')),
             'prefix'                  => '',
-            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', TRUE),
         ],
 
         'mysql' => [
@@ -51,12 +51,12 @@ return [
             'charset'        => env('DB_CHARSET', 'utf8mb4'),
             'collation'      => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
             'prefix'         => '',
-            'prefix_indexes' => true,
-            'strict'         => true,
-            'engine'         => null,
+            'prefix_indexes' => TRUE,
+            'strict'         => TRUE,
+            'engine'         => NULL,
             'options'        => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+                                                                                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                                                                             ]) : [],
         ],
 
         'mariadb' => [
@@ -71,12 +71,12 @@ return [
             'charset'        => env('DB_CHARSET', 'utf8mb4'),
             'collation'      => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
             'prefix'         => '',
-            'prefix_indexes' => true,
-            'strict'         => true,
-            'engine'         => null,
+            'prefix_indexes' => TRUE,
+            'strict'         => TRUE,
+            'engine'         => NULL,
             'options'        => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+                                                                                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                                                                             ]) : [],
         ],
 
         'pgsql' => [
@@ -89,7 +89,7 @@ return [
             'password'       => env('DB_PASSWORD', ''),
             'charset'        => env('DB_CHARSET', 'utf8'),
             'prefix'         => '',
-            'prefix_indexes' => true,
+            'prefix_indexes' => TRUE,
             'search_path'    => 'public',
             'sslmode'        => 'prefer',
         ],
@@ -104,7 +104,7 @@ return [
             'password'       => env('DB_PASSWORD', ''),
             'charset'        => env('DB_CHARSET', 'utf8'),
             'prefix'         => '',
-            'prefix_indexes' => true,
+            'prefix_indexes' => TRUE,
             // 'encrypt' => env('DB_ENCRYPT', 'yes'),
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
@@ -124,7 +124,7 @@ return [
 
     'migrations' => [
         'table'                  => 'migrations',
-        'update_date_on_publish' => true,
+        'update_date_on_publish' => TRUE,
     ],
 
     /*
@@ -144,7 +144,8 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix'  => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            //            'prefix'  => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
+            'prefix'  => 'lite-redis-',
         ],
 
         'default' => [

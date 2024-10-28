@@ -9,12 +9,7 @@ Route::get('/', function () {
     return redirect('https://lite.cotopia.social');
 });
 Route::get('/tester', function () {
-    return Http::post(env('SOCKET_URL', 'http://localhost:3010') . '/joinToRoom', [
-        'data' => [
-            'user_id' => 1,
-            'room_id' => 918321
-        ]
-    ])->json();
+    dd();
 
 });
 
