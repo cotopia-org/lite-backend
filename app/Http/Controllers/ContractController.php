@@ -20,7 +20,6 @@ class ContractController extends Controller {
                                'renew_time_period_type' => 'required',
                                'renew_time_period'      => 'required',
                                'renew_notice'           => 'required',
-                               'contractor_status'      => 'required',
                                'min_hours'              => 'required',
                                'max_hours'              => 'required',
                                'payment_method'         => 'required',
