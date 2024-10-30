@@ -9,7 +9,7 @@ Route::get('/', function () {
     return redirect('https://lite.cotopia.social');
 });
 Route::get('/tester', function () {
-    dd();
+    dd(\App\Models\User::first()->isInSocket());
 
 });
 
@@ -60,14 +60,12 @@ Route::get('/acts', function () {
         $d = [];
         foreach ($users as $user) {
 
-            $d[] = collect($user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded,
-                                          $request->workspace));
+            $d[] = collect($user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded, $request->workspace));
         }
         return collect($d)->sortByDesc('sum_minutes')->values()->toArray();
     }
     $user = \App\Models\User::find($request->user_id);
-    return $user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded,
-                          $request->workspace);
+    return $user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded, $request->workspace);
 
 
 });
@@ -81,8 +79,7 @@ Route::get('/scoreboard', function () {
     $d = [];
     foreach ($users as $user) {
 
-        $d[] = collect($user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded,
-                                      $request->workspace));
+        $d[] = collect($user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded, $request->workspace));
     }
     return collect($d)->sortByDesc('sum_minutes')->pluck('sum_hours', 'user.username')->all();
 

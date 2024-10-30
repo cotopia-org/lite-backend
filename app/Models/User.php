@@ -96,6 +96,15 @@ class User extends Authenticatable {
         return FALSE;
     }
 
+
+    public function isInSocket() {
+
+        $socket_users = collect(\Http::get('http://localhost:3010/sockets')->json());
+        $socket_user = $socket_users->where('username', $this->username)->first();
+        return $socket_user !== NULL;
+
+    }
+
     public function room() {
         return $this->belongsTo(Room::class);
     }
