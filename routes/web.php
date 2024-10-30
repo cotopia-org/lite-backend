@@ -9,7 +9,7 @@ Route::get('/', function () {
     return redirect('https://lite.cotopia.social');
 });
 Route::get('/tester', function () {
-    dd(\App\Models\User::first()->isInSocket());
+    \Illuminate\Support\Facades\Redis::publish('test-channel', $this->data);
 
 });
 
