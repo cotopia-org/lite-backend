@@ -24,7 +24,7 @@ class User extends Authenticatable {
      */
 
 
-    protected $with = ['avatar'];
+//    protected $with = ['avatar'];
     protected $fillable = [
         'name',
         'username',
