@@ -28,7 +28,11 @@ class SocketController extends Controller {
                       ]);
 
 
-        return api(UserResource::make(auth()->user()));
+        return api([
+                       'id'       => $user->id,
+                       'username' => $user->username,
+                       'channels' => $user->channels()
+                   ]);
     }
 
     public function events(Request $request) {
