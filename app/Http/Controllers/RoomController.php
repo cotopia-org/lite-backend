@@ -85,6 +85,7 @@ class RoomController extends Controller {
         $user = auth()->user();
 
         if (!$user->isInSocket()) {
+            logger($user->isInSocket());
             return error('Not in Socket');
         }
 
