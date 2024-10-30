@@ -19,7 +19,7 @@ Route::get('/tester', function () {
             'username'    => 'Katerou22'
         ],
     ];
-    \Illuminate\Support\Facades\Redis::publish('test-channel', $data);
+    \Illuminate\Support\Facades\Redis::publish('test-channel', json_encode($data));
 
 });
 
