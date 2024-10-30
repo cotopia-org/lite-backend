@@ -84,10 +84,10 @@ class RoomController extends Controller {
     public function join(Room $room) {
         $user = auth()->user();
 
-        if (!$user->isInSocket()) {
-            logger($user->isInSocket());
-            return error('Not in Socket');
-        }
+//        if (!$user->isInSocket()) {
+//            logger($user->isInSocket());
+//            return error('Not in Socket');
+//        }
 
         $before_room = $user->room_id;
 
