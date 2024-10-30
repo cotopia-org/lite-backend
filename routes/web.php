@@ -10,17 +10,7 @@ Route::get('/', function () {
 });
 Route::get('/tester', function () {
 
-    $data = [
-        'eventName' => 'updateCoordinates',
-        'channel'   => 'room-6',
-        'data'      => [
-            'room_id'     => 6,
-            'coordinates' => '1,1',
-            'username'    => 'Katerou22'
-        ],
-    ];
-    \Illuminate\Support\Facades\Redis::publish('test-channel', json_encode($data));
-
+    dd(\App\Models\User::first()->chats()->pluck('id'));
 });
 
 
