@@ -9,7 +9,17 @@ Route::get('/', function () {
     return redirect('https://lite.cotopia.social');
 });
 Route::get('/tester', function () {
-    \Illuminate\Support\Facades\Redis::publish('test-channel', $this->data);
+
+    $data = [
+        'eventName' => 'updateCoordinates',
+        'channel'   => 'room-6',
+        'data'      => [
+            'room_id'     => 6,
+            'coordinates' => '1,1',
+            'username'    => 'Katerou22'
+        ],
+    ];
+    \Illuminate\Support\Facades\Redis::publish('test-channel', $data);
 
 });
 
