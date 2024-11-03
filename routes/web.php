@@ -51,7 +51,41 @@ Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'i
 
 
 //Route::get('/l/{link}', 'LinkController@redirect');
+Route::get('/lastMonth', function () {
+    $firstOfMonth = today()->subMonth()->firstOfMonth();
+    $lastOfMonth = today()->subMonth()->lastOfMonth();
 
+    $workspace = \App\Models\Workspace::first();
+    $users = $workspace->users;
+    $acts = DB::table('activities')
+              ->select('user_id',
+                       DB::raw('SUM(TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60) as sum_minutes'))
+              ->where('created_at', '>=', $firstOfMonth)->where('created_at', '<=', $lastOfMonth)->groupBy('user_id')
+              ->get();
+    $d = [];
+
+
+    \Carbon\CarbonInterval::setCascadeFactors([
+                                                  'minute' => [60, 'seconds'],
+                                                  'hour'   => [60, 'minutes'],
+                                              ]);
+    foreach ($acts as $act) {
+        $user = $users->find($act->user_id);
+        if ($user === NULL) {
+            continue;
+        }
+        $d[] = [
+            'username'    => $user->username,
+            'email'       => $user->email,
+            'name'        => $user->email,
+            'sum_minutes' => (float) $act->sum_minutes,
+            'sum_hours'   => \Carbon\CarbonInterval::minutes($act->sum_minutes)->cascade()->forHumans(),
+
+        ];
+    }
+    return api(array_values($d));
+
+});
 
 Route::get('/acts', function () {
     $request = request();
@@ -60,12 +94,14 @@ Route::get('/acts', function () {
         $d = [];
         foreach ($users as $user) {
 
-            $d[] = collect($user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded, $request->workspace));
+            $d[] = collect($user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded,
+                                          $request->workspace));
         }
         return collect($d)->sortByDesc('sum_minutes')->values()->toArray();
     }
     $user = \App\Models\User::find($request->user_id);
-    return $user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded, $request->workspace);
+    return $user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded,
+                          $request->workspace);
 
 
 });
@@ -79,7 +115,8 @@ Route::get('/scoreboard', function () {
     $d = [];
     foreach ($users as $user) {
 
-        $d[] = collect($user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded, $request->workspace));
+        $d[] = collect($user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded,
+                                      $request->workspace));
     }
     return collect($d)->sortByDesc('sum_minutes')->pluck('sum_hours', 'user.username')->all();
 
