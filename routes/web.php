@@ -9,7 +9,7 @@ Route::get('/', function () {
     return redirect('https://lite.cotopia.social');
 });
 Route::get('/tester', function () {
-    $user = \App\Models\User::first();
+    $user = \App\Models\User::find(3);
     $user->notify(new \App\Notifications\newNotification('Salam Test'));
     //    \App\Models\User::find(3)->notify('Salam Test');
 });
