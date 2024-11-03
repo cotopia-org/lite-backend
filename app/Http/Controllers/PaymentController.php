@@ -17,8 +17,8 @@ class PaymentController extends Controller {
     public function create(Request $request) {
 
         $request->validate([
-                               'status'=>'required',
-                               'amount'=>'required',
+                               'status' => 'required',
+                               'amount' => 'required',
                                'total_hours',
                                'bonus',
                                'round',
@@ -26,5 +26,11 @@ class PaymentController extends Controller {
                                'user_id',
                                'contract_id'
                            ]);
+
+
+        $payment = Payment::create($request->all());
+
+
+        return api(PaymentResource::make($payment));
     }
 }
