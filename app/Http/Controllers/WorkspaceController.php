@@ -139,7 +139,12 @@ class WorkspaceController extends Controller
     {
 
 
-        return api(ScheduleResource::collection($workspace->schedules()->with('user')->get()));
+        return api(ScheduleResource::collection($workspace->schedules()->with([
+                                                                                  'user' => [
+                                                                                      'schedules',
+                                                                                      'avatar'
+                                                                                  ]
+                                                                              ])->get()));
     }
 
     public function addTag(Workspace $workspace, Request $request)
