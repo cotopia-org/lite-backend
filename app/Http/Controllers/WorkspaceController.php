@@ -32,7 +32,12 @@ class WorkspaceController extends Controller
 
     public function rooms(Workspace $workspace)
     {
-        return api(RoomListResource::collection($workspace->rooms));
+        return api(RoomListResource::collection($workspace->rooms()->with([
+                                                                              'users' => [
+                                                                                  'schedules',
+                                                                                  'avatar'
+                                                                              ]
+                                                                          ])->get()));
     }
 
     public function tags(Workspace $workspace)
@@ -54,7 +59,7 @@ class WorkspaceController extends Controller
 
     public function users(Workspace $workspace)
     {
-        return api(UserMinimalResource::collection($workspace->users));
+        return api(UserMinimalResource::collection($workspace->users()->with('schedules', 'avatar')->get()));
     }
 
     public function calendars(Workspace $workspace)
