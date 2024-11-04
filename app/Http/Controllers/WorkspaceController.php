@@ -155,10 +155,9 @@ class WorkspaceController extends Controller {
 
 
         $users = $workspace->users;
-        $acts = DB::table('activities')
-                  ->select('user_id', 'workspace_id', DB::raw('SUM(TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60) as sum_minutes'))
-                  ->where('workspace_id', $workspace->id)->where('created_at', '>=', $firstOfMonth)->groupBy('user_id')
-                  ->get();
+        $acts = DB::table('activities')->where('workspace_id', $workspace->id)
+                  ->select('user_id', DB::raw('SUM(TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60) as sum_minutes'))
+                  ->where('created_at', '>=', $firstOfMonth)->groupBy('user_id')->get();
         $d = [];
         foreach ($acts as $act) {
             $user = $users->find($act->user_id);
