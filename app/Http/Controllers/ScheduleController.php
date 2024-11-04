@@ -51,7 +51,7 @@ class ScheduleController extends Controller
                 $start = str_replace(':', '', $time);
                 $end = str_replace(':', '', $time);
                 if ($start >= $end) {
-                    return error('End time can not be lower than start time.');
+                    return error('End time can not be lower than start time');
                 }
             }
         }
