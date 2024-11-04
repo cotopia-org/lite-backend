@@ -41,6 +41,7 @@ return new class () extends Migration {
 
 
             $table->integer('active_job_id')->nullable();
+            $table->integer('active_activity_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

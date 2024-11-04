@@ -24,16 +24,16 @@ class SocketController extends Controller
     {
 
         $user = auth()->user();
-        $user->update([
-                          'socket_id' => $request->socket_id,
-                          'status'    => Constants::ONLINE
-                      ]);
+//        $user->update([
+//                          'socket_id' => $request->socket_id,
+//                          'status'    => Constants::ONLINE
+//                      ]);
 
 
         return api([
                        'id'       => $user->id,
                        'username' => $user->username,
-                       'channels' => $user->channels()
+//                       'channels' => $user->channels()
                    ]);
     }
 
