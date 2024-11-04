@@ -5,119 +5,107 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ChatResource;
 use App\Http\Resources\MessageResource;
 use App\Models\Chat;
+use App\Models\User;
 use App\Models\Workspace;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
-class ChatController extends Controller {
-    public function create(Request $request) {
+class ChatController extends Controller
+{
+
+    public function createDirect(Request $request)
+    {
         $request->validate([
-                               'type'    => [
-                                   'required',
-                                   Rule::in([Constants::GROUP, Constants::CHANNEL, Constants::DIRECT])
-                               ],
-                               'title'   => 'required_if:type,group',
-                               //                               'participants' => 'required_if:type,group|required_without:workspace_id',
-                               'user_id' => 'required_if:type,direct',
+
+
+                               'user_id' => 'required|exists:users',
                            ]);
 
 
         $user = $request->user();
-        if ($request->type === 'direct') {
 
+        $users = [$request->user_id, $user->id];
+        asort($users);
+        $title = implode('-', $users);
 
-            $users = [$request->user_id, $user->id];
-            asort($users);
-            $title = implode('-', $users);
-
-            $chat = Chat::whereTitle($title)->first();
-            if ($chat !== NULL) {
-                return error('Chat exists!');
-            }
-
-
-            $chat = Chat::create([
-                                     'title'   => $title,
-                                     'type'    => Constants::DIRECT,
-                                     'user_id' => $user->id,
-                                 ]);
-
-
-            $chat->users()->attach($users);
+        $chat = Chat::whereTitle($title)->first();
+        if ($chat !== NULL) {
+            return error('Chat exists!');
         }
 
 
-        if ($request->type === 'group') {
-            $hasToAddParticipants = TRUE;
-
-            if ($request->workspace_id !== NULL) {
-                $workspace = Workspace::findOrFail($request->workspace_id);
-
-                //TODO: has to check user has permission to add group to workspace or not.
+        $chat = Chat::create([
+                                 'title'   => $title,
+                                 'type'    => Constants::DIRECT,
+                                 'user_id' => $user->id,
+                             ]);
 
 
-                $request->participants = $workspace->users->pluck('id');
-            } else {
-                $request->validate([
-                                       'participants' => 'required',
-                                   ]);
-
-            }
-
-            $chat = Chat::create([
-                                     'title'        => $request->title,
-                                     'type'         => Constants::GROUP,
-                                     'user_id'      => $user->id,
-                                     'workspace_id' => $request->workspace_id,
-                                 ]);
-
-            $participants = [];
-            foreach ($request->participants as $participant) {
-                $role = 'member';
-                if ($participant === $user->id) {
-                    $role = 'super-admin';
-                }
-                $participants[$participant] = ['role' => $role];
-            }
-            //            $participants[] = [$user->id, ['role' => 'super-admin']];
-            $chat->users()->attach($participants);
-
-
-        }
-
-
-        if ($request->type === 'channel') {
-
-            return error('Cant create channels yet.');
-            //            if ($request->workspace_id !== NULL) {
-            //                Workspace::findOrFail($request->workspace_id);
-            //                //TODO: has to check user has permission to add channel to workspace or not.
-            //
-            //            }
-            //
-            //            $chat = Chat::create([
-            //                                     'title'        => $request->title,
-            //                                     'type'         => Constants::CHANNEL,
-            //                                     'user_id'      => $user->id,
-            //                                     'workspace_id' => $request->workspace_id,
-            //                                 ]);
-            //
-            //            $chat->users()->attach($user->id, ['role', 'super-admin']);
-
-
-        }
-
-
-        /** @var Chat $chat */
+        $chat->users()->attach($users);
         return api(ChatResource::make($chat));
 
+    }
+
+    public function createGroup(Request $request)
+    {
+        $request->validate([
+
+                               'title' => 'required',
+                           ]);
+
+
+        $user = $request->user();
+
+        $hasToAddParticipants = TRUE;
+
+        if ($request->workspace_id !== NULL) {
+            $workspace = Workspace::findOrFail($request->workspace_id);
+
+            //TODO: has to check user has permission to add group to workspace or not.
+
+
+            $request->participants = $workspace->users->pluck('id');
+        } else {
+            $request->validate([
+                                   'participants' => 'required',
+                               ]);
+
+        }
+
+        $chat = Chat::create([
+                                 'title'        => $request->title,
+                                 'type'         => Constants::GROUP,
+                                 'user_id'      => $user->id,
+                                 'workspace_id' => $request->workspace_id,
+                             ]);
+
+        $participants = [];
+        foreach ($request->participants as $participant) {
+            $role = 'member';
+            if ($participant === $user->id) {
+                $role = 'super-admin';
+            }
+            $participants[$participant] = ['role' => $role];
+        }
+        //            $participants[] = [$user->id, ['role' => 'super-admin']];
+        $chat->users()->attach($participants);
+
+        return api(ChatResource::make($chat));
 
     }
 
 
-    public function messages(Chat $chat) {
+    public function createChannel(Request $request)
+    {
+        return error('Cant create channels yet.');
+
+    }
+
+
+    public function messages(Chat $chat)
+    {
 
 
         $user = auth()->user();
@@ -125,8 +113,8 @@ class ChatController extends Controller {
         $request = request();
         if ($request->page) {
             $last_message_seen_id = $this
-                                        ->users()->where('user_id', $user->id)
-                                        ->first()->pivot->last_message_seen_id ?? 0;
+                ->users()->where('user_id', $user->id)
+                ->first()->pivot->last_message_seen_id ?? 0;
 
 
             $messages = $chat

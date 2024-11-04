@@ -459,6 +459,8 @@ class User extends Authenticatable {
                 foreach ($day->times as $time) {
                     $end = now()->setTimeFromTimeString($time->end);
                     $start = now()->setTimeFromTimeString($time->start);
+
+
                     $minutes += $start->diffInMinutes($end);
                 }
             }

@@ -31,7 +31,6 @@ class ScheduleController extends Controller {
     public function create(Request $request) {
 
         $types = get_enum_values(AvailabilityType::cases());
-        $days = get_enum_values(Days::cases());
 
         $request->validate([
 
@@ -44,6 +43,15 @@ class ScheduleController extends Controller {
 
         $timezone = $request->timezone ?? 'Asia/Tehran';
 
+        foreach (json_encode($request->days, JSON_THROW_ON_ERROR) as $day){
+            foreach ($day['times'] as $time){
+                $start = str_replace(':','',$time);
+                $end = str_replace(':','',$time);
+                if ($start >= $end){
+                    return error('End time can not be lower than start time.');
+                }
+            }
+        }
         $schedule = auth()->user()->schedules()->create([
                                                             'availability_type'   => $request->availability_type,
                                                             'days'                => json_encode($request->days, JSON_THROW_ON_ERROR),
@@ -73,7 +81,7 @@ class ScheduleController extends Controller {
                                   'recurrence_end_at'   => $request->recurrence_end_at,
                                   'timezone'            => $timezone,
                                   'workspace_id'        => $request->workspace_id,
-                              
+
                               ]);
         }
 

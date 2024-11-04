@@ -140,7 +140,9 @@ Route::middleware('auth:sanctum')->group(callback: function () {
 
 
     Route::controller(ChatController::class)->prefix('chats')->group(function () {
-        Route::post('/', 'create');
+        Route::post('/createDirect', 'createDirect');
+        Route::post('/createGroup', 'createGroup');
+        Route::post('/createChannel', 'createChannel');
         Route::get('/{chat}/messages', 'messages');
 
     });
