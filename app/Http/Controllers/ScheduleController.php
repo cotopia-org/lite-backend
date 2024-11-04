@@ -46,8 +46,7 @@ class ScheduleController extends Controller
 
         $timezone = $request->timezone ?? 'Asia/Tehran';
 
-        foreach (json_encode($request->days, JSON_THROW_ON_ERROR) as $day) {
-            dd($day['times']);
+        foreach ($request->days as $day) {
             foreach ($day['times'] as $time) {
                 $start = str_replace(':', '', $time);
                 $end = str_replace(':', '', $time);
