@@ -49,8 +49,8 @@ class Chat extends Model {
 
     public function mentionedMessages($user) {
 
-
-        $messagesIds = $this->unSeens($user, FALSE)->pluck('id');
+//TODO: has to change just usneen messages, but got mentions from chat->mentions not from messages.
+        $messagesIds = $this->messages->pluck('id');
         return $user->mentions->whereIn('id', $messagesIds);
     }
 
@@ -74,7 +74,7 @@ class Chat extends Model {
         $last_message_seen_id = $this->users->where('user_id', $user->id)->first()->pivot->last_message_seen_id ?? 0;
 
 
-        return $this->messages->with('files', 'links', 'mentions')->where('id', '>', $last_message_seen_id)->get();
+        return $this->messages()->with('files', 'links', 'mentions')->where('id', '>', $last_message_seen_id)->get();
 
     }
 
