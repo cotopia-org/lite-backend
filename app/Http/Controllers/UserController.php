@@ -17,6 +17,7 @@ use App\Models\User;
 use App\Models\Workspace;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller {
     public function me() {
@@ -196,8 +197,7 @@ class UserController extends Controller {
                                                                      'lastMessage' => ['files', 'mentions', 'links']
                                                                  ])->withCount([
                                                                                    'messages' => function ($query) {
-                                                                                       dd($query);
-                                                                                       $query->where('id', '>', 'chat_user.last_seen_message_id');
+                                                                                       $query->where('messages.id', '>', DB::raw('chat_user.last_read_message_id'));
 
                                                                                    }
                                                                                ])->get()));
