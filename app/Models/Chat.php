@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Utilities\Constants;
 use Illuminate\Database\Eloquent\Model;
 
 class Chat extends Model {
@@ -19,6 +20,23 @@ class Chat extends Model {
     protected $appends = [
         'channel'
     ];
+
+
+    public function getTitle($user) {
+        $title = $this->title;
+
+        if ($this->type === Constants::DIRECT) {
+            $pattern = "/\b($title)-(\w+)|(\w+)-($title)\b/";
+
+            // Use preg_replace_callback to return the matching word
+            return preg_replace_callback($pattern, function ($matches) {
+                // Check which match is set and return the other word
+                return $matches[2] ?? $matches[3];
+            },                           $user->id);
+        }
+
+        return $this->title;
+    }
 
     public function getChannelAttribute($value) {
 
@@ -49,7 +67,7 @@ class Chat extends Model {
 
     public function mentionedMessages($user) {
 
-//TODO: has to change just usneen messages, but got mentions from chat->mentions->where(message_id > user last seen id) not from messages.
+        //TODO: has to change just usneen messages, but got mentions from chat->mentions->where(message_id > user last seen id) not from messages.
         $messagesIds = $this->messages->pluck('id');
         return $user->mentions->whereIn('id', $messagesIds);
     }
