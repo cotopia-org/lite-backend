@@ -187,7 +187,13 @@ class UserController extends Controller {
         $user = auth()->user();
 
 
-        return api(ChatResource::collection($user->chats()->with('messages', 'users')->get()));
+        return api(ChatResource::collection($user->chats()->with([
+                                                                     'users'    => [
+                                                                         'avatar',
+                                                                         'schedules'
+                                                                     ],
+                                                                     'messages' => ['files', 'mentions']
+                                                                 ])->get()));
     }
 
 
