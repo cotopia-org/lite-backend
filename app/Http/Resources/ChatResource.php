@@ -21,7 +21,7 @@ class ChatResource extends JsonResource {
             'id'           => $this->id,
             'title'        => $this->getTitle($user),
             'workspace_id' => $this->workspace_id,
-            //            'participants'       => UserMinimalResource::collection($this->users),
+            'participants' => UserMinimalResource::collection($this->users),
             'last_message' => MessageResource::make($this->lastMessage()),
             'unseens'      => $this->unSeensCount($user),
             //            'pinned_messages'    => MessageResource::collection($this->pinnedMessages()),
