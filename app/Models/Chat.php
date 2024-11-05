@@ -30,7 +30,7 @@ class Chat extends Model {
 
 
             $names = explode('-', $title);
-            $sum = $names[0] + $names[1];
+            $sum = (int)$names[0] + (int)$names[1];
             $user_id = ($id === $names[0] || $user->id === $names[1]) ? $sum - $id : NULL;
 
 
