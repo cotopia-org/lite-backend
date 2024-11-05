@@ -44,9 +44,9 @@ class Chat extends Model {
 
     }
 
-    public function lastMessage() {
-        return $this->messages->sortByDesc('id')->first();
-
+    public function lastMessage()
+    {
+        return $this->hasOne(Message::class)->latestOfMany();
     }
 
 

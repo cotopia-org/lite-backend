@@ -22,7 +22,7 @@ class ChatResource extends JsonResource {
             'title'        => $this->getTitle($user),
             'workspace_id' => $this->workspace_id,
             'participants' => UserMinimalResource::collection($this->users),
-            'last_message' => MessageResource::make($this->lastMessage()),
+            'last_message' => MessageResource::make($this->lastMessage),
             'unseens'      => $this->unSeensCount($user),
             //            'pinned_messages'    => MessageResource::collection($this->pinnedMessages()),
 
