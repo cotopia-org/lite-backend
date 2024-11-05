@@ -18,6 +18,7 @@ class ChatResource extends JsonResource {
     public function toArray(Request $request): array {
 
         $user = auth()->user();
+        dd($this->pivot);
         return [
             'id'           => $this->id,
             'title'        => $this->getTitle($user),
