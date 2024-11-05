@@ -195,11 +195,9 @@ class UserController extends Controller {
                                                                      //                                                                     'messages'    => ['files', 'mentions', 'links'],
                                                                      'lastMessage' => ['files', 'mentions', 'links']
                                                                  ])->withCount([
-                                                                                   'chats as unread_messages_count' => function ($query) {
-                                                                                       $query->whereHas('messages', function ($messageQuery) {
-                                                                                           // Join the pivot table to access 'last_seen_message_id'
-                                                                                           $messageQuery->whereColumn('messages.id', '>', 'chat_user.last_seen_message_id');
-                                                                                       });
+                                                                                   'message' => function ($query) {
+                                                                                       $query->where('id', '>', 'chat_user.last_seen_message_id');
+
                                                                                    }
                                                                                ])->get()));
     }
