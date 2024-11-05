@@ -189,10 +189,6 @@ class UserController extends Controller {
 
 
         return api(ChatResource::collection($user->chats()->with([
-                                                                     'users'       => [
-                                                                         'avatar',
-                                                                         'schedules'
-                                                                     ],
                                                                      //                                                                     'messages'    => ['files', 'mentions', 'links'],
                                                                      'lastMessage' => ['files', 'mentions', 'links']
                                                                  ])->withCount([

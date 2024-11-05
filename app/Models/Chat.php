@@ -28,11 +28,13 @@ class Chat extends Model {
         if ($this->type === Constants::DIRECT) {
             $pattern = "/\b($title)-(\w+)|(\w+)-($title)\b/";
 
-            // Use preg_replace_callback to return the matching word
-            return preg_replace_callback($pattern, function ($matches) {
+
+            $user_id = preg_replace_callback($pattern, function ($matches) {
                 // Check which match is set and return the other word
                 return $matches[2] ?? $matches[3];
-            },                           $user->id);
+            },                               $user->id);
+            // Use preg_replace_callback to return the matching word
+            return $this->participants()->find($user_id)->name;
         }
 
         return $this->title;
@@ -44,8 +46,7 @@ class Chat extends Model {
 
     }
 
-    public function lastMessage()
-    {
+    public function lastMessage() {
         return $this->hasOne(Message::class)->latestOfMany();
     }
 
