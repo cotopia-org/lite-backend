@@ -18,14 +18,14 @@ class ChatResource extends JsonResource {
     public function toArray(Request $request): array {
 
         $user = auth()->user();
-        dd($this->pivot);
+        $pivot = $this->pivot;
         return [
             'id'           => $this->id,
             'title'        => $this->getTitle($user),
             'workspace_id' => $this->workspace_id,
             'participants' => UserMinimalResource::collection($this->users),
             'last_message' => MessageResource::make($this->lastMessage),
-            'unseens'      => $this->unSeensCount($user),
+            'unseens'      => $this->unSeensCount($pivot),
             //            'pinned_messages'    => MessageResource::collection($this->pinnedMessages()),
 
 
