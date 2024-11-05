@@ -54,6 +54,18 @@ class Chat extends Model {
         return $user->mentions->whereIn('id', $messagesIds);
     }
 
+    public function unSeensCount($user) {
+        // Messages that pinned and not seen
+        // Message that user mentioned and not seen
+
+
+        $last_message_seen_id = $this->users->where('user_id', $user->id)->first()->pivot->last_message_seen_id ?? 0;
+
+
+        return $this->messages()->where('id', '>', $last_message_seen_id)->count();
+
+    }
+
     public function unSeens($user) {
         // Messages that pinned and not seen
         // Message that user mentioned and not seen
