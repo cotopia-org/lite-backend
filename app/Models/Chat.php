@@ -33,7 +33,7 @@ class Chat extends Model {
             $sum = (int)$names[0] + (int)$names[1];
             $user_id = ($id === $names[0] || $user->id === $names[1]) ? $sum - $id : NULL;
 
-
+            dd($user_id);
             return $this->participants()->find($user_id)->name;
         }
 

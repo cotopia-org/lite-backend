@@ -31,7 +31,7 @@ class MessengerChannel {
                                      'type'    => Constants::DIRECT,
                                      'user_id' => $notifiable->id,
                                  ]);
-            $chat->users()->attach($notifiable->id);
+            $chat->users()->attach([$notifiable->id, $notifUser->id]);
 
         }
 
