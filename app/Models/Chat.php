@@ -62,7 +62,7 @@ class Chat extends Model {
         $last_message_seen_id = $this->users->where('user_id', $user->id)->first()->pivot->last_message_seen_id ?? 0;
 
 
-        return $this->messages()->where('id', '>', $last_message_seen_id)->count();
+        return $this->messages->where('id', '>', $last_message_seen_id)->count();
 
     }
 
@@ -74,7 +74,7 @@ class Chat extends Model {
         $last_message_seen_id = $this->users->where('user_id', $user->id)->first()->pivot->last_message_seen_id ?? 0;
 
 
-        return $this->messages()->with('files', 'links', 'mentions')->where('id', '>', $last_message_seen_id)->get();
+        return $this->messages->with('files', 'links', 'mentions')->where('id', '>', $last_message_seen_id)->get();
 
     }
 
