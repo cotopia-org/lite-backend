@@ -31,7 +31,7 @@ class Chat extends Model {
 
             $user_id = preg_replace_callback($pattern, function ($matches) {
                 // Check which match is set and return the other word
-                return isset($matches[2]) ? $matches[2] : $matches[3];
+                return isset($matches[2]) ? $matches[3] : $matches[2];
             }, $user->id);
             // Use preg_replace_callback to return the matching word
             return $this->participants()->find($user_id)->name;
