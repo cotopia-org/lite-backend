@@ -63,9 +63,9 @@ class Message extends Model {
             return FALSE;
         }
 
-        $last_message_seen_id = $user->chats->find($this->chat_id)->pivot->last_message_seen_id ?? 0;
-        //        $last_message_seen_id = DB::table('chat_user')->where('user_id', $user->id)->where('chat_id', $this->chat_id)
-        //                                  ->first()->last_message_seen_id ?? 0;
+
+        $last_message_seen_id = DB::table('chat_user')->where('user_id', $user->id)->where('chat_id', $this->chat_id)
+                                  ->first()->last_message_seen_id ?? 0;
 
         return $this->id <= $last_message_seen_id;
 
