@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Chat extends Model {
 
-//    protected $with = ['messages', 'users', 'workspace'];
+    //    protected $with = ['messages', 'users', 'workspace'];
 
     protected $fillable = [
         'title',
@@ -62,7 +62,7 @@ class Chat extends Model {
         $last_message_seen_id = $this->users->where('user_id', $user->id)->first()->pivot->last_message_seen_id ?? 0;
 
 
-        return $this->messages->where('id', '>', $last_message_seen_id);
+        return $this->messages()->with('files', 'links', 'mentions')->where('id', '>', $last_message_seen_id)->get();
 
     }
 
