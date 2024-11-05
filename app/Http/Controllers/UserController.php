@@ -192,7 +192,7 @@ class UserController extends Controller {
                                                                          'avatar',
                                                                          'schedules'
                                                                      ],
-                                                                     'messages'    => ['files', 'mentions', 'links'],
+                                                                     //                                                                     'messages'    => ['files', 'mentions', 'links'],
                                                                      'lastMessage' => ['files', 'mentions', 'links']
                                                                  ])->get()));
     }

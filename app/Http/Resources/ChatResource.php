@@ -14,6 +14,7 @@ class ChatResource extends JsonResource {
 
 
     // TODO: We must change pinned messages from here to got with request. and participants too.
+    // TODO: Mentions will added after refactor in model. check the comment in mentionedMessages in Chat Model.
     public function toArray(Request $request): array {
 
         $user = auth()->user();
@@ -27,7 +28,7 @@ class ChatResource extends JsonResource {
             //            'pinned_messages'    => MessageResource::collection($this->pinnedMessages()),
 
 
-            'mentioned_messages' => MessageResource::collection($this->mentionedMessages($user)),
+            //            'mentioned_messages' => MessageResource::collection($this->mentionedMessages($user)),
         ];
     }
 }
