@@ -49,7 +49,7 @@ class Chat extends Model {
 
     public function mentionedMessages($user) {
 
-//TODO: has to change just usneen messages, but got mentions from chat->mentions not from messages.
+//TODO: has to change just usneen messages, but got mentions from chat->mentions->where(message_id > user last seen id) not from messages.
         $messagesIds = $this->messages->pluck('id');
         return $user->mentions->whereIn('id', $messagesIds);
     }
