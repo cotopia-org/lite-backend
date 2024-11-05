@@ -24,16 +24,16 @@ class Chat extends Model {
 
     public function getTitle($user) {
         $title = $this->title;
+        $id = $user->id;
 
         if ($this->type === Constants::DIRECT) {
-            $pattern = "/\b($title)-(\w+)|(\w+)-($title)\b/";
 
 
-            $user_id = preg_replace_callback($pattern, function ($matches) {
-                // Check which match is set and return the other word
-                return isset($matches[2]) ? $matches[3] : $matches[2];
-            }, $user->id);
-            // Use preg_replace_callback to return the matching word
+            $names = explode('-', $title);
+            $sum = $names[0] + $names[1];
+            $user_id = ($id === $names[0] || $user->id === $names[1]) ? $sum - $id : NULL;
+
+
             return $this->participants()->find($user_id)->name;
         }
 
