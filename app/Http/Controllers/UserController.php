@@ -196,6 +196,7 @@ class UserController extends Controller {
                                                                      'lastMessage' => ['files', 'mentions', 'links']
                                                                  ])->withCount([
                                                                                    'messages' => function ($query) {
+                                                                                       dd($query);
                                                                                        $query->where('id', '>', 'chat_user.last_seen_message_id');
 
                                                                                    }
