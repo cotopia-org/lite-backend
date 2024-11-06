@@ -211,6 +211,16 @@ class UserController extends Controller
                                                                                        $query->where('messages.id', '>',
                                                                                                      DB::raw('chat_user.last_message_seen_id'));
 
+                                                                                   },
+                                                                                   'mentions' => function ($query) use (
+                                                                                       $user
+                                                                                   ) {
+                                                                                       $query->where('mentions.message_id',
+                                                                                                     '>',
+                                                                                                     DB::raw('chat_user.last_message_seen_id'))
+                                                                                             ->where('mentions.user_id',
+                                                                                                     $user->id);
+
                                                                                    }
                                                                                ])->get()));
     }
