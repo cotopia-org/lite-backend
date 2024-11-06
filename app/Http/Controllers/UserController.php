@@ -222,7 +222,7 @@ class UserController extends Controller
                                                                                                         User::class)
                                                                                                 ->where('mentions.mentionable_id',
                                                                                                         $user->id)
-                                                                                                ->get());
+                                                                                       );
                                                                                        $query->where('mentions.message_id',
                                                                                                      '>',
                                                                                                      DB::raw('chat_user.last_message_seen_id'))
