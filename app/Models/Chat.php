@@ -83,9 +83,8 @@ class Chat extends Model
 
 
         $last_message_seen_id = $this->users->where('user_id', $user->id)->first()->pivot->last_message_seen_id ?? 0;
-        $mentions = $this->mentions->where('mentionable_type', User::class)->where('mentionable_id', $user->id)
-                         ->where('message_id', '>', $last_message_seen_id)->get();
-        return $mentions;
+        return $this->mentions->where('mentionable_type', User::class)->where('mentionable_id', $user->id)
+                              ->where('message_id', '>', $last_message_seen_id);
     }
 
     public function unSeensCount($user)
