@@ -204,7 +204,8 @@ class UserController extends Controller
         return api(ChatResource::collection($user->chats()->with([
                                                                      //                                                                     'messages'    => ['files', 'mentions', 'links'],
                                                                      'lastMessage' => ['files', 'mentions', 'links'],
-                                                                     'users'
+                                                                     'users',
+                                                                     'mentions'
                                                                  ])->withCount([
                                                                                    'messages' => function ($query) {
                                                                                        $query->where('messages.id', '>',

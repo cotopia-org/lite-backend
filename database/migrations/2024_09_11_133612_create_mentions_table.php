@@ -15,6 +15,7 @@ return new class extends Migration {
 
             $table->foreignId('message_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('chat_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->integer('start_position')->nullable();
             $table->morphs('mentionable');
 
