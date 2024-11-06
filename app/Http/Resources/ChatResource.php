@@ -20,7 +20,6 @@ class ChatResource extends JsonResource
     {
 
         $user = auth()->user();
-        //        $pivot = $this->pivot;
         return [
             'id'                 => $this->id,
             'title'              => $this->getTitle($user),
@@ -31,7 +30,6 @@ class ChatResource extends JsonResource
             'mentioned_messages' => $this->mentions_count,
 
 
-            //            'mentioned_messages' => MessageResource::collection($this->mentionedMessages($user)),
         ];
     }
 }

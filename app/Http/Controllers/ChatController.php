@@ -104,6 +104,14 @@ class ChatController extends Controller
 
     }
 
+
+    public function mentionedMessages(Chat $chat)
+    {
+        $user = auth()->user();
+        return api(MessageResource::collection($chat->mentionedMessages($user)));
+
+    }
+
     public function participants(Chat $chat)
     {
 
