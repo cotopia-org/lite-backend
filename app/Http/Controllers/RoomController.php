@@ -16,8 +16,10 @@ use App\Models\Workspace;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
 
-class RoomController extends Controller {
-    public function update(Room $room, Request $request) {
+class RoomController extends Controller
+{
+    public function update(Room $room, Request $request)
+    {
 
 
         $user = auth()->user();
@@ -42,7 +44,8 @@ class RoomController extends Controller {
     }
 
 
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
 
         $request->validate([
                                'workspace_id' => 'required',
@@ -68,7 +71,8 @@ class RoomController extends Controller {
 
     }
 
-    public function get(Room $room) {
+    public function get(Room $room)
+    {
         //        $user = auth()->user();
         //        $workspace = $user->workspaces()->find($workspace);
         //        if ($workspace === NULL) {
@@ -81,7 +85,8 @@ class RoomController extends Controller {
         return api(RoomResource::make($room));
     }
 
-    public function join(Room $room) {
+    public function join(Room $room)
+    {
         $user = auth()->user();
 
         if (!$user->isInSocket()) {
@@ -134,13 +139,14 @@ class RoomController extends Controller {
     }
 
 
-    public function delete(Room $room) {
+    public function delete(Room $room)
+    {
         //TODO CHECK PERMISSION
         $user = auth()->user();
         $user->canDo(Permission::ROOM_DELETE, $room->workspace->id);
 
         foreach ($room->users as $user) {
-            DisconnectUserJob::dispatch($room, $user, FALSE, FALSE, 'Disconnected From RoomController Delete Method');
+            DisconnectUserJob::dispatch($user, FALSE, FALSE, 'Disconnected From RoomController Delete Method');
 
         }
 
@@ -153,7 +159,8 @@ class RoomController extends Controller {
     }
 
 
-    public function leave() {
+    public function leave()
+    {
         $user = auth()->user();
         $request = \request();
 
