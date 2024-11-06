@@ -201,38 +201,31 @@ class UserController extends Controller
         $user = auth()->user();
 
 
-        return api(ChatResource::collection($user->chats()->with([
-                                                                     //                                                                     'messages'    => ['files', 'mentions', 'links'],
-                                                                     'lastMessage' => ['files', 'mentions', 'links'],
-                                                                     'users',
-                                                                     'mentions'
-                                                                 ])->withCount([
-                                                                                   'messages' => function ($query) {
-                                                                                       $query->where('messages.id', '>',
-                                                                                                     DB::raw('chat_user.last_message_seen_id'));
+        return api(ChatResource::collection($user->chats()
+                                                 ->with([
+                                                            //                                                                     'messages'    => ['files', 'mentions', 'links'],
+                                                            'lastMessage' => ['files', 'mentions', 'links'],
+                                                            'users',
+                                                            'mentions'
+                                                        ])
+                                                 ->withCount([
+                                                                 'messages' => function ($query) {
+                                                                     $query->where('messages.id', '>',
+                                                                                   DB::raw('chat_user.last_message_seen_id'));
 
-                                                                                   },
-                                                                                   'mentions' => function ($query) use (
-                                                                                       $user
-                                                                                   ) {
-                                                                                       dd($query->where('mentions.message_id',
-                                                                                                        '>',
-                                                                                                        DB::raw('chat_user.last_message_seen_id'))
-                                                                                                ->where('mentions.mentionable_type',
-                                                                                                        User::class)
-                                                                                                ->where('mentions.mentionable_id',
-                                                                                                        $user->id)
-                                                                                       );
-                                                                                       $query->where('mentions.message_id',
-                                                                                                     '>',
-                                                                                                     DB::raw('chat_user.last_message_seen_id'))
-                                                                                             ->where('mentions.mentionable_type',
-                                                                                                     User::class)
-                                                                                             ->where('mentions.mentionable_id',
-                                                                                                     $user->id);
+                                                                 },
+                                                                 'mentions' => function ($query) use ($user) {
 
-                                                                                   }
-                                                                               ])->get()));
+                                                                     $query->where('mentions.message_id',
+                                                                                   '>',
+                                                                                   DB::raw('chat_user.last_message_seen_id'))
+                                                                           ->where('mentions.mentionable_type',
+                                                                                   User::class)
+                                                                           ->where('mentions.mentionable_id',
+                                                                                   $user->id);
+
+                                                                 }
+                                                             ])->get()));
     }
 
 
