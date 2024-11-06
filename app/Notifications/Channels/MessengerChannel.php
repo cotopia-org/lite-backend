@@ -26,12 +26,12 @@ class MessengerChannel {
         $chat = Chat::whereTitle($title)->first();
         if ($chat === NULL) {
             $chat = Chat::create([
-                                     'title'   => 'Lite Notifications',
-                                     //                                     'title'   => $title,
+                                     //                                     'title'   => 'Lite Notifications',
+                                     'title'   => $title,
                                      'type'    => Constants::DIRECT,
                                      'user_id' => $notifiable->id,
                                  ]);
-            $chat->users()->attach($notifiable->id);
+            $chat->users()->attach([$notifiable->id, $notifUser->id]);
 
         }
 

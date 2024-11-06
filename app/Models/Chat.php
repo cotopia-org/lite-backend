@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Utilities\Constants;
 use Illuminate\Database\Eloquent\Model;
 
 class Chat extends Model {
 
-//    protected $with = ['messages', 'users', 'workspace'];
+    //    protected $with = ['messages', 'users', 'workspace'];
 
     protected $fillable = [
         'title',
@@ -20,6 +21,24 @@ class Chat extends Model {
         'channel'
     ];
 
+
+    public function getTitle($user) {
+        $title = $this->title;
+        $id = $user->id;
+
+        if ($this->type === Constants::DIRECT) {
+
+
+            $names = explode('-', $title);
+            $sum = (int)$names[0] + (int)$names[1];
+            $user_id = ($id === (int)$names[0] || $id === (int)$names[1]) ? $sum - $id : NULL;
+
+            return $this->participants()->find($user_id)->name;
+        }
+
+        return $this->title;
+    }
+
     public function getChannelAttribute($value) {
 
         return 'chat-' . $this->id;
@@ -27,8 +46,7 @@ class Chat extends Model {
     }
 
     public function lastMessage() {
-        return $this->messages->sortByDesc('id')->first();
-
+        return $this->hasOne(Message::class)->latestOfMany();
     }
 
 
@@ -49,9 +67,21 @@ class Chat extends Model {
 
     public function mentionedMessages($user) {
 
-
-        $messagesIds = $this->unSeens($user, FALSE)->pluck('id');
+        //TODO: has to change just usneen messages, but got mentions from chat->mentions->where(message_id > user last seen id) not from messages.
+        $messagesIds = $this->messages->pluck('id');
         return $user->mentions->whereIn('id', $messagesIds);
+    }
+
+    public function unSeensCount($user) {
+        // Messages that pinned and not seen
+        // Message that user mentioned and not seen
+
+
+        $last_message_seen_id = $this->users->where('user_id', $user->id)->first()->pivot->last_message_seen_id ?? 0;
+
+
+        return $this->messages()->where('id', '>', $last_message_seen_id)->count();
+
     }
 
     public function unSeens($user) {
@@ -62,7 +92,7 @@ class Chat extends Model {
         $last_message_seen_id = $this->users->where('user_id', $user->id)->first()->pivot->last_message_seen_id ?? 0;
 
 
-        return $this->messages->where('id', '>', $last_message_seen_id);
+        return $this->messages()->with('files', 'links', 'mentions')->where('id', '>', $last_message_seen_id)->get();
 
     }
 
