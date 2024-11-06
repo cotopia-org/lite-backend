@@ -35,7 +35,7 @@ class Chat extends Model
             $sum = (int) $names[0] + (int) $names[1];
             $user_id = ($id === (int) $names[0] || $id === (int) $names[1]) ? $sum - $id : NULL;
 
-            return $this->participants()->find($user_id)->name;
+            return $this->users->find($user_id)->name;
         }
 
         return $this->title;
@@ -82,11 +82,10 @@ class Chat extends Model
         //TODO: has to change just usneen messages, but got mentions from chat->mentions->where(message_id > user last seen id) not from messages.
 
 
-        dd($user->pivot);
+        $last_message_seen_id = $this->users->where('user_id', $user->id)->first()->pivot->last_message_seen_id ?? 0;
         $mentions = $this->mentions()->where('mentionable_type', User::class)->where('mentionable_id', $user->id)
-                         ->where('message_id', '>')->get();
-        $messagesIds = $this->messages->pluck('id');
-        return $user->mentions->whereIn('id', $messagesIds);
+                         ->where('message_id', '>', $last_message_seen_id)->get();
+        return $mentions;
     }
 
     public function unSeensCount($user)
