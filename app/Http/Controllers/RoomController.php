@@ -153,6 +153,8 @@ class RoomController extends Controller
 
         $room->delete();
 
+        sendSocket(Constants::roomDeleted, $room->workspace->channel, $room->id);
+
         return api(TRUE);
 
 
