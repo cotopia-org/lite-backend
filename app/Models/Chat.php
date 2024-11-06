@@ -79,8 +79,6 @@ class Chat extends Model
     public function mentionedMessages($user)
     {
 
-        //TODO: has to change just usneen messages, but got mentions from chat->mentions->where(message_id > user last seen id) not from messages.
-
 
         $last_message_seen_id = $this->users->where('user_id', $user->id)->first()->pivot->last_message_seen_id ?? 0;
         return $this->mentions->where('mentionable_type', User::class)->where('mentionable_id', $user->id)

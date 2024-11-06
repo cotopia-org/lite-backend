@@ -145,6 +145,8 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::post('/createGroup', 'createGroup');
         Route::post('/createChannel', 'createChannel');
         Route::get('/{chat}/messages', 'messages');
+        Route::get('/{chat}/participants', 'participants');
+        Route::get('/{chat}/pinnedMessaged', 'pinnedMessaged');
 
     });
 

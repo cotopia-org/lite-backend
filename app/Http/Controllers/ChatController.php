@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ChatResource;
 use App\Http\Resources\MessageResource;
+use App\Http\Resources\UserMinimalResource;
 use App\Models\Chat;
 use App\Models\User;
 use App\Models\Workspace;
@@ -103,6 +104,19 @@ class ChatController extends Controller
 
     }
 
+    public function participants(Chat $chat)
+    {
+
+        return api(UserMinimalResource::collection($chat->users));
+
+    }
+
+    public function pinnedMessages(Chat $chat)
+    {
+
+        return api(MessageResource::collection($chat->pinnedMessages()));
+
+    }
 
     public function messages(Chat $chat)
     {
