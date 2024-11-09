@@ -16,7 +16,7 @@ Route::get('/tester', function () {
     foreach ($users as $user) {
         $la = $user->lastActivity();
         if ($la !== NULL) {
-            $user->update(['active_activitiy_id' => $la->id]);
+            $user->update(['active_activity_id' => $la->id]);
         }
     }
     dd('Okay');
