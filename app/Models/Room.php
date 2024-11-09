@@ -96,7 +96,6 @@ class Room extends Model
 
     public function joinUser($user, $joinLivekit = TRUE)
     {
-        $workspace = $this->workspace;
         //        $workspace = $user->workspaces->find($workspace->id);
         //        if ($workspace === NULL) {
         //            return error('You have no access to this workspace');
@@ -106,7 +105,7 @@ class Room extends Model
 
         $user->update([
                           'room_id'      => $this->id,
-                          'workspace_id' => $workspace->id,
+                          'workspace_id' => $this->workspace_id,
                       ]);
 
 
