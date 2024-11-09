@@ -101,18 +101,19 @@ class RoomController extends Controller
 
         $res = RoomResource::make($room);
 
+        $userResource = UserMinimalResource::make($user);
         if ($before_room !== NULL) {
             $before_room = Room::find($before_room);
 
             sendSocket(Constants::userLeftFromRoom, $before_room->workspace->channel, [
                 'room_id' => $before_room->id,
-                'user'    => UserMinimalResource::make($user)
+                'user'    => $userResource
             ]);
         }
 
         sendSocket(Constants::userJoinedToRoom, $room->workspace->channel, [
             'room_id' => $room->id,
-            'user'    => UserMinimalResource::make($user)
+            'user'    => $userResource
         ]);
 
 
