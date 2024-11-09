@@ -126,7 +126,7 @@ class Room extends Model
             $this->token = $token;
         }
 
-        $this->load('users', 'background', 'users.schedules', 'users.jobs');
+        $this->load('users', 'files', 'users.schedules', 'users.jobs');
 
 
         return $this;
