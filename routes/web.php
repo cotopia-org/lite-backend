@@ -10,9 +10,20 @@ Route::get('/', function () {
 });
 Route::get('/tester', function () {
 
-    dd(explode('-', '1-12'));
-    $user = \App\Models\User::find(3);
-    $user->notify(new \App\Notifications\newNotification('Salam Test'));
+
+    $users = \App\Models\User::all();
+
+    foreach ($users as $user) {
+        $la = $user->lastActivity();
+        if ($la !== NULL) {
+            $user->update(['active_activitiy_id' => $la->id]);
+        }
+    }
+    dd('Okay');
+//    sleep(60);
+//    dd($job->end($user, 'paused'));
+//    $user = \App\Models\User::find(3);
+//    $user->notify(new \App\Notifications\newNotification('Salam Test'));
     //    \App\Models\User::find(3)->notify('Salam Test');
 });
 
@@ -61,7 +72,8 @@ Route::get('/lastMonth', function () {
     $workspace = \App\Models\Workspace::first();
     $users = $workspace->users;
     $acts = DB::table('activities')
-              ->select('user_id', DB::raw('SUM(TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60) as sum_minutes'))
+              ->select('user_id',
+                       DB::raw('SUM(TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60) as sum_minutes'))
               ->where('created_at', '>=', $firstOfMonth)->where('created_at', '<=', $lastOfMonth)->groupBy('user_id')
               ->get();
     $d = [];
@@ -80,7 +92,7 @@ Route::get('/lastMonth', function () {
             'username'    => $user->username,
             'email'       => $user->email,
             'name'        => $user->email,
-            'sum_minutes' => (float)$act->sum_minutes,
+            'sum_minutes' => (float) $act->sum_minutes,
             'sum_hours'   => \Carbon\CarbonInterval::minutes($act->sum_minutes)->cascade()->forHumans(),
 
         ];
@@ -96,12 +108,14 @@ Route::get('/acts', function () {
         $d = [];
         foreach ($users as $user) {
 
-            $d[] = collect($user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded, $request->workspace));
+            $d[] = collect($user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded,
+                                          $request->workspace));
         }
         return collect($d)->sortByDesc('sum_minutes')->values()->toArray();
     }
     $user = \App\Models\User::find($request->user_id);
-    return $user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded, $request->workspace);
+    return $user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded,
+                          $request->workspace);
 
 
 });
@@ -115,7 +129,8 @@ Route::get('/scoreboard', function () {
     $d = [];
     foreach ($users as $user) {
 
-        $d[] = collect($user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded, $request->workspace));
+        $d[] = collect($user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded,
+                                      $request->workspace));
     }
     return collect($d)->sortByDesc('sum_minutes')->pluck('sum_hours', 'user.username')->all();
 

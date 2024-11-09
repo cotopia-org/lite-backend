@@ -9,8 +9,10 @@ use App\Models\User;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
 
-class JobController extends Controller {
-    public function create(Request $request) {
+class JobController extends Controller
+{
+    public function create(Request $request)
+    {
         $request->validate([
                                'title'        => 'required',
                                'description'  => 'required',
@@ -42,7 +44,8 @@ class JobController extends Controller {
         return api(JobResource::make($job));
     }
 
-    public function get(Job $job) {
+    public function get(Job $job)
+    {
         $user = auth()->user();
         if (!$user->jobs->contains($job)) {
             abort(404);
@@ -53,7 +56,8 @@ class JobController extends Controller {
 
     }
 
-    public function update(Job $job, Request $request) {
+    public function update(Job $job, Request $request)
+    {
         $user = auth()->user();
 
         if (!$user->jobs->contains($job)) {
@@ -84,7 +88,8 @@ class JobController extends Controller {
         return api($jobResource);
     }
 
-    public function delete(Job $job) {
+    public function delete(Job $job)
+    {
         $user = auth()->user();
 
         if (!$user->jobs->contains($job)) {
@@ -98,7 +103,8 @@ class JobController extends Controller {
     }
 
 
-    public function removeUser(Job $job, Request $request) {
+    public function removeUser(Job $job, Request $request)
+    {
         $request->validate([
                                'user_id' => 'required|exists:users,id',
                            ]);

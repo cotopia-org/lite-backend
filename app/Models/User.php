@@ -75,6 +75,10 @@ class User extends Authenticatable
         ];
     }
 
+    public function activeJob()
+    {
+        return $this->belongsTo(Job::class, 'active_job_id');
+    }
 
     public static function byUsername($username)
     {

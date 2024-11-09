@@ -15,7 +15,10 @@ return new class () extends Migration {
             $table->string('title');
             $table->text('description')->nullable();
             $table->enum('status', \App\Models\Job::STATUSES)->default('in_progress');
+            $table->timestamp('start_at')->nullable();
             $table->timestamp('end_at')->nullable();
+
+            $table->integer('duration')->default(0);
 
             $table->integer('estimate');
             $table->foreignId('workspace_id');

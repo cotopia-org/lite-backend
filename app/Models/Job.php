@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Utilities\Constants;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -23,12 +24,65 @@ class Job extends Model
         'description',
         'status',
         'end_at',
-        'estimate'
+        'estimate',
+        'start_at',
+        'duration',
     ];
 
     protected $casts = [
-        'end_at' => 'datetime',
+        'end_at'   => 'datetime',
+        'start_at' => 'datetime',
     ];
+
+
+    public function start($user)
+    {
+        if ($this->status !== Constants::IN_PROGRESS) {
+
+
+            $this->update([
+                              'status'   => Constants::IN_PROGRESS,
+                              'start_at' => now(),
+                          ]);
+            $user->update([
+                              'active_job_id' => $this->id
+                          ]);
+
+
+            $user->jobs()->where('jobs.id', '!=', $this->id)->whereStatus(Constants::IN_PROGRESS)->update([
+                                                                                                              'status' => Constants::PAUSED
+                                                                                                          ]);
+
+
+        }
+
+        return $this;
+
+    }
+
+
+    public function end($user, $status = Constants::COMPLETED)
+    {
+        if ($this->status === Constants::IN_PROGRESS) {
+
+            $now = now();
+
+            $this->update([
+                              'status'   => $status,
+                              'end_at'   => $now,
+                              'duration' => $this->duration + $this->start_at->diffInMinutes($now),
+                          ]);
+            if ($status === Constants::COMPLETED) {
+                $user->update([
+                                  'active_job_id' => NULL
+                              ]);
+            }
+
+
+        }
+        return $this;
+
+    }
 
     public function activities()
     {
