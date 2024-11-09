@@ -2,15 +2,12 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Resources\RoomResource;
 use App\Http\Resources\UserMinimalResource;
-use App\Jobs\disconnectLivekitJob;
 use App\Jobs\DisconnectUserJob;
-use App\Models\Room;
 use App\Utilities\Constants;
 use Illuminate\Console\Command;
 
-class checkUsersInSocketCommand extends Command
+class CheckUsersInSocketCommand extends Command
 {
     /**
      * The name and signature of the console command.
@@ -33,7 +30,6 @@ class checkUsersInSocketCommand extends Command
     {
 
         $socket_users = collect(\Http::get('http://localhost:3010/sockets')->json());
-
 
 
         $online_users = \App\Models\User::whereStatus('online')->whereNotNull('room_id')->get();

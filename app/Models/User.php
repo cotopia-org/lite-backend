@@ -296,26 +296,41 @@ class User extends Authenticatable
 
     public function refreshActivity()
     {
-        $user = $this;
-        $room = $user->room;
+        $room = $this->room;
 
 
-        $user->left('Left Refreshed By RefreshActivity in User');
-        $user->activities()->create([
-                                        'join_at'      => now(),
-                                        'left_at'      => NULL,
-                                        'workspace_id' => $room->workspace->id,
-                                        'room_id'      => $room->id,
-                                        'job_id'       => $user->active_job_id,
-                                        'data'         => 'Refreshed By RefreshActivity in User',
-                                    ]);
+        $this->left('Left Refreshed By RefreshActivity in User');
+
+        $this->joined($room, 'Refreshed By RefreshActivity in User');
 
 
     }
 
+
+    public function joined($room, $data)
+    {
+        if ($this->lastActivity === NULL) {
+
+            $act = $this->activities()->create([
+                                                   'join_at'      => now(),
+                                                   'left_at'      => NULL,
+                                                   'workspace_id' => $room->workspace->id,
+                                                   'room_id'      => $room->id,
+                                                   'job_id'       => $this->active_job_id,
+                                                   'data'         => $data,
+                                               ]);
+            $this->update([
+                              'active_activity_id' => $act->id,
+                          ]);
+
+        }
+
+    }
+
+
     public function lastActivity()
     {
-        return $this->activities()->whereNull('left_at')->first();
+        return $this->belongsTo(Activity::class, 'active_activity_id');
 
 
     }
@@ -323,13 +338,16 @@ class User extends Authenticatable
     public function left($data = NULL)
     {
 
-        $last_activity = $this->lastActivity();
+        $last_activity = $this->lastActivity;
         if ($last_activity !== NULL) {
             $last_activity->update([
                                        'left_at' => now(),
                                        'data'    => $data,
 
                                    ]);
+            $this->update([
+                              'active_activity_id' => NULL
+                          ]);
         }
 
     }

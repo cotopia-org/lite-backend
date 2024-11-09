@@ -118,17 +118,8 @@ class RoomController extends Controller
 
         joinUserToSocketRoom($user->id, $room->id);
 
-        if ($user->lastActivity() === NULL) {
-            $user->activities()->create([
-                                            'join_at'      => now(),
-                                            'left_at'      => NULL,
-                                            'workspace_id' => $room->workspace->id,
-                                            'room_id'      => $room->id,
-                                            'job_id'       => $user->active_job_id,
-                                            'data'         => 'Connected From RoomController Join Method',
-                                        ]);
 
-        }
+        $user->joined($room, 'Connected From RoomController Join Method');
 
 
         return api($res);

@@ -11,15 +11,7 @@ Route::get('/', function () {
 Route::get('/tester', function () {
 
 
-    $users = \App\Models\User::all();
-
-    foreach ($users as $user) {
-        $la = $user->lastActivity();
-        if ($la !== NULL) {
-            $user->update(['active_activity_id' => $la->id]);
-        }
-    }
-    dd('Okay');
+    dd(Storage::disk('s3')->put('/tester/test.txt', 'test'));
 //    sleep(60);
 //    dd($job->end($user, 'paused'));
 //    $user = \App\Models\User::find(3);
