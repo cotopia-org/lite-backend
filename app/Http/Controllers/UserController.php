@@ -205,7 +205,7 @@ class UserController extends Controller
                                                  ->with([
                                                             //                                                                     'messages'    => ['files', 'mentions', 'links'],
                                                             'lastMessage' => ['files', 'mentions', 'links'],
-                                                            'users',
+                                                            'users'       => ['avatar'],
                                                             'mentions'
                                                         ])
                                                  ->withCount([
