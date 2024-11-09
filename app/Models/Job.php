@@ -39,11 +39,10 @@ class Job extends Model
     {
 
 
-        $acts = $this->activities()->where('user_id', $user_id);
+        $acts = $this->activities->where('user_id', $user_id);
 
 
         $sum_minutes = 0;
-        $acts = $acts->get();
         foreach ($acts as $act) {
 
 
