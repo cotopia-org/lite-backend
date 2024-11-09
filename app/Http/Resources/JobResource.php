@@ -14,7 +14,6 @@ class JobResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $users = $this->users;
         return [
             'id'           => $this->id,
             'workspace_id' => $this->workspace_id,
@@ -25,7 +24,7 @@ class JobResource extends JsonResource
             'total_hours'  => $this->whenPivotLoaded('job_user', function () {
                 return $this->getTime($this->pivot->user_id)['sum_hours'];
             }),
-//            'members'      => UserMinimalResource::collection($users),
+            //            'members'      => UserMinimalResource::collection($users),
         ];
     }
 }
