@@ -85,7 +85,7 @@ class Chat extends Model {
         $pivot = $this->users->find($user->id)->pivot;
         $last_message_seen_id = $pivot->last_message_seen_id ?? 0;
         $joined_at = $pivot->created_at;
-
+        dd($joined_at);
         return $this
             ->messages()->where('created_at', '>=', $joined_at)->where('id', '>', $last_message_seen_id)->count();
 
