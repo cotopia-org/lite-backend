@@ -196,8 +196,9 @@ class UserController extends Controller {
                                                                     'mentions'
                                                                 ])->withCount([
                                                                                   'messages' => function ($query) {
-                                                                                      $query->where('messages.id', '>', DB::raw('chat_user.last_message_seen_id')
-                                                                                                                          ->where('messages.created_at', '>=', DB::raw('chat_user.created_at')));
+                                                                                      $query
+                                                                                          ->where('messages.id', '>', DB::raw('chat_user.last_message_seen_id'))
+                                                                                          ->where('messages.created_at', '>=', DB::raw('chat_user.created_at'));
 
                                                                                   },
                                                                                   'mentions' => function ($query) use ($user) {
