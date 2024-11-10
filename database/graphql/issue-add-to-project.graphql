@@ -1,0 +1,7 @@
+mutation {
+    addProjectV2ItemById(input: {projectId: "PVT_kwHOAbHJtM4ArWgS", contentId: "I_kwDOMSveCs6cx4Mh"}) {
+        item {
+            id
+        }
+    }
+}

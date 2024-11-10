@@ -1,0 +1,8 @@
+query {
+    user(login: "mdhesari") { # or "organization" if it's an org project
+        projectV2(number: 4) {
+            id
+        }
+    }
+}
+# PVT_kwHOAbHJtM4ArWgS

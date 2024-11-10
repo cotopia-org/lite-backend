@@ -1,0 +1,22 @@
+query {
+    repository(owner: "mdhesari", name: "lite-backend") {
+        projects(first: 5) {
+            nodes {
+                id
+                name
+                columns(first: 5) {
+                    nodes {
+                        id
+                        name
+                        cards(first: 10) {
+                            nodes {
+                                id
+                                note
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,12 @@
+mutation {
+    updateProjectV2ItemFieldValue(input: {
+        projectId: "PVT_kwHOAbHJtM4ArWgS",
+        itemId: "PVTI_lAHOAbHJtM4ArWgSzgUcAZY",
+        fieldId: "PVTIF_f75ad846",
+        value: { singleSelectOptionId: "OPTION_ID_TODO" }
+    }) {
+        projectV2Item {
+            id
+        }
+    }
+}

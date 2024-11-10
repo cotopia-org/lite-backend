@@ -26,10 +26,10 @@ class Github
                                        ])->post($url, [
             'title'     => $params['title'],
             'body'      => $params['description'],
-            'assignees' => [],
-            'milestone' => NULL,
-            'labels'    => [],
-            'projects'  => [3]
+//            'milestone' => [],
+//            'assignees' => [],
+//            'labels'    => [],
+//            'projects'  => [3]
         ]);
 
         if (!$response->successful()) {

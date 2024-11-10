@@ -1,0 +1,10 @@
+mutation {
+    createIssue(input: {repositoryId: "R_kgDOMSveCg", title: "Issue Title", body: "This is the issue body."}) {
+        issue {
+            id
+            number
+            title
+        }
+    }
+}
+# I_kwDOMSveCs6cx4Mh
