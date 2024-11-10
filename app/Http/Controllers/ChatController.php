@@ -19,7 +19,7 @@ class ChatController extends Controller {
         $request->validate([
 
 
-                               'user_id' => 'required|exists:users',
+                               'user_id' => 'required|exists:users,id',
                            ]);
 
 
