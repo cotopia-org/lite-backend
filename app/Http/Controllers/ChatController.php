@@ -126,22 +126,14 @@ class ChatController extends Controller {
 
         $request = request();
         if ($request->page) {
-            $last_message_seen_id = $this
-                                        ->users()->where('user_id', $user->id)
-                                        ->first()->pivot->last_message_seen_id ?? 0;
-
-
-            $messages = $chat
-                ->messages()->orderBy('id', 'DESC')->withTrashed()->with([
-                                                                             'links',
-                                                                             'mentions',
-                                                                             'user',
-                                                                             'files',
-                                                                         ])->where('id', '<=', $last_message_seen_id)
-                ->paginate($request->perPage ?? 50);
+            $messages = $chat->oldMessages()->paginate($request->perPage ?? 50);
 
         } else {
             $messages = $chat->unSeens($user);
+            if (count($messages) < 1) {
+                $messages = $chat->oldMessages()->paginate($request->perPage ?? 50);
+
+            }
 
         }
 

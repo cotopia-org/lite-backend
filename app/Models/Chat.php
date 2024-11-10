@@ -90,6 +90,23 @@ class Chat extends Model {
 
     }
 
+
+    public function oldMessages($user) {
+
+        $pivot = $this->users->find($user->id)->pivot;
+        $last_message_seen_id = $pivot->last_message_seen_id ?? 0;
+        $joined_at = $pivot->created_at;
+        return $this
+            ->messages()->orderBy('id', 'DESC')->withTrashed()->with([
+                                                                         'links',
+                                                                         'mentions',
+                                                                         'user',
+                                                                         'files',
+                                                                     ])->where('id', '<=', $last_message_seen_id)
+            ->where('created_at', '>=', $joined_at);
+
+    }
+
     public function unSeens($user) {
         // Messages that pinned and not seen
         // Message that user mentioned and not seen
