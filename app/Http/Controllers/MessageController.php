@@ -18,7 +18,7 @@ use App\Utilities\Constants;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class MessageController extends Controller {
+class   MessageController extends Controller {
 
     public function send(Request $request) {
         $request->validate(['text' => 'required', 'chat_id' => 'required']);
