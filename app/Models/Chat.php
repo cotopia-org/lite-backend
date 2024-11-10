@@ -95,11 +95,13 @@ class Chat extends Model {
 
 
         $pivot = $this->users->where('user_id', $user->id)->first()->pivot;
+        dd($pivot);
         $last_message_seen_id = $pivot->last_message_seen_id ?? 0;
         $joined_at = $pivot->created_at;
 
-        return $this->messages()->with('files', 'links', 'mentions')->where('created_at', '>=', $joined_at)
-                    ->where('id', '>', $last_message_seen_id)->get();
+        return $this
+            ->messages()->with('files', 'links', 'mentions')->where('created_at', '>=', $joined_at)
+            ->where('id', '>', $last_message_seen_id)->get();
 
     }
 
