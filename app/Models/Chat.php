@@ -82,20 +82,20 @@ class Chat extends Model {
         // Message that user mentioned and not seen
 
 
-        $last_message_seen_id = $this->users->where('user_id', $user->id)->first()->pivot->last_message_seen_id ?? 0;
+        $pivot = $this->users->find($user->id)->pivot;
+        $last_message_seen_id = $pivot->last_message_seen_id ?? 0;
+        $joined_at = $pivot->created_at;
 
-
-        return $this->messages()->where('id', '>', $last_message_seen_id)->count();
+        return $this
+            ->messages()->where('created_at', '>=', $joined_at)->where('id', '>', $last_message_seen_id)->count();
 
     }
 
     public function unSeens($user) {
         // Messages that pinned and not seen
         // Message that user mentioned and not seen
-        dd($this->users);
 
-        $pivot = $this->users->where('user_id', $user->id)->first()->pivot;
-        dd($pivot);
+        $pivot = $this->users->find($user->id)->pivot;
         $last_message_seen_id = $pivot->last_message_seen_id ?? 0;
         $joined_at = $pivot->created_at;
 
