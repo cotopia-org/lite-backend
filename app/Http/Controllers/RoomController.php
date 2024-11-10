@@ -89,9 +89,9 @@ class RoomController extends Controller
     {
         $user = auth()->user();
 
-        if (!$user->isInSocket()) {
-            return error('Not in Socket');
-        }
+//        if (!$user->isInSocket()) {
+//            return error('Not in Socket');
+//        } TODO: Commented due command checks every minute of user is in socket or not.
 
         $before_room = $user->room_id;
 
