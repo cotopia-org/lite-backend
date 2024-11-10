@@ -126,12 +126,12 @@ class ChatController extends Controller {
 
         $request = request();
         if ($request->page) {
-            $messages = $chat->oldMessages()->paginate($request->perPage ?? 50);
+            $messages = $chat->oldMessages($user)->paginate($request->perPage ?? 50);
 
         } else {
             $messages = $chat->unSeens($user);
             if (count($messages) < 1) {
-                $messages = $chat->oldMessages()->paginate($request->perPage ?? 50);
+                $messages = $chat->oldMessages($user)->paginate($request->perPage ?? 50);
 
             }
 
