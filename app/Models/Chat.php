@@ -108,8 +108,7 @@ class Chat extends Model {
     }
 
     public function unSeens($user) {
-        // Messages that pinned and not seen
-        // Message that user mentioned and not seen
+
 
         $pivot = $this->users->find($user->id)->pivot;
         $last_message_seen_id = $pivot->last_message_seen_id ?? 0;
