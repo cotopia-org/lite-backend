@@ -99,7 +99,7 @@ class Chat extends Model {
         $joined_at = $pivot->created_at;
 
         return $this
-            ->messages()->with('files', 'links', 'mentions')->where('created_at', '>=', $joined_at->toDateTime())
+            ->messages()->with('files', 'links', 'mentions')->where('created_at', '>=', $joined_at)
             ->where('id', '>', $last_message_seen_id)->get();
 
     }
