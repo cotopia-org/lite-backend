@@ -92,7 +92,7 @@ class Chat extends Model {
     public function unSeens($user) {
         // Messages that pinned and not seen
         // Message that user mentioned and not seen
-
+        dd($this->users->where('user_id', $user->id)->first());
 
         $pivot = $this->users->where('user_id', $user->id)->first()->pivot;
         dd($pivot);
