@@ -5,8 +5,7 @@ namespace App\Models;
 use App\Utilities\Constants;
 use Illuminate\Database\Eloquent\Model;
 
-class Chat extends Model
-{
+class Chat extends Model {
 
     //    protected $with = ['messages', 'users', 'workspace'];
 
@@ -23,8 +22,7 @@ class Chat extends Model
     ];
 
 
-    public function getTitle($user)
-    {
+    public function getTitle($user) {
         $title = $this->title;
         $id = $user->id;
 
@@ -32,8 +30,8 @@ class Chat extends Model
 
 
             $names = explode('-', $title);
-            $sum = (int) $names[0] + (int) $names[1];
-            $user_id = ($id === (int) $names[0] || $id === (int) $names[1]) ? $sum - $id : NULL;
+            $sum = (int)$names[0] + (int)$names[1];
+            $user_id = ($id === (int)$names[0] || $id === (int)$names[1]) ? $sum - $id : NULL;
 
             return $this->users->find($user_id)->name;
         }
@@ -41,52 +39,45 @@ class Chat extends Model
         return $this->title;
     }
 
-    public function getChannelAttribute($value)
-    {
+    public function getChannelAttribute($value) {
 
         return 'chat-' . $this->id;
 
     }
 
-    public function lastMessage()
-    {
+    public function lastMessage() {
         return $this->hasOne(Message::class)->latestOfMany();
     }
 
-    public function mentions()
-    {
+    public function mentions() {
         return $this->hasMany(Mention::class);
     }
 
-    public function owner()
-    {
+    public function owner() {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function participants()
-    {
+    public function participants() {
 
 
         return $this->users;
     }
 
 
-    public function pinnedMessages()
-    {
+    public function pinnedMessages() {
         return $this->messages->where('is_pinned', TRUE);
     }
 
-    public function mentionedMessages($user)
-    {
+    public function mentionedMessages($user) {
 
 
         $last_message_seen_id = $this->users->where('user_id', $user->id)->first()->pivot->last_message_seen_id ?? 0;
-        return $this->mentions->where('mentionable_type', User::class)->where('mentionable_id', $user->id)
-                              ->where('message_id', '>', $last_message_seen_id);
+        return $this->mentions
+            ->where('mentionable_type', User::class)->where('mentionable_id', $user->id)
+            ->where('message_id', '>', $last_message_seen_id);
     }
 
-    public function unSeensCount($user)
-    {
+    public function unSeensCount($user) {
         // Messages that pinned and not seen
         // Message that user mentioned and not seen
 
@@ -98,33 +89,31 @@ class Chat extends Model
 
     }
 
-    public function unSeens($user)
-    {
+    public function unSeens($user) {
         // Messages that pinned and not seen
         // Message that user mentioned and not seen
 
 
-        $last_message_seen_id = $this->users->where('user_id', $user->id)->first()->pivot->last_message_seen_id ?? 0;
+        $pivot = $this->users->where('user_id', $user->id)->first()->pivot;
+        $last_message_seen_id = $pivot->last_message_seen_id ?? 0;
+        $joined_at = $pivot->created_at;
 
-
-        return $this->messages()->with('files', 'links', 'mentions')->where('id', '>', $last_message_seen_id)->get();
+        return $this->messages()->with('files', 'links', 'mentions')->where('created_at', '>=', $joined_at)
+                    ->where('id', '>', $last_message_seen_id)->get();
 
     }
 
-    public function users()
-    {
+    public function users() {
         return $this->belongsToMany(User::class)->withPivot('role', 'last_message_seen_id')->withTimestamps();
     }
 
 
-    public function workspace()
-    {
+    public function workspace() {
         return $this->belongsTo(Workspace::class);
     }
 
 
-    public function messages()
-    {
+    public function messages() {
         return $this->hasMany(Message::class);
     }
 }
