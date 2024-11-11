@@ -139,7 +139,7 @@ class ChatController extends Controller {
         }
 
 
-        return api(MessageResource::collection($messages->sortBy('id', 'ASC')));
+        return api(MessageResource::collection($messages->sortBy('id')));
 
     }
 
