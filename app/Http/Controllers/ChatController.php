@@ -138,7 +138,7 @@ class ChatController extends Controller {
         }
 
 
-        return api(MessageResource::collection($messages));
+        return api(MessageResource::collection($messages->sortBy('id', 'ASC')));
 
     }
 
