@@ -31,7 +31,8 @@ class ChatController extends Controller {
 
         $chat = Chat::whereTitle($title)->first();
         if ($chat !== NULL) {
-            return error('Chat exists!');
+            return api(ChatResource::make($chat));
+
         }
 
 
