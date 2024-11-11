@@ -167,8 +167,10 @@ class WorkspaceController extends Controller {
                 continue;
             }
             $d[] = [
-                'sum_minutes' => (float)$act->sum_minutes,
-                'user'        => $user,
+                'sum_minutes'     => (float)$act->sum_minutes,
+                'idle_minutes'    => (float)$act->idle,
+                'working_minutes' => (float)$act->working,
+                'user'            => $user,
             ];
         }
         return api(array_values($d));
