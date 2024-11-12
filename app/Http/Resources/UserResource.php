@@ -36,7 +36,7 @@ class UserResource extends JsonResource
             'video_size'              => $this->video_size,
             'last_login'              => $this->updated_at,
             'is_bot'                  => $this->is_bot,
-            'active_job'              => JobResource::make($this->jobs->find($this->active_job_id)),
+            'active_job'              => JobResource::make($this->activeJob),
             'schedule_hours_in_week'  => $this->getScheduledHoursInWeek(),
 
         ];
