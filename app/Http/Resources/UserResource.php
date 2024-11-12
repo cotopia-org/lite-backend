@@ -18,8 +18,11 @@ class UserResource extends JsonResource
 
 
         $activeJob = $this->activeJob;
+        if ($activeJob !== NULL) {
+            $activeJob->total_hours = $activeJob->getTime($this);
 
-        $activeJob->total_hours = $activeJob->getTime($this);
+        }
+
 
         return [
             'id'                      => $this->id,
