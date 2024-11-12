@@ -62,7 +62,8 @@ class WorkspaceController extends Controller
     {
         return api(UserResource::collection($workspace
                                                 ->users()
-                                                ->with('schedules', 'avatar', 'activeJob', 'activeJob.activities')
+                                                ->with('schedules', 'avatar', 'activeJob', 'activeJob.pivot',
+                                                       'activeJob.activities')
                                                 ->get()));
     }
 
