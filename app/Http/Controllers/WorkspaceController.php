@@ -9,6 +9,7 @@ use App\Http\Resources\RoomListResource;
 use App\Http\Resources\ScheduleResource;
 use App\Http\Resources\TagResource;
 use App\Http\Resources\UserMinimalResource;
+use App\Http\Resources\UserResource;
 use App\Http\Resources\WorkspaceResource;
 use App\Models\Activity;
 use App\Models\Role;
@@ -53,7 +54,7 @@ class WorkspaceController extends Controller {
     }
 
     public function users(Workspace $workspace) {
-        return api(UserMinimalResource::collection($workspace
+        return api(UserResource::collection($workspace
                                                        ->users()->with('schedules', 'avatar', 'jobs', 'jobs.activities')
                                                        ->get()));
     }

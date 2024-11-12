@@ -5,7 +5,7 @@ use App\Http\Controllers\SocketController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::prefix('socket')->group(function () {
+Route::prefix('socket')->middleware('checkSocketId')->group(function () {
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::controller(SocketController::class)->group(function () {
