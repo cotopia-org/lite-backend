@@ -19,7 +19,7 @@ class UserResource extends JsonResource
 
         $activeJob = $this->activeJob;
         if ($activeJob !== NULL) {
-            $activeJob->total_hours = $activeJob->getTime($this);
+            $activeJob->total_hours = $activeJob->getTime($this->id)['sum_hours'];
 
         }
 
