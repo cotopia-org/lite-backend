@@ -39,7 +39,9 @@ class UserResource extends JsonResource
             'channels'                => $this->channels(),
             'last_login'              => $this->updated_at,
             'is_bot'                  => $this->is_bot,
-            'active_job'              => JobResource::make($this->jobs->find($this->active_job))
+            'active_job'              => JobResource::make($this->jobs->find($this->active_job)),
+            'schedule_hours_in_week'  => $this->getScheduledHoursInWeek(),
+
         ];
     }
 }
