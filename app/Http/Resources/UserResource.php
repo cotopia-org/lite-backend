@@ -17,18 +17,17 @@ class UserResource extends JsonResource
     {
 
         return [
-            'id'                      => $this->id,
-            'name'                    => $this->name,
-            'username'                => $this->username,
-            'email'                   => $this->email,
-            'token'                   => $this->token,
-            'avatar'                  => FileResource::make($this->avatar),
-            'active'                  => $this->active,
-            'status'                  => $this->status,
-            'bio'                     => $this->bio,
-            'room_id'                 => $this->room_id,
-            'workspace'               => $this->workspace,
-            'workspaces'              => WorkspaceResource::collection($this->workspaces),
+            'id'       => $this->id,
+            'name'     => $this->name,
+            'username' => $this->username,
+            'email'    => $this->email,
+            'token'    => $this->token,
+            'avatar'   => FileResource::make($this->avatar),
+            'active'   => $this->active,
+            'status'   => $this->status,
+            'bio'      => $this->bio,
+            'room_id'  => $this->room_id,
+
             'voice_status'            => $this->voice_status,
             'video_status'            => $this->video_status,
             'coordinates'             => $this->coordinates,
@@ -40,8 +39,7 @@ class UserResource extends JsonResource
             'last_login'              => $this->updated_at,
             'is_bot'                  => $this->is_bot,
             'active_job'              => JobResource::make($this->jobs->find($this->active_job_id)),
-
-            'schedule_hours_in_week' => $this->getScheduledHoursInWeek(),
+            'schedule_hours_in_week'  => $this->getScheduledHoursInWeek(),
 
         ];
     }
