@@ -35,7 +35,6 @@ class WorkspaceController extends Controller
     {
         return api(RoomListResource::collection($workspace->rooms()->with([
                                                                               'users' => [
-                                                                                  'schedules',
                                                                                   'avatar'
                                                                               ]
                                                                           ])->get()));
