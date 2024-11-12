@@ -22,14 +22,17 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 
-class WorkspaceController extends Controller {
-    public function all() {
+class WorkspaceController extends Controller
+{
+    public function all()
+    {
         $user = auth()->user();
 
         return api(WorkspaceResource::collection($user->workspaces));
     }
 
-    public function rooms(Workspace $workspace) {
+    public function rooms(Workspace $workspace)
+    {
         return api(RoomListResource::collection($workspace->rooms()->with([
                                                                               'users' => [
                                                                                   'schedules',
@@ -38,12 +41,14 @@ class WorkspaceController extends Controller {
                                                                           ])->get()));
     }
 
-    public function tags(Workspace $workspace) {
+    public function tags(Workspace $workspace)
+    {
 
         return api(TagResource::collection($workspace->tags));
     }
 
-    public function jobs(Workspace $workspace) {
+    public function jobs(Workspace $workspace)
+    {
 
         return api(JobResource::collection($workspace->jobs()->with([
                                                                         'users' => [
@@ -53,17 +58,21 @@ class WorkspaceController extends Controller {
                                                                     ])->get()));
     }
 
-    public function users(Workspace $workspace) {
+    public function users(Workspace $workspace)
+    {
         return api(UserResource::collection($workspace
-                                                       ->users()->with('schedules', 'avatar', 'jobs', 'jobs.activities')
-                                                       ->get()));
+                                                ->users()
+                                                ->with('schedules', 'avatar', 'activeJob', 'activeJob.activities')
+                                                ->get()));
     }
 
-    public function calendars(Workspace $workspace) {
+    public function calendars(Workspace $workspace)
+    {
         return api(CalendarResource::make($workspace->calendars));
     }
 
-    public function get(Workspace $workspace) {
+    public function get(Workspace $workspace)
+    {
         if (auth()->user()->tokenCan(Permission::WS_GET->value . '-' . $workspace->id)) {
             return api(WorkspaceResource::make($workspace));
 
@@ -72,7 +81,8 @@ class WorkspaceController extends Controller {
     }
 
 
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
         $request->validate(['title' => 'required']);
         /** @var User $user */
         $user = auth()->user();
@@ -92,7 +102,8 @@ class WorkspaceController extends Controller {
         return api(WorkspaceResource::make($workspace));
     }
 
-    public function update(Workspace $workspace, Request $request) {
+    public function update(Workspace $workspace, Request $request)
+    {
 
         //TODO: has to check with sanctum permissions
         $workspace->update($request->all());
@@ -103,7 +114,8 @@ class WorkspaceController extends Controller {
 
     }
 
-    public function addRole(Workspace $workspace, Request $request) {
+    public function addRole(Workspace $workspace, Request $request)
+    {
 
         $request->validate([
                                'role'    => 'required',
@@ -127,7 +139,8 @@ class WorkspaceController extends Controller {
     }
 
 
-    public function schedules(Workspace $workspace) {
+    public function schedules(Workspace $workspace)
+    {
 
 
         return api(ScheduleResource::collection($workspace->schedules()->with([
@@ -138,7 +151,8 @@ class WorkspaceController extends Controller {
                                                                               ])->get()));
     }
 
-    public function addTag(Workspace $workspace, Request $request) {
+    public function addTag(Workspace $workspace, Request $request)
+    {
         $request->validate([
                                'tag'     => 'required',
                                'user_id' => 'required',
@@ -151,7 +165,8 @@ class WorkspaceController extends Controller {
     }
 
 
-    public function leaderboard(Workspace $workspace) {
+    public function leaderboard(Workspace $workspace)
+    {
 
 
         $firstOfMonth = now()->firstOfMonth();
@@ -159,7 +174,10 @@ class WorkspaceController extends Controller {
 
         $users = $workspace->users;
         $acts = DB::table('activities')->where('workspace_id', $workspace->id)
-                  ->select('user_id', DB::raw('SUM(TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60) as sum_minutes'), DB::raw('SUM(IF(job_id IS NULL, TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60, 0)) as idle'), DB::raw('SUM(IF(job_id IS NOT NULL, TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60, 0)) as working'))
+                  ->select('user_id',
+                           DB::raw('SUM(TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60) as sum_minutes'),
+                           DB::raw('SUM(IF(job_id IS NULL, TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60, 0)) as idle'),
+                           DB::raw('SUM(IF(job_id IS NOT NULL, TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60, 0)) as working'))
                   ->where('created_at', '>=', $firstOfMonth)->groupBy('user_id')->get();
         $d = [];
         foreach ($acts as $act) {
@@ -168,9 +186,9 @@ class WorkspaceController extends Controller {
                 continue;
             }
             $d[] = [
-                'sum_minutes'     => (float)$act->sum_minutes,
-                'idle_minutes'    => (float)$act->idle,
-                'working_minutes' => (float)$act->working,
+                'sum_minutes'     => (float) $act->sum_minutes,
+                'idle_minutes'    => (float) $act->idle,
+                'working_minutes' => (float) $act->working,
                 'user'            => $user,
             ];
         }
@@ -179,7 +197,8 @@ class WorkspaceController extends Controller {
 
     }
 
-    public function join(Workspace $workspace) {
+    public function join(Workspace $workspace)
+    {
         /** @var User $user */
         $user = auth()->user();
         $workspace->joinUser($user);
