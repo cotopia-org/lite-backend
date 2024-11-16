@@ -11,7 +11,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notification;
 use RuntimeException;
 
-class MessengerChannel {
+class MessengerChannel
+{
     /**
      * Send the given notification.
      *
@@ -19,21 +20,35 @@ class MessengerChannel {
      * @param Notification $notification
      * @return Model
      */
-    public function send(object $notifiable, Notification $notification) {
+    public function send(object $notifiable, Notification $notification)
+    {
         $data = $notification->toMessenger($notifiable);
         $notifUser = User::find(41);
         $title = $notifUser->id . '-' . $notifiable->id;
-        $chat = Chat::whereTitle($title)->first();
-        if ($chat === NULL) {
-            $chat = Chat::create([
-                                     //                                     'title'   => 'Lite Notifications',
-                                     'title'   => $title,
-                                     'type'    => Constants::DIRECT,
-                                     'user_id' => $notifiable->id,
-                                 ]);
-            $chat->users()->attach([$notifiable->id, $notifUser->id]);
 
+
+        if ($data['chat_id'] !== NULL) {
+            $chat = Chat::find($data['chat_id']);
+
+
+            if ($chat->users()->find($notifUser) === NULL) {
+                $chat->users()->attach($notifUser->id);
+
+            }
+        } else {
+            $chat = Chat::whereTitle($title)->first();
+            if ($chat === NULL) {
+                $chat = Chat::create([
+                                         //                                     'title'   => 'Lite Notifications',
+                                         'title'   => $title,
+                                         'type'    => Constants::DIRECT,
+                                         'user_id' => $notifiable->id,
+                                     ]);
+                $chat->users()->attach([$notifiable->id, $notifUser->id]);
+
+            }
         }
+
 
         //TODO: workspace id for messages
         $msg = Message::create([

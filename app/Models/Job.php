@@ -27,6 +27,7 @@ class Job extends Model
         'estimate',
         'start_at',
         'duration',
+        'message_id',
     ];
 
     protected $casts = [
