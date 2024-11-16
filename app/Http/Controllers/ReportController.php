@@ -59,9 +59,7 @@ Title: $report->title
 ----
 Description: $report->description
 ----
-Created By: $user->name
-----
-Type: $report->type", 40);
+Created By: $user->name", 40);
 
         $report->update(['message_id', $msg->id]);
 
