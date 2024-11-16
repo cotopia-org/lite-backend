@@ -42,10 +42,13 @@ class JobController extends Controller
 //        event(new JobCreated($job));
 
         $msg = sendMessage("New job created successfully ✅
+----
 Title: $job->title
-
+----
 Created By: $user->name
+----
 Status: $job->status
+----
 Estimate: $job->estimate hrs", 39);
 
 

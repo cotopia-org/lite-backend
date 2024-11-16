@@ -13,7 +13,9 @@ class Report extends Model
         'type',
         'reportable_type',
         'reportable_id',
-        'user_id'
+        'user_id',
+        'message_id',
+
     ];
 
     public function files()
