@@ -38,7 +38,7 @@ Route::get('/tester', function () {
         }
 
         $user = $job->users->first();
-        $text = "Job #$job->id by: @$user->username
+        $text = "Job#$job->id by @$user->username
 
 **$job->title**
 $job->description
