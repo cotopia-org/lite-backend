@@ -11,12 +11,9 @@ class GithubController extends Controller
     {
 
 
-        $pusher = $request->pusher['name'] . '(' . $request->pusher['email'] . ')';
-        $repo = $request->repository['full_name'];
-
-        $text = "A new commit pushed to $repo by $pusher
-
-Commits:";
+//        $pusher = $request->pusher['name'] . '(' . $request->pusher['email'] . ')';
+//        $repo = $request->repository['full_name'];
+        $text = '';
         foreach ($request->commits as $commit) {
 
             $message = $commit['message'];
