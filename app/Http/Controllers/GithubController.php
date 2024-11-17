@@ -20,7 +20,7 @@ class GithubController extends Controller
             $by = $commit['author']['name'];
             $created_at = Carbon::create($commit['timestamp'])->diffForHumans();
 
-            $text .= "-$message , by $by at $created_at" . PHP_EOL;
+            $text .= "- $message" . PHP_EOL;
         }
 
         sendMessage($text, 42);
