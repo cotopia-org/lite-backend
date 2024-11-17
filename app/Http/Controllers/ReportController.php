@@ -52,6 +52,17 @@ class ReportController extends Controller
             }
         }
 
+
+        $msg = sendMessage("New job created successfully ✅
+----
+Title: $report->title
+----
+Description: $report->description
+----
+Created By: $user->name", 40);
+
+        $report->update(['message_id', $msg->id]);
+
         return api(ReportResource::make($report));
 
     }

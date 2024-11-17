@@ -17,7 +17,8 @@ class newNotification extends Notification
      */
 
 
-    public function __construct(private readonly string $text, private readonly ?int $reply_to = NULL)
+    public function __construct(private readonly string $text, private readonly ?int $reply_to = NULL,
+                                private readonly ?int   $chat_id = NULL)
     {
         //
     }
@@ -37,6 +38,7 @@ class newNotification extends Notification
         return [
             'text'     => $this->text,
             'reply_to' => $this->reply_to,
+            'chat_id'  => $this->chat_id,
 
         ];
     }

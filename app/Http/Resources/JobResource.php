@@ -14,6 +14,12 @@ class JobResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
+
+        $total_hours = $this->total_hours;
+        if ($total_hours === NULL) {
+            $total_hours = $this->getTime($this->users->first()->id)['sum_hours'];
+        }
         return [
             'id'           => $this->id,
             'workspace_id' => $this->workspace_id,
@@ -21,9 +27,11 @@ class JobResource extends JsonResource
             'description'  => $this->description,
             'status'       => $this->status,
             'estimate'     => $this->estimate,
-            'total_hours'  => $this->whenPivotLoaded('job_user', function () {
-                return $this->getTime($this->pivot->user_id)['sum_hours'];
-            }),
+            //            'total_hours'  => $this->whenPivotLoaded('job_user', function () {
+            //                return $this->getTime($this->pivot->user_id)['sum_hours'];
+            //            }),
+            'total_hours'  => $total_hours,
+            'created_at'   => $this->created_at,
             //            'members'      => UserMinimalResource::collection($users),
         ];
     }

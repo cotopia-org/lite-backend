@@ -27,6 +27,7 @@ class Job extends Model
         'estimate',
         'start_at',
         'duration',
+        'message_id',
     ];
 
     protected $casts = [
@@ -116,9 +117,9 @@ class Job extends Model
                                           ]);
 
         return [
-            'job'         => $this,
-            'sum_minutes' => $sum_minutes,
-            'sum_hours'   => CarbonInterval::minutes($sum_minutes)->cascade()->forHumans(),
+//            'job'         => $this,
+'sum_minutes' => $sum_minutes,
+'sum_hours'   => CarbonInterval::minutes($sum_minutes)->cascade()->forHumans(),
 
         ];
     }

@@ -23,7 +23,7 @@ return new class extends Migration {
             $table->foreignId('workspace_id')->nullable()->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
 
-
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -16,6 +16,14 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
 
+
+        $activeJob = $this->activeJob;
+        if ($activeJob !== NULL) {
+            $activeJob->total_hours = $activeJob->getTime($this->id)['sum_hours'];
+
+        }
+
+
         return [
             'id'                      => $this->id,
             'name'                    => $this->name,
@@ -26,9 +34,7 @@ class UserResource extends JsonResource
             'active'                  => $this->active,
             'status'                  => $this->status,
             'bio'                     => $this->bio,
-            'room'                    => $this->room,
-            'workspace'               => $this->workspace,
-            'workspaces'              => WorkspaceResource::collection($this->workspaces),
+            'room_id'                 => $this->room_id,
             'voice_status'            => $this->voice_status,
             'video_status'            => $this->video_status,
             'coordinates'             => $this->coordinates,
@@ -36,10 +42,11 @@ class UserResource extends JsonResource
             'screenshare_size'        => $this->screenshare_size,
             'video_coordinates'       => $this->video_coordinates,
             'video_size'              => $this->video_size,
-            'channels'                => $this->channels(),
             'last_login'              => $this->updated_at,
             'is_bot'                  => $this->is_bot,
-            'active_job'              => JobResource::make($this->jobs->find($this->active_job))
+            'active_job'              => JobResource::make($activeJob),
+            'schedule_hours_in_week'  => $this->getScheduledHoursInWeek(),
+
         ];
     }
 }

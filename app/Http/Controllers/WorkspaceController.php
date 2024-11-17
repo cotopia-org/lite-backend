@@ -9,6 +9,7 @@ use App\Http\Resources\RoomListResource;
 use App\Http\Resources\ScheduleResource;
 use App\Http\Resources\TagResource;
 use App\Http\Resources\UserMinimalResource;
+use App\Http\Resources\UserResource;
 use App\Http\Resources\WorkspaceResource;
 use App\Models\Activity;
 use App\Models\Role;
@@ -34,7 +35,6 @@ class WorkspaceController extends Controller
     {
         return api(RoomListResource::collection($workspace->rooms()->with([
                                                                               'users' => [
-                                                                                  'schedules',
                                                                                   'avatar'
                                                                               ]
                                                                           ])->get()));
@@ -59,9 +59,10 @@ class WorkspaceController extends Controller
 
     public function users(Workspace $workspace)
     {
-        return api(UserMinimalResource::collection($workspace->users()
-                                                             ->with('schedules', 'avatar', 'jobs', 'jobs.activities')
-                                                             ->get()));
+        return api(UserResource::collection($workspace
+                                                ->users()
+                                                ->with('schedules', 'avatar', 'activeJob', 'activeJob.activities')
+                                                ->get()));
     }
 
     public function calendars(Workspace $workspace)
@@ -173,7 +174,9 @@ class WorkspaceController extends Controller
         $users = $workspace->users;
         $acts = DB::table('activities')->where('workspace_id', $workspace->id)
                   ->select('user_id',
-                           DB::raw('SUM(TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60) as sum_minutes'))
+                           DB::raw('SUM(TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60) as sum_minutes'),
+                           DB::raw('SUM(IF(job_id IS NULL, TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60, 0)) as idle'),
+                           DB::raw('SUM(IF(job_id IS NOT NULL, TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60, 0)) as working'))
                   ->where('created_at', '>=', $firstOfMonth)->groupBy('user_id')->get();
         $d = [];
         foreach ($acts as $act) {
@@ -182,8 +185,10 @@ class WorkspaceController extends Controller
                 continue;
             }
             $d[] = [
-                'sum_minutes' => (float) $act->sum_minutes,
-                'user'        => $user,
+                'sum_minutes'     => (float) $act->sum_minutes,
+                'idle_minutes'    => (float) $act->idle,
+                'working_minutes' => (float) $act->working,
+                'user'            => $user,
             ];
         }
         return api(array_values($d));

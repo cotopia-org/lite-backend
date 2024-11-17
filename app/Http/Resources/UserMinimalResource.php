@@ -26,8 +26,6 @@ class UserMinimalResource extends JsonResource {
             'video_status'           => $this->video_status,
             'voice_status'           => $this->voice_status,
             'screenshare_status'     => $this->screenshare_status,
-            'schedule_hours_in_week' => $this->getScheduledHoursInWeek(),
-            'active_job'             => JobResource::make($this->jobs->find($this->active_job_id))
 
 
         ];
