@@ -16,7 +16,11 @@ Route::get('/tester', function () {
     $jobs = \App\Models\Job::all();
 
     foreach ($jobs as $job) {
-
+        $users = $job->users;
+        if (count($users) < 1) {
+            logger($job->id);
+            continue;
+        }
 
         $status = NULL;
         if ($job->status === Constants::IN_PROGRESS) {
