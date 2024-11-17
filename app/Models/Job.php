@@ -39,9 +39,10 @@ class Job extends Model
     {
         static::created(function (Job $job) {
             $user = $job->users->first();
-            $text = "Job #$job->id by: @$user->username
+            $text = "Job #$job->id by @$user->username
 
 **$job->title**
+
 $job->description
 
 In Progress 🔵
@@ -75,9 +76,10 @@ $job->estimate hrs ⏰
                 $status = 'Completed 🟢';
             }
 
-            $text = "Job #$job->id by: @$user->username
+            $text = "Job #$job->id by @$user->username
 
 **$job->title**
+
 $job->description
 
 $status
