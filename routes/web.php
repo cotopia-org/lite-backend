@@ -12,7 +12,7 @@ Route::get('/', function () {
 });
 Route::get('/tester', function () {
 
-
+    dd('Okay');
     $jobs = \App\Models\Job::all();
 
     foreach ($jobs as $job) {
