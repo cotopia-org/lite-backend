@@ -42,8 +42,6 @@ class JobController extends Controller
 //        event(new JobCreated($job));
 
 
-
-
         return api(JobResource::make($job));
     }
 
@@ -89,14 +87,13 @@ class JobController extends Controller
         sendSocket('jobUpdated', $job->workspace->channel, $jobResource);
 
 
-
-
-
         return api($jobResource);
     }
 
     public function delete(Job $job)
     {
+
+        return api(TRUE);
         $user = auth()->user();
 
         if (!$user->jobs->contains($job)) {
