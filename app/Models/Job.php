@@ -35,6 +35,61 @@ class Job extends Model
         'start_at' => 'datetime',
     ];
 
+    protected static function booted(): void
+    {
+        static::created(function (Job $job) {
+            $user = $job->users->first();
+            $text = "Job #$job->id by: @$user->username
+
+**$job->title**
+$job->description
+
+In Progress 🔵
+
+$job->estimate hrs ⏰
+";
+
+            $msg = sendMessage($text, 39);
+
+
+            Job::withoutEvents(function () use ($job, $msg) {
+                $job->update([
+                                 'message_id' => $msg->id
+                             ]);
+
+            });
+
+        });
+
+
+        static::updated(function (Job $job) {
+            $user = $job->users->first();
+            $status = NULL;
+            if ($job->status === Constants::IN_PROGRESS) {
+                $status = 'In Progress 🔵';
+            }
+            if ($job->status === Constants::PAUSED) {
+                $status = 'Paused 🟡';
+            }
+            if ($job->status === Constants::COMPLETED) {
+                $status = 'Completed 🟢';
+            }
+
+            $text = "Job #$job->id by: @$user->username
+
+**$job->title**
+$job->description
+
+$status
+
+$job->estimate hrs ⏰
+";
+
+            updateMesssage($job->message_id, $text);
+
+
+        });
+    }
 
     public function start($user)
     {
@@ -152,4 +207,6 @@ class Job extends Model
     {
         return $this->belongsTo(Workspace::class);
     }
+
+
 }

@@ -47,6 +47,17 @@ function sendSocket($eventName, $channel, $data)
 
 }
 
+function updateMesssage(Message $message, $text, $reply_to = NULL)
+{
+
+    $message->update([
+                         'text'      => $text,
+                         'is_edited' => TRUE,
+                         'reply_to'  => $reply_to,
+
+                     ]);
+}
+
 function sendMessage($message, $chat_id, $reply_to = NULL)
 {
     //TODO: has to change to notification or Job.

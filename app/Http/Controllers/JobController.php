@@ -41,20 +41,8 @@ class JobController extends Controller
 
 //        event(new JobCreated($job));
 
-        $msg = sendMessage("New job created successfully ✅
-----
-Title: $job->title
-----
-Created By: $user->name
-----
-Status: $job->status
-----
-Estimate: $job->estimate hrs", 39);
 
 
-        $job->update([
-                         'message_id' => $msg->id
-                     ]);
 
         return api(JobResource::make($job));
     }
@@ -99,6 +87,10 @@ Estimate: $job->estimate hrs", 39);
         $jobResource = JobResource::make($job);
 
         sendSocket('jobUpdated', $job->workspace->channel, $jobResource);
+
+
+
+
 
         return api($jobResource);
     }
