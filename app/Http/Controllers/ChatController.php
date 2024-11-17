@@ -13,9 +13,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
-class ChatController extends Controller {
+class ChatController extends Controller
+{
 
-    public function createDirect(Request $request) {
+    public function createDirect(Request $request)
+    {
         $request->validate([
 
 
@@ -48,7 +50,8 @@ class ChatController extends Controller {
 
     }
 
-    public function createGroup(Request $request) {
+    public function createGroup(Request $request)
+    {
         $request->validate([
 
                                'title' => 'required',
@@ -96,55 +99,69 @@ class ChatController extends Controller {
     }
 
 
-    public function createChannel(Request $request) {
+    public function createChannel(Request $request)
+    {
         return error('Cant create channels yet.');
 
     }
 
 
-    public function mentionedMessages(Chat $chat) {
+    public function mentionedMessages(Chat $chat)
+    {
         $user = auth()->user();
         return api(MessageResource::collection($chat->mentionedMessages($user)));
 
     }
 
-    public function participants(Chat $chat) {
+    public function participants(Chat $chat)
+    {
 
         return api(UserMinimalResource::collection($chat->users));
 
     }
 
-    public function pinnedMessages(Chat $chat) {
+    public function pinnedMessages(Chat $chat)
+    {
 
         return api(MessageResource::collection($chat->pinnedMessages()));
 
     }
 
-    public function messages(Chat $chat) {
+    public function messages(Chat $chat)
+    {
 
 
         $user = auth()->user();
 
         $request = request();
-        if ($request->page) {
-            $messages = $chat->oldMessages($user)->paginate($request->perPage ?? 50);
-
-        } else {
-            $messages = $chat->unSeens($user);
-            if (count($messages) < 1) {
-                $messages = $chat->oldMessages($user)->paginate($request->perPage ?? 50);
-
-            }
-
-        }
-
+//        if ($request->page) {
+//            $messages = $chat->oldMessages($user)->paginate($request->perPage ?? 50);
+//
+//        } else {
+//            $messages = $chat->unSeens($user);
+//            if (count($messages) < 1) {
+//                $messages = $chat->oldMessages($user)->paginate($request->perPage ?? 50);
+//
+//            }
+//
+//        }
+        $pivot = $chat->users()->find($user)->pivot;
+        $joined_at = $pivot->created_at;
+        $messages = $chat->messages()->orderBy('id', 'DESC')->withTrashed()->with([
+                                                                                     'links',
+                                                                                     'mentions',
+                                                                                     'user',
+                                                                                     'files',
+                                                                                 ])
+                        ->where('created_at', '>=', $joined_at)->paginate($request->perPage ?? 50);
 
         return api(MessageResource::collection($messages->sortBy('id')));
 
     }
 
 
-    public function delete(Chat $chat) {
+    public function delete(Chat $chat)
+    {
 
         $user = auth()->user();
         $chat->users()->detach($user->id);

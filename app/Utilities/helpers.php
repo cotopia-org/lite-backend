@@ -56,6 +56,10 @@ function updateMesssage($message, $text, $reply_to = NULL)
                          'reply_to'  => $reply_to,
 
                      ]);
+
+
+    sendSocket('messageUpdated', $message->chat->workspace->channel, MessageResource::make($message));
+
 }
 
 function sendMessage($message, $chat_id, $reply_to = NULL)
