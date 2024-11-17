@@ -174,9 +174,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
 
 });
 
-Route::any('/github/webhook', function (Request $request) {
-    logger($request);
-});
+Route::any('/github/webhook', 'App\Http\Controllers\GithubController@webhook');
 Route::get('export-postman', PostmanExportController::class)->name('postman');
 
 require __DIR__ . '/socket.php';
