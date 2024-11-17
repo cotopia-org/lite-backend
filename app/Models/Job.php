@@ -85,7 +85,7 @@ $status
 $job->estimate hrs ⏰
 ";
 
-            updateMesssage($job->message_id, $text);
+            updateMesssage(Message::find($job->message_id), $text);
 
 
         });

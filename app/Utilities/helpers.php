@@ -47,7 +47,7 @@ function sendSocket($eventName, $channel, $data)
 
 }
 
-function updateMesssage(Message $message, $text, $reply_to = NULL)
+function updateMesssage($message, $text, $reply_to = NULL)
 {
 
     $message->update([

@@ -46,9 +46,11 @@ $estimate hrs ⏰
 
         $msg = sendMessage($text, 39);
 
-        $job->update([
-                         'message_id' => $msg->id
-                     ]);
+        Job::withoutEvents(function () use ($job, $msg) {
+            $job->update([
+                             'message_id' => $msg->id
+                         ]);
+        });
     }
     dd('Okay');
     //    sleep(60);
