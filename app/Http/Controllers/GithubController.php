@@ -11,16 +11,14 @@ class GithubController extends Controller
     {
 
 
-//        $pusher = $request->pusher['name'] . '(' . $request->pusher['email'] . ')';
-//        $repo = $request->repository['full_name'];
         $text = '';
         foreach ($request->commits as $commit) {
 
             $message = $commit['message'];
-            $by = $commit['author']['name'];
-            $created_at = Carbon::create($commit['timestamp'])->diffForHumans();
-
-            $text .= "- $message" . PHP_EOL;
+            $text .= "- $message";
+            if (last($request->commits) !== $commit) {
+                $text .= PHP_EOL;
+            }
         }
 
         sendMessage($text, 42);
