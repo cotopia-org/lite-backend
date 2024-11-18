@@ -41,6 +41,26 @@ class JobController extends Controller
 
 //        event(new JobCreated($job));
 
+        $text = "Job #$job->id by @$user->username
+
+**$job->title**
+
+$job->description
+
+In Progress 🔵
+
+$job->estimate hrs ⏰
+";
+
+        $msg = sendMessage($text, 39);
+
+
+        Job::withoutEvents(function () use ($job, $msg) {
+            $job->update([
+                             'message_id' => $msg->id
+                         ]);
+
+        });
 
         return api(JobResource::make($job));
     }

@@ -37,30 +37,7 @@ class Job extends Model
 
     protected static function booted(): void
     {
-        static::created(function (Job $job) {
-            $user = auth()->user();
-            $text = "Job #$job->id by @$user->username
 
-**$job->title**
-
-$job->description
-
-In Progress 🔵
-
-$job->estimate hrs ⏰
-";
-
-            $msg = sendMessage($text, 39);
-
-
-            Job::withoutEvents(function () use ($job, $msg) {
-                $job->update([
-                                 'message_id' => $msg->id
-                             ]);
-
-            });
-
-        });
 
 
         static::updated(function (Job $job) {

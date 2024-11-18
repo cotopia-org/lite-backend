@@ -12,7 +12,7 @@ Route::get('/', function () {
 });
 Route::get('/tester', function () {
 
-    dd('Okay');
+//    dd('Okay');
     $jobs = \App\Models\Job::all();
 
     foreach ($jobs as $job) {
@@ -37,7 +37,7 @@ Route::get('/tester', function () {
             $estimate = $job->estimate;
         }
 
-        $user = $job->users->first();
+        $user = $users->first();
         $text = "Job#$job->id by @$user->username
 
 **$job->title**

@@ -80,7 +80,7 @@ function sendMessage($message, $chat_id, $reply_to = NULL)
                                'reply_to' => $reply_to,
                                'user_id'  => $notifUser->id,
                                'chat_id'  => $chat->id,
-                               'nonce_id' => now()->timestamp,
+                               'nonce_id' => random_int(100000, 999999),
                            ]);
 
 
