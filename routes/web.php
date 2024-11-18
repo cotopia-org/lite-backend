@@ -13,13 +13,14 @@ Route::get('/', function () {
 Route::get('/tester', function () {
 
 //    dd('Okay');
-    \App\Models\Message::where('chat_id',39)->delete();
-    $jobs = \App\Models\Job::orderBy('id', 'DESC')->get();
+    \App\Models\Message::where('chat_id', 39)->delete();
+    $jobs = \App\Models\Job::orderBy('id', 'ASC')->get();
 
     foreach ($jobs as $job) {
         $users = $job->users;
         if (count($users) < 1) {
             logger($job->id);
+            $job->delete();
             continue;
         }
 
