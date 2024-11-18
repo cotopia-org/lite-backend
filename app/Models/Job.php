@@ -38,7 +38,7 @@ class Job extends Model
     protected static function booted(): void
     {
         static::created(function (Job $job) {
-            $user = $job->users->first();
+            $user = auth()->user();
             $text = "Job #$job->id by @$user->username
 
 **$job->title**
