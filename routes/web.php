@@ -13,7 +13,8 @@ Route::get('/', function () {
 Route::get('/tester', function () {
 
 //    dd('Okay');
-    $jobs = \App\Models\Job::all();
+    \App\Models\Message::where('chat_id',39)->delete();
+    $jobs = \App\Models\Job::orderBy('id', 'DESC')->get();
 
     foreach ($jobs as $job) {
         $users = $job->users;
