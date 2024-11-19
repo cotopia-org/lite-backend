@@ -29,7 +29,7 @@ class CheckUsersInSocketCommand extends Command
     public function handle()
     {
 
-        $socket_users = collect(\Http::get('http://localhost:3010/sockets')->json());
+        $socket_users = collect(\Http::get(get_socket_url('sockets'))->json());
 
 
         $online_users = \App\Models\User::whereStatus('online')->whereNotNull('room_id')->get();
@@ -42,7 +42,7 @@ class CheckUsersInSocketCommand extends Command
                 DisconnectUserJob::dispatch($user, TRUE, TRUE, 'Disconnected From Command checkUsersInSocket');
 
             }
-            if (!$user->isInLk() && $user->room_id !== NULL) {
+            if (! $user->isInLk() && $user->room_id !== NULL) {
                 sendSocket(Constants::livekitDisconnected, $user->room->channel, UserMinimalResource::make($user));
             }
 

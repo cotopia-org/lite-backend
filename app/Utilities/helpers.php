@@ -9,7 +9,6 @@ use App\Utilities\Constants;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redis;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 function getPhoneNumber($phone)
 {
@@ -44,21 +43,6 @@ function sendSocket($eventName, $channel, $data)
                                 ]);
     }
 
-
-}
-
-function updateMesssage($message, $text, $reply_to = NULL)
-{
-
-    $message->update([
-                         'text'      => $text,
-                         'is_edited' => TRUE,
-                         'reply_to'  => $reply_to,
-
-                     ]);
-
-
-    sendSocket('messageUpdated', $message->chat->workspace->channel, MessageResource::make($message));
 
 }
 
