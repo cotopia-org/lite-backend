@@ -148,7 +148,7 @@ class ChatController extends Controller {
                                                                      ])->where('created_at', '>=', $joined_at)
             ->paginate($request->perPage ?? 50);
 
-        return api(MessageResource::collection($messages->sortBy('id')));
+        return api(MessageResource::collection($messages->sortBy('id', 'ASC')));
 
     }
 
