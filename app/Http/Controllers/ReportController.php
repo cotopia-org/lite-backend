@@ -53,8 +53,7 @@ class ReportController extends Controller
         }
 
 
-        $msg = sendMessage("New job created successfully ✅
-----
+        $msg = sendMessage("
 Title: $report->title
 ----
 Description: $report->description

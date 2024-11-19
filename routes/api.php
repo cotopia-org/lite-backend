@@ -16,6 +16,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TalkController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkspaceController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 //Route::get('/user', function (Request $request) {
@@ -173,7 +174,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
 
 });
 
-
+Route::any('/github/webhook', 'App\Http\Controllers\GithubController@webhook');
 Route::get('export-postman', PostmanExportController::class)->name('postman');
 
 require __DIR__ . '/socket.php';

@@ -41,20 +41,26 @@ class JobController extends Controller
 
 //        event(new JobCreated($job));
 
-        $msg = sendMessage("New job created successfully ✅
-----
-Title: $job->title
-----
-Created By: $user->name
-----
-Status: $job->status
-----
-Estimate: $job->estimate hrs", 39);
+        $text = "Job #$job->id by @$user->username
+
+**$job->title**
+
+$job->description
+
+In Progress 🔵
+
+$job->estimate hrs ⏰
+";
+
+        $msg = sendMessage($text, 39);
 
 
-        $job->update([
-                         'message_id' => $msg->id
-                     ]);
+        Job::withoutEvents(function () use ($job, $msg) {
+            $job->update([
+                             'message_id' => $msg->id
+                         ]);
+
+        });
 
         return api(JobResource::make($job));
     }
@@ -81,9 +87,13 @@ Estimate: $job->estimate hrs", 39);
         //TODO: code upper, need to changed to user->can('update-job-1') method.
 
         if ($request->status === Constants::IN_PROGRESS) {
-            $user->jobs()->whereStatus(Constants::IN_PROGRESS)->update([
-                                                                           'status' => Constants::PAUSED
-                                                                       ]);
+
+
+            foreach ($user->jobs()->whereStatus(Constants::IN_PROGRESS)->get() as $j) {
+                $j->update([
+                               'status' => Constants::PAUSED
+                           ]);
+            }
 
 
             $user->updateActiveJob($job->id);
@@ -100,11 +110,14 @@ Estimate: $job->estimate hrs", 39);
 
         sendSocket('jobUpdated', $job->workspace->channel, $jobResource);
 
+
         return api($jobResource);
     }
 
     public function delete(Job $job)
     {
+
+        return api(TRUE);
         $user = auth()->user();
 
         if (!$user->jobs->contains($job)) {

@@ -26,8 +26,8 @@ function getPhoneNumber($phone)
     }
 
     // Add the country code '98' if it's missing
-    if (! preg_match('/^98/', $phone)) {
-        $phone = '98'.$phone;
+    if (!preg_match('/^98/', $phone)) {
+        $phone = '98' . $phone;
     }
 
     return $phone;
@@ -37,10 +37,10 @@ function sendSocket($eventName, $channel, $data)
 {
     if ($channel !== NULL) {
         sendSocketJob::dispatch([
-            'eventName' => $eventName,
-            'channel'   => $channel,
-            'data'      => $data,
-        ]);
+                                    'eventName' => $eventName,
+                                    'channel'   => $channel,
+                                    'data'      => $data,
+                                ]);
     }
 
 
@@ -60,12 +60,12 @@ function sendMessage($message, $chat_id, $reply_to = NULL)
 
 
     $msg = Message::create([
-        'text'     => $message,
-        'reply_to' => $reply_to,
-        'user_id'  => $notifUser->id,
-        'chat_id'  => $chat->id,
-        'nonce_id' => now()->timestamp,
-    ]);
+                               'text'     => $message,
+                               'reply_to' => $reply_to,
+                               'user_id'  => $notifUser->id,
+                               'chat_id'  => $chat->id,
+                               'nonce_id' => random_int(100000, 999999),
+                           ]);
 
 
     sendSocket('messageReceived', $chat->workspace->channel, MessageResource::make($msg));
@@ -77,9 +77,9 @@ function sendMessage($message, $chat_id, $reply_to = NULL)
 function joinUserToSocketRoom($user_id, $room_id)
 {
     Redis::publish('joined', json_encode([
-        'user_id' => $user_id,
-        'room_id' => $room_id
-    ]));
+                                             'user_id' => $user_id,
+                                             'room_id' => $room_id
+                                         ]));
 
     //    return Http::post(env('SOCKET_URL', 'http://localhost:3010') . '/joinToRoom', [
     //        'data' => [
@@ -94,19 +94,14 @@ function joinUserToSocketRoom($user_id, $room_id)
 function sendSms($phone, $code)
 {
     return Http::asForm()->withHeader('apikey', '001a87a26baf886222895114bff20fcde5a54706f09e22487645b422fbd4dd15')
-        ->post('https://api.ghasedak.me/v2/verification/send/simple', [
-            'param1'   => $code,
-            'template' => 'resanaAuth',
-            'type'     => '1',
-            'receptor' => $phone,
-        ])->json();
+               ->post('https://api.ghasedak.me/v2/verification/send/simple', [
+                   'param1'   => $code,
+                   'template' => 'resanaAuth',
+                   'type'     => '1',
+                   'receptor' => $phone,
+               ])->json();
 
     //TODO: // Have to go in queue.
-}
-
-function get_socket_url($path = ""): string
-{
-    return rtrim(config('socket.base_url'), '/').'/'.$path;
 }
 
 function get_enum_values($cases, $key = FALSE): array
