@@ -68,6 +68,19 @@ function joinUserToSocketRoom($user_id, $room_id) {
 
 }
 
+function acted($user_id, $workspace_id, $room_id, $job_id, $type, $description) {
+
+
+    return \App\Models\Act::create([
+                                       'user_id'      => $user_id,
+                                       'workspace_id' => $workspace_id,
+                                       'room_id'      => $room_id,
+                                       'job_id'       => $job_id,
+                                       'type'         => $type,
+                                       'description'  => $description,
+                                   ]);
+
+}
 
 function get_enum_values($cases, $key = FALSE): array {
     return array_column($cases, 'value', $key ? 'name' : NULL);
