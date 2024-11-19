@@ -29,15 +29,15 @@ class JobController extends Controller {
                                                                                                              'status' => Constants::PAUSED
                                                                                                          ]);
 
-            $user->updateActiveJob($job->id);
-
 
             if ($user->active_job_id !== NULL) {
+                logger($user->active_job_id);
                 acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'JobController@create');
 
             }
             acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started', 'JobController@create');
 
+            $user->updateActiveJob($job->id);
 
         }
 
