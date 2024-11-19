@@ -115,6 +115,7 @@ return [
         'nova-api*',
         'pulse*',
         'health*',
+        'logs*'
     ],
 
     'ignore_commands' => [//
@@ -172,7 +173,7 @@ return [
             'level'   => 'error',
         ],
 
-        Watchers\MailWatcher::class => env('TELESCOPE_MAIL_WATCHER', TRUE),
+        Watchers\MailWatcher::class => env('TELESCOPE_MAIL_WATCHER', FALSE),
 
         Watchers\ModelWatcher::class => [
             'enabled'    => env('TELESCOPE_MODEL_WATCHER', TRUE),
@@ -194,11 +195,11 @@ return [
         Watchers\RequestWatcher::class => [
             'enabled'             => env('TELESCOPE_REQUEST_WATCHER', TRUE),
             'size_limit'          => env('TELESCOPE_RESPONSE_SIZE_LIMIT', 64),
-            'ignore_http_methods' => [],
+            'ignore_http_methods' => ['options'],
             'ignore_status_codes' => [],
         ],
 
         Watchers\ScheduleWatcher::class => env('TELESCOPE_SCHEDULE_WATCHER', TRUE),
-        Watchers\ViewWatcher::class     => env('TELESCOPE_VIEW_WATCHER', TRUE),
+        Watchers\ViewWatcher::class     => env('TELESCOPE_VIEW_WATCHER', FALSE),
     ],
 ];

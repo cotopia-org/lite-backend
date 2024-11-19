@@ -7,8 +7,7 @@ use App\Jobs\DisconnectUserJob;
 use App\Utilities\Constants;
 use Illuminate\Console\Command;
 
-class CheckUsersInSocketCommand extends Command
-{
+class CheckUsersInSocketCommand extends Command {
     /**
      * The name and signature of the console command.
      *
@@ -26,8 +25,7 @@ class CheckUsersInSocketCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
-    {
+    public function handle() {
 
         $socket_users = collect(\Http::get(get_socket_url('sockets'))->json());
 
@@ -42,7 +40,7 @@ class CheckUsersInSocketCommand extends Command
                 DisconnectUserJob::dispatch($user, TRUE, TRUE, 'Disconnected From Command checkUsersInSocket');
 
             }
-            if (! $user->isInLk() && $user->room_id !== NULL) {
+            if (!$user->isInLk() && $user->room_id !== NULL) {
                 sendSocket(Constants::livekitDisconnected, $user->room->channel, UserMinimalResource::make($user));
             }
 
