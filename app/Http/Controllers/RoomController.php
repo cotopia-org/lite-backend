@@ -53,10 +53,13 @@ class RoomController extends Controller
                            ]);
 
         //TODO:check has create room permission
+        $user = auth()->user();
 
+        $user->canDo(Permission::ROOM_CREATE, $request->workspace_id);
 
         $workspace = Workspace::findOrFail($request->workspace_id);
-        $user = auth()->user();
+
+
         $user->canDo(Permission::WS_ADD_ROOMS, $workspace->id);
 
         $room = $workspace->rooms()->create([
@@ -132,7 +135,7 @@ class RoomController extends Controller
     {
         //TODO CHECK PERMISSION
         $user = auth()->user();
-        $user->canDo(Permission::ROOM_DELETE, $room->workspace->id);
+        $user->canDo(Permission::WS_ADD_ROOMS, $room->workspace->id);
 
         foreach ($room->users as $user) {
             DisconnectUserJob::dispatch($user, FALSE, FALSE, 'Disconnected From RoomController Delete Method');
