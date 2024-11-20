@@ -100,7 +100,7 @@ class User extends Authenticatable {
 
 
     public function isInSocket() {
-        $socket_users = collect(\Http::get(get_socket_url('sockets'))->json());
+        $socket_users = getSocketUsers();
         $socket_user = $socket_users->where('username', $this->username)->first();
 
         return $socket_user !== NULL;
