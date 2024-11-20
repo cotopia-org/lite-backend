@@ -75,9 +75,9 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/{workspace}/join', 'join');
         Route::get('/{workspace}/rooms', 'rooms')->middleware('checkIsUserOnline');
         Route::get('/{workspace}/jobs', 'jobs')->middleware('checkIsUserOnline');
-        Route::get('/{workspace}/users', 'users')->middleware('checkIsUserOnline');
-        Route::get('/{workspace}/leaderboard', 'leaderboard')->middleware('checkIsUserOnline');
-        Route::get('/{workspace}/schedules', 'schedules')->middleware('checkIsUserOnline');
+        Route::get('/{workspace}/users', 'users');
+        Route::get('/{workspace}/leaderboard', 'leaderboard');
+        Route::get('/{workspace}/schedules', 'schedules');
         Route::get('/{workspace}/tags', 'tags')->middleware('checkIsUserOnline');
         Route::post('/{workspace}/addRole', 'addRole')->middleware('checkIsUserOnline');
         Route::post('/{workspace}/addTag', 'addTag')->middleware('checkIsUserOnline');
