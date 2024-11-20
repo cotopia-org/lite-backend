@@ -51,19 +51,19 @@ Route::middleware('auth:sanctum')->group(callback: function () {
 
     Route::controller(UserController::class)->prefix('users')->group(function () {
         Route::get('/me', 'me');
-        Route::get('/activities', 'activities')->middleware('checkIsUserOnline');
-        Route::get('/chats', 'chats')->middleware('checkIsUserOnline');
-        Route::get('/{user}/jobs', 'jobs')->middleware('checkIsUserOnline');
-        Route::get('/{user}/schedules', 'schedules')->middleware('checkIsUserOnline');
-        Route::get('/{user}/scheduleFulfillment', 'scheduleFulfillment')->middleware('checkIsUserOnline');
-        Route::get('/talks', 'talks')->middleware('checkIsUserOnline');
-        Route::get('/unGhost', 'unGhost')->middleware('checkIsUserOnline');
-        Route::get('/', 'all')->middleware('checkIsUserOnline');
-        Route::post('/', 'update')->middleware('checkIsUserOnline');
-        Route::post('/updateCoordinates', 'updateCoordinates')->middleware('checkIsUserOnline');
-        Route::get('/toggleMegaphone', 'toggleMegaphone')->middleware('checkIsUserOnline');
-        Route::post('/search', 'search')->middleware('checkIsUserOnline');
-        Route::put('/update', 'update')->middleware('checkIsUserOnline');
+        Route::get('/activities', 'activities');
+        Route::get('/chats', 'chats');
+        Route::get('/{user}/jobs', 'jobs');
+        Route::get('/{user}/schedules', 'schedules');
+        Route::get('/{user}/scheduleFulfillment', 'scheduleFulfillment');
+        Route::get('/talks', 'talks');
+        Route::get('/unGhost', 'unGhost');
+        Route::get('/', 'all');
+        Route::post('/', 'update');
+        Route::post('/updateCoordinates', 'updateCoordinates');
+        Route::get('/toggleMegaphone', 'toggleMegaphone');
+        Route::post('/search', 'search');
+        Route::put('/update', 'update');
         Route::get('/settings', 'settings');
     });
 
@@ -71,27 +71,27 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/', 'all');
         Route::post('/', 'create');
         //        Route::get('/{workspace}', 'get')->middleware('ownedWorkspace');
-        Route::get('/{workspace}', 'get')->middleware('checkIsUserOnline');
+        Route::get('/{workspace}', 'get');
         Route::get('/{workspace}/join', 'join');
-        Route::get('/{workspace}/rooms', 'rooms')->middleware('checkIsUserOnline');
-        Route::get('/{workspace}/jobs', 'jobs')->middleware('checkIsUserOnline');
+        Route::get('/{workspace}/rooms', 'rooms');
+        Route::get('/{workspace}/jobs', 'jobs');
         Route::get('/{workspace}/users', 'users');
         Route::get('/{workspace}/leaderboard', 'leaderboard');
         Route::get('/{workspace}/schedules', 'schedules');
-        Route::get('/{workspace}/tags', 'tags')->middleware('checkIsUserOnline');
-        Route::post('/{workspace}/addRole', 'addRole')->middleware('checkIsUserOnline');
-        Route::post('/{workspace}/addTag', 'addTag')->middleware('checkIsUserOnline');
-        Route::put('/{workspace}', 'update')->middleware('checkIsUserOnline');
+        Route::get('/{workspace}/tags', 'tags');
+        Route::post('/{workspace}/addRole', 'addRole');
+        Route::post('/{workspace}/addTag', 'addTag');
+        Route::put('/{workspace}', 'update');
 
     });
 
     Route::controller(RoomController::class)->prefix('rooms')->group(function () {
-        Route::post('/', 'create')->middleware('checkIsUserOnline');
-        Route::get('/leave', 'leave')->middleware('checkIsUserOnline');
+        Route::post('/', 'create');
+        Route::get('/leave', 'leave');
         Route::get('/{room}/', 'get');
-        Route::put('/{room}/', 'update')->middleware('checkIsUserOnline');
+        Route::put('/{room}/', 'update');
         Route::get('/{room}/join', 'join');
-        Route::delete('/{room}', 'delete')->middleware('checkIsUserOnline');
+        Route::delete('/{room}', 'delete');
 
     });
 
