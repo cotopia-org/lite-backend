@@ -36,7 +36,7 @@ class DisconnectUserJob implements ShouldQueue
 
         if ($this->checkIsInRoom) {
             sleep(15);
-            $socket_users = collect(\Http::get(get_socket_url('sockets'))->json());
+            $socket_users = getSocketUsers();
 
             $socket_user = $socket_users->where('username', $user->username)->first();
             if ($socket_user === NULL) {
@@ -50,12 +50,12 @@ class DisconnectUserJob implements ShouldQueue
             $room_id = $user->room_id;
 
             $user->update([
-                'socket_id'    => $this->offline ? NULL : $user->socket_id,
-                'status'       => $this->offline ? Constants::OFFLINE : $user->status,
-                'room_id'      => NULL,
-                'workspace_id' => NULL,
+                              'socket_id'    => $this->offline ? NULL : $user->socket_id,
+                              'status'       => $this->offline ? Constants::OFFLINE : $user->status,
+                              'room_id'      => NULL,
+                              'workspace_id' => NULL,
 
-            ]);
+                          ]);
 
             $room = Room::find($room_id);
 

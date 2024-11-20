@@ -28,15 +28,7 @@ class CheckUsersInSocketCommand extends Command
      */
     public function handle()
     {
-        $socket_users = collect([]);
-
-        try {
-            $socket_request = \Http::get(get_socket_url('sockets'))->json();
-
-            $socket_users = collect($socket_request);
-        } catch (\Exception $exception) {
-        }
-
+        $socket_users = getSocketUsers();
 
         $online_users = \App\Models\User::whereStatus('online')->whereNotNull('room_id')->get();
         foreach ($online_users as $user) {
