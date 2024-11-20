@@ -29,7 +29,11 @@ class CheckUsersInSocketCommand extends Command
     public function handle()
     {
 
-        $socket_users = collect(\Http::get(get_socket_url('sockets'))->json());
+        try {
+            $socket_users = collect(\Http::get(get_socket_url('sockets'))->json());
+        } catch (\Exception $exception) {
+            $socket_users = collect([]);
+        }
 
 
         $online_users = \App\Models\User::whereStatus('online')->whereNotNull('room_id')->get();
