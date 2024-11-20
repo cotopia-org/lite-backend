@@ -18,9 +18,11 @@ use App\Utilities\Constants;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class   MessageController extends Controller {
+class   MessageController extends Controller
+{
 
-    public function send(Request $request) {
+    public function send(Request $request)
+    {
         $request->validate(['text' => 'required', 'chat_id' => 'required']);
 
         $user = auth()->user();
@@ -42,7 +44,8 @@ class   MessageController extends Controller {
                                              'user_id'          => $user->id,
                                              'start_position'   => $mention['start_position'],
                                              'mentionable_type' => $models[$mention['model_type']],
-                                             'mentionable_id'   => $mention['model_id']
+                                             'mentionable_id'   => $mention['model_id'],
+                                             'chat_id'          => $request->chat_id,
 
                                          ]);
             }
@@ -74,7 +77,8 @@ class   MessageController extends Controller {
 
     }
 
-    public function seen(Message $message) {
+    public function seen(Message $message)
+    {
         $user = auth()->user();
 
 
@@ -88,7 +92,8 @@ class   MessageController extends Controller {
 
     }
 
-    public function searchMention(Request $request) {
+    public function searchMention(Request $request)
+    {
 
         $users = User::where('username', 'LIKE', $request->q . '%')->get();
         $workspaces = Workspace::where('title', 'LIKE', $request->q . '%')->get();
@@ -102,7 +107,8 @@ class   MessageController extends Controller {
 
     }
 
-    public function get(Room $room) {
+    public function get(Room $room)
+    {
         $user = auth()->user();
         //TODO check if user is in room
 
@@ -112,7 +118,8 @@ class   MessageController extends Controller {
 
     }
 
-    public function pin(Message $message) {
+    public function pin(Message $message)
+    {
         //TODO: check user can pin message in this room
 
         $message->update(['is_pinned' => TRUE]);
@@ -121,7 +128,8 @@ class   MessageController extends Controller {
 
     }
 
-    public function unPin(Message $message) {
+    public function unPin(Message $message)
+    {
         //TODO: check user can pin message in this room
 
         $message->update(['is_pinned' => FALSE]);
@@ -131,7 +139,8 @@ class   MessageController extends Controller {
     }
 
 
-    public function delete(Message $message) {
+    public function delete(Message $message)
+    {
 
         if (auth()->id() === $message->user_id) {
             $message->delete();
@@ -143,7 +152,8 @@ class   MessageController extends Controller {
 
     }
 
-    public function update(Message $message, Request $request) {
+    public function update(Message $message, Request $request)
+    {
 
 
         if (auth()->id() === $message->user_id) {
