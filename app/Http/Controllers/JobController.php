@@ -9,10 +9,8 @@ use App\Models\User;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
 
-class JobController extends Controller
-{
-    public function create(Request $request)
-    {
+class JobController extends Controller {
+    public function create(Request $request) {
         $request->validate([
                                'title'        => 'required',
                                'description'  => 'required',
@@ -31,15 +29,21 @@ class JobController extends Controller
                                                                                                              'status' => Constants::PAUSED
                                                                                                          ]);
 
-            $user->updateActiveJob($job->id);
 
+            if ($user->active_job_id !== NULL) {
+                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'JobController@create');
+
+            }
+            acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started', 'JobController@create');
+
+            $user->updateActiveJob($job->id);
 
         }
 
 
         $user->jobs()->attach($job, ['role' => 'owner']);
 
-//        event(new JobCreated($job));
+        //        event(new JobCreated($job));
 
         $text = "Job #$job->id by @$user->username
 
@@ -65,8 +69,7 @@ $job->estimate hrs ⏰
         return api(JobResource::make($job));
     }
 
-    public function get(Job $job)
-    {
+    public function get(Job $job) {
         $user = auth()->user();
         if (!$user->jobs->contains($job)) {
             abort(404);
@@ -77,8 +80,7 @@ $job->estimate hrs ⏰
 
     }
 
-    public function update(Job $job, Request $request)
-    {
+    public function update(Job $job, Request $request) {
         $user = auth()->user();
 
         if (!$user->jobs->contains($job)) {
@@ -96,10 +98,20 @@ $job->estimate hrs ⏰
             }
 
 
+            if ($user->active_job_id !== NULL) {
+                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'JobController@update');
+
+            }
+            acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started', 'JobController@update');
+
+
             $user->updateActiveJob($job->id);
 
 
         } elseif ($job->id === $user->active_job_id) {
+
+            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'JobController@update');
+
             $user->updateActiveJob();
 
         }
@@ -114,8 +126,7 @@ $job->estimate hrs ⏰
         return api($jobResource);
     }
 
-    public function delete(Job $job)
-    {
+    public function delete(Job $job) {
 
         return api(TRUE);
         $user = auth()->user();
@@ -131,8 +142,7 @@ $job->estimate hrs ⏰
     }
 
 
-    public function removeUser(Job $job, Request $request)
-    {
+    public function removeUser(Job $job, Request $request) {
         $request->validate([
                                'user_id' => 'required|exists:users,id',
                            ]);

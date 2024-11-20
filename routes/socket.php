@@ -11,7 +11,7 @@ Route::prefix('socket')->group(function () {
         Route::controller(SocketController::class)->group(function () {
             Route::post('/updateCoordinates', 'updateCoordinates')->middleware('checkSocketId');
             Route::post('/connected', 'connected');
-            Route::get('/disconnected', 'disconnected')->middleware('checkSocketId');
+            Route::get('/disconnected', 'disconnected');
 
 
         });

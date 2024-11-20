@@ -7,8 +7,7 @@ use App\Jobs\DisconnectUserJob;
 use App\Utilities\Constants;
 use Illuminate\Console\Command;
 
-class CheckUsersInSocketCommand extends Command
-{
+class CheckUsersInSocketCommand extends Command {
     /**
      * The name and signature of the console command.
      *
@@ -26,10 +25,9 @@ class CheckUsersInSocketCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
-    {
+    public function handle() {
 
-        $socket_users = collect(\Http::get('http://localhost:3010/sockets')->json());
+        $socket_users = collect(\Http::get(get_socket_url('sockets'))->json());
 
 
         $online_users = \App\Models\User::whereStatus('online')->whereNotNull('room_id')->get();
