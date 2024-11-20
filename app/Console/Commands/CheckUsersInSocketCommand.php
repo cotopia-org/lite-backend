@@ -7,7 +7,8 @@ use App\Jobs\DisconnectUserJob;
 use App\Utilities\Constants;
 use Illuminate\Console\Command;
 
-class CheckUsersInSocketCommand extends Command {
+class CheckUsersInSocketCommand extends Command
+{
     /**
      * The name and signature of the console command.
      *
@@ -25,7 +26,8 @@ class CheckUsersInSocketCommand extends Command {
     /**
      * Execute the console command.
      */
-    public function handle() {
+    public function handle()
+    {
 
         $socket_users = collect(\Http::get(get_socket_url('sockets'))->json());
 
@@ -38,6 +40,10 @@ class CheckUsersInSocketCommand extends Command {
             if ($socket_user === NULL) {
 
                 DisconnectUserJob::dispatch($user, TRUE, TRUE, 'Disconnected From Command checkUsersInSocket');
+                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'time_ended',
+                      'CheckUsersInSocketCommand@handle');
+                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'disconnected',
+                      'CheckUsersInSocketCommand@handle');
 
             }
             if (!$user->isInLk() && $user->room_id !== NULL) {
