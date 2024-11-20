@@ -12,6 +12,12 @@ Route::get('/', function () {
 });
 Route::get('/tester', function () {
 
+    try {
+        $socket_users = collect(\Http::get(get_socket_url('sockets'))->json());
+    } catch (\Exception $exception) {
+        $socket_users = collect([]);
+    }
+    dd($socket_users);
 //    dd('Okay');
     \App\Models\Message::where('chat_id', 39)->delete();
     $jobs = \App\Models\Job::orderBy('id', 'ASC')->get();

@@ -28,11 +28,13 @@ class CheckUsersInSocketCommand extends Command
      */
     public function handle()
     {
+        $socket_users = collect([]);
 
         try {
-            $socket_users = collect(\Http::get(get_socket_url('sockets'))->json());
+            $socket_request = \Http::get(get_socket_url('sockets'))->json();
+
+            $socket_users = collect($socket_request);
         } catch (\Exception $exception) {
-            $socket_users = collect([]);
         }
 
 
