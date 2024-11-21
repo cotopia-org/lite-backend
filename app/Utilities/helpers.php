@@ -56,7 +56,7 @@ function sendMessage($message, $chat_id, $reply_to = NULL)
                            ]);
 
 
-    sendSocket('messageReceived', $chat->workspace->channel, MessageResource::make($msg));
+    sendSocket('messageReceived', $chat->channel, MessageResource::make($msg));
 
     return $msg;
 
