@@ -139,5 +139,11 @@ class SocketController extends Controller
 
     }
 
+    public function logger(Request $request)
+    {
+
+        logger($request->all());
+
+    }
 
 }
