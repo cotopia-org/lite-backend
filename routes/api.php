@@ -13,6 +13,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\TalkController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkspaceController;
@@ -54,6 +55,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/activities', 'activities');
         Route::get('/chats', 'chats');
         Route::get('/{user}/jobs', 'jobs');
+        Route::get('/{user}/tags', 'tags');
         Route::get('/{user}/schedules', 'schedules');
         Route::get('/{user}/scheduleFulfillment', 'scheduleFulfillment');
         Route::get('/talks', 'talks');
@@ -80,7 +82,6 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/{workspace}/schedules', 'schedules');
         Route::get('/{workspace}/tags', 'tags');
         Route::post('/{workspace}/addRole', 'addRole');
-        Route::post('/{workspace}/addTag', 'addTag');
         Route::put('/{workspace}', 'update');
 
     });
@@ -112,7 +113,6 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::delete('/{message}', 'delete');
     })->middleware('checkIsUserOnline');
 
-
     Route::controller(JobController::class)->prefix('jobs')->group(function () {
         Route::post('/', 'create');
         Route::get('/{job}', 'get');
@@ -121,13 +121,11 @@ Route::middleware('auth:sanctum')->group(callback: function () {
 
     })->middleware('checkIsUserOnline');
 
-
     Route::controller(TalkController::class)->prefix('talks')->group(function () {
         Route::post('/', 'talk');
         Route::post('/{talk}', 'respond');
 
     })->middleware('checkIsUserOnline');
-
 
     Route::controller(ReportController::class)->prefix('reports')->group(function () {
         Route::get('/', 'all');
@@ -140,7 +138,6 @@ Route::middleware('auth:sanctum')->group(callback: function () {
 
     })->middleware('checkIsUserOnline');
 
-
     Route::controller(ChatController::class)->prefix('chats')->group(function () {
         Route::post('/createDirect', 'createDirect');
         Route::post('/createGroup', 'createGroup');
@@ -152,7 +149,6 @@ Route::middleware('auth:sanctum')->group(callback: function () {
 
     })->middleware('checkIsUserOnline');
 
-
     Route::controller(ContractController::class)->prefix('contracts')->group(function () {
         Route::get('/', 'all');
         Route::post('/', 'create');
@@ -162,12 +158,19 @@ Route::middleware('auth:sanctum')->group(callback: function () {
 
     });
 
-
     Route::controller(PaymentController::class)->prefix('payments')->group(function () {
         Route::get('/', 'all');
         Route::post('/', 'create');
         Route::get('/{payment}', 'get');
         Route::put('/{payment}', 'update');
+
+    });
+
+    Route::controller(TagController::class)->prefix('tags')->group(function () {
+        Route::post('/', 'create');
+        Route::get('/{tag}', 'get');
+        Route::put('/{tag}', 'update');
+        Route::post('/{tag}/addMember', 'addMember');
 
     });
 

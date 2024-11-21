@@ -12,13 +12,28 @@ class TagController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'title'        => 'required',
-            'workspace_id' => 'required|exists:workspaces,id',
-        ]);
+                               'title'        => 'required',
+                               'workspace_id' => 'required|exists:workspaces,id',
+                           ]);
 
         $tag = Tag::create($request->all());
 
         return api(TagResource::make($tag));
+    }
+
+    public function addMember(Tag $tag, Request $request)
+    {
+
+
+        $request->validate([
+                               'user_id' => 'required|exists:users,id',
+                           ]);
+
+
+        $tag->users()->attach($request->user_id);
+        return api(TagResource::make($tag));
+
+
     }
 
     public function get(Tag $tag)

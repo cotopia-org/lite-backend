@@ -22,8 +22,12 @@ return new class () extends Migration {
 
             $table->integer('estimate');
             $table->foreignId('workspace_id');
+
+
+            $table->integer('job_id')->nullable();
             // TODO - Foreign key constraint is incorrectly formed
 //            $table->foreignId('workspace_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+//            $table->foreignId('job_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
 
             $table->timestamps();
         });

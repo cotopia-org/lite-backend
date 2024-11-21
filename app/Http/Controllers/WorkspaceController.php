@@ -65,11 +65,6 @@ class WorkspaceController extends Controller
                                                 ->get()));
     }
 
-    public function calendars(Workspace $workspace)
-    {
-        return api(CalendarResource::make($workspace->calendars));
-    }
-
     public function get(Workspace $workspace)
     {
         if (auth()->user()->tokenCan(Permission::WS_GET->value . '-' . $workspace->id)) {
@@ -78,7 +73,6 @@ class WorkspaceController extends Controller
         }
         return error('Permission Denied');
     }
-
 
     public function create(Request $request)
     {
@@ -137,7 +131,6 @@ class WorkspaceController extends Controller
 
     }
 
-
     public function schedules(Workspace $workspace)
     {
 
@@ -149,20 +142,6 @@ class WorkspaceController extends Controller
                                                                                   ]
                                                                               ])->get()));
     }
-
-    public function addTag(Workspace $workspace, Request $request)
-    {
-        $request->validate([
-                               'tag'     => 'required',
-                               'user_id' => 'required',
-                           ]);
-
-        $wsUser = User::find($request->user_id);
-        $workspace->users()->updateExistingPivot($wsUser, ['tag' => $request->role]);
-
-        return api(WorkspaceResource::make($workspace));
-    }
-
 
     public function leaderboard(Workspace $workspace)
     {

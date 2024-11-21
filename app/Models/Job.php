@@ -39,7 +39,6 @@ class Job extends Model
     {
 
 
-
         static::updated(function (Job $job) {
             $user = $job->users->first();
             $status = NULL;
@@ -68,6 +67,12 @@ $job->estimate hrs ⏰
 
 
         });
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+
     }
 
     public function start($user)
