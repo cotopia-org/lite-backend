@@ -19,6 +19,12 @@ use App\Utilities\EventType;
 use Illuminate\Http\Request;
 
 class SocketController extends Controller {
+    
+    
+    public function checkUser()
+    {
+        
+    }
     public function connected(Request $request) {
 
         $user = auth()->user();

@@ -71,7 +71,7 @@ function getSocketUsers()
     }
 }
 
-function joinUserToSocketRoom($user_id, $room_id)
+function userJoinedToRoomEmit($user_id, $room_id)
 {
     Redis::publish('joined', json_encode([
                                              'user_id' => $user_id,

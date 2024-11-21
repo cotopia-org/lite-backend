@@ -92,6 +92,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/{room}/', 'get');
         Route::put('/{room}/', 'update');
         Route::get('/{room}/join', 'join');
+        Route::get('/{room}/switch', 'switch');
         Route::delete('/{room}', 'delete');
 
     });

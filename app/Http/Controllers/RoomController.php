@@ -87,13 +87,41 @@ class RoomController extends Controller
         return api(RoomResource::make($room));
     }
 
+
+    public function switch(Room $room)
+    {
+        $user = auth()->user();
+
+
+        $previous_room = $user->room;
+
+
+        $room = $room->joinUser($user);
+
+
+        $userResource = UserMinimalResource::make($user);
+
+        sendSocket(Constants::userLeftFromRoom, $previous_room->workspace->channel, [
+            'room_id' => $previous_room->id,
+            'user'    => $userResource
+        ]);
+
+        sendSocket(Constants::userJoinedToRoom, $room->workspace->channel, [
+            'room_id' => $room->id,
+            'user'    => $userResource
+        ]);
+
+
+        userJoinedToRoomEmit($user->id, $room->id);
+
+
+        return api(RoomResource::make($room));
+    }
+
     public function join(Room $room)
     {
         $user = auth()->user();
 
-        //        if (!$user->inSocket()) {
-        //            return error('Not in Socket');
-        //        } TODO: Commented due command checks every minute of user is in socket or not.
 
         $before_room = $user->room_id;
 
