@@ -141,9 +141,15 @@ class SocketController extends Controller
 
     public function logger(Request $request)
     {
-        $json = json_encode($request->all());
+        return true;
+//        $json = json_encode($request->all());
+//
+//        logger($json);
 
-        logger($json);
+//        $message = '';
+//        foreach ($request->all() as $req) {
+//            $message
+//        }
 //        sendMessage($json, 48);
 
     }
