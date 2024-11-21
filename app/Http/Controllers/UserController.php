@@ -230,7 +230,7 @@ class UserController extends Controller
         return api(
             ChatResource::collection(
                 $user
-                    ->chats()
+                    ->chats()->has('messages')
                     ->with([
                                //                                                                     'messages'    => ['files', 'mentions', 'links'],
                                "lastMessage" => ["files", "mentions", "links"],
