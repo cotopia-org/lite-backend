@@ -12,6 +12,42 @@ Route::get('/', function () {
 });
 Route::get('/tester', function () {
 
+
+    $req = [
+        0 =>
+            [
+                'eventName' => 'userLeftFromRoom',
+                'channel'   => 'workspace-1',
+                'data'      =>
+                    [
+                        'room_id' => 1,
+                        'user'    =>
+                            [
+                                'id'                 => 6,
+                                'name'               => 'Youssef',
+                                'username'           => 'Youssef_Sameh',
+                                'room_id'            => 1,
+                                'status'             => 'online',
+                                'avatar'             =>
+                                    [
+                                        'id'        => 413,
+                                        'path'      => 'images/nD8rMGrXcSKjhdk63qhJdavPMsfuibBRbhkhUlix.jpg',
+                                        'url'       => 'https://lite-api.cotopia.social/storage/images/nD8rMGrXcSKjhdk63qhJdavPMsfuibBRbhkhUlix.jpg',
+                                        'mime_type' => 'image/jpeg',
+                                        'type'      => 'avatar',
+                                    ],
+                                'coordinates'        => '1470.0395618762616,389.33600914650685',
+                                'last_login'         => '2024-11-21T12:56:17.000000Z',
+                                'verified'           => 0,
+                                'is_bot'             => 0,
+                                'video_status'       => NULL,
+                                'voice_status'       => NULL,
+                                'screenshare_status' => NULL,
+                            ],
+                    ],
+            ],
+    ];
+    dd(json_encode($req));
     try {
         $socket_users = collect(\Http::get(get_socket_url('sockets'))->json());
     } catch (\Exception $exception) {
