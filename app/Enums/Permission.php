@@ -23,13 +23,14 @@ enum Permission: string
     case WS_DELETE = 'delete-ws';
     case WS_ADD_ROOMS = 'add-rooms-to-ws';
     case WS_ADD_JOB = 'add-job-to-ws';
+    case WS_ADD_TAG = 'add-tag-to-ws';
 
     case ROOMS_CHANGE_POSITION = 'change-rooms-position';
     case ROOM_GET = 'get-room';
     case ROOM_KICK_USER = 'kick-user-from-room';
     case ROOM_UPDATE = 'update-room';
     case ROOM_DELETE = 'delete-room';
-    case ROOM_UPDATE_USER = 'update-user-in-room'; //mute,unmute,stop screen,change position of user.
+    case ROOM_UPDATE_USER = 'update-user-in-room';         //mute,unmute,stop screen,change position of user.
     case ROOM_UPDATE_MESSAGES = 'update-messages-in-room'; //delete message,pin message,edit message
 
     case JOB_GET = 'get-job';

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Permission;
 use App\Http\Resources\TagResource;
 use App\Models\Tag;
 use Illuminate\Http\Request;
@@ -15,6 +16,11 @@ class TagController extends Controller
                                'title'        => 'required',
                                'workspace_id' => 'required|exists:workspaces,id',
                            ]);
+
+
+        $user = auth()->user();
+        $user->canDo(Permission::WS_ADD_TAG, $request->workspace_id);
+
 
         $tag = Tag::create($request->all());
 

@@ -55,7 +55,6 @@ class RoomController extends Controller
         //TODO:check has create room permission
         $user = auth()->user();
 
-        $user->canDo(Permission::ROOM_CREATE, $request->workspace_id);
 
         $workspace = Workspace::findOrFail($request->workspace_id);
 
