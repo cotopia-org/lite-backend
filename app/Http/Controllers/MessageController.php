@@ -107,14 +107,30 @@ class   MessageController extends Controller
 
     }
 
-    public function get(Room $room)
+    public function get(Message $message)
     {
-        $user = auth()->user();
-        //TODO check if user is in room
 
-        $messages = $room->messages;
+        $chat = $message->chat;
 
-        return api(MessageListResource::collection($messages));
+        $before_messages = $chat->messages()->orderBy('id', 'DESC')->withTrashed()->with([
+                                                                                             'links',
+                                                                                             'mentions',
+                                                                                             'user',
+                                                                                             'files',
+                                                                                         ])
+                                ->where('id', '<=', $message->id)
+                                ->take(20)->get();
+
+        $after_messages = $chat->messages()->orderBy('id', 'DESC')->withTrashed()->with([
+                                                                                            'links',
+                                                                                            'mentions',
+                                                                                            'user',
+                                                                                            'files',
+                                                                                        ])->where('id', '<', $message)
+                               ->take(20)->get();
+
+
+        return api(MessageListResource::collection($before_messages->merge($after_messages)->sortBy('id')));
 
     }
 
@@ -127,6 +143,7 @@ class   MessageController extends Controller
         //        sendSocket(Constants::messagePinned, $message->room->channel, MessageResource::make($message));
 
     }
+
 
     public function unPin(Message $message)
     {

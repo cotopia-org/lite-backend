@@ -120,6 +120,9 @@ class ChatController extends Controller {
 
     }
 
+
+
+
     public function messages(Chat $chat) {
 
 

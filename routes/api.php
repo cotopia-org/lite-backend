@@ -103,7 +103,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
 
     Route::controller(MessageController::class)->prefix('messages')->group(function () {
         Route::get('/searchMention', 'searchMention');
-        Route::get('/{room}', 'get');
+        Route::get('/{message:nonce_id}', 'get');
         Route::get('/{message}/seen', 'seen');
         Route::get('/{message}/pin', 'pin');
         Route::get('/{message}/unPin', 'unPin');
