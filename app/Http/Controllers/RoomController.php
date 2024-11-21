@@ -153,7 +153,7 @@ class RoomController extends Controller
         ]);
 
 
-        joinUserToSocketRoom($user->id, $room->id);
+        userJoinedToRoomEmit($user->id, $room->id);
 
 
         $user->joined($room, 'Connected From RoomController Join Method');
