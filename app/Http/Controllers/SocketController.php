@@ -143,8 +143,8 @@ class SocketController extends Controller
     {
         $json = json_encode($request->all());
 
-
-        sendMessage($request->json(), 48);
+        logger($json);
+//        sendMessage($json, 48);
 
     }
 
