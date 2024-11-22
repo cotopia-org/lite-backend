@@ -18,12 +18,10 @@ use App\Utilities\Constants;
 use App\Utilities\EventType;
 use Illuminate\Http\Request;
 
-class SocketController extends Controller
-{
+class SocketController extends Controller {
 
 
-    public function checkUser()
-    {
+    public function checkUser() {
         $user = auth()->user();
         return api([
                        'id'       => $user->id,
@@ -31,8 +29,7 @@ class SocketController extends Controller
                    ]);
     }
 
-    public function connected(Request $request)
-    {
+    public function connected(Request $request) {
 
         $user = auth()->user();
         $user->update([
@@ -48,8 +45,7 @@ class SocketController extends Controller
                    ]);
     }
 
-    public function events(Request $request)
-    {
+    public function events(Request $request) {
 
 
         return TRUE;
@@ -100,8 +96,7 @@ class SocketController extends Controller
 
     }
 
-    public function updateCoordinates(Request $request)
-    {
+    public function updateCoordinates(Request $request) {
 
         $user = auth()->user();
 
@@ -115,8 +110,7 @@ class SocketController extends Controller
 
     }
 
-    public function disconnected()
-    {
+    public function disconnected() {
 
         $user = auth()->user();
         $request = \request();
@@ -124,13 +118,13 @@ class SocketController extends Controller
 
         if (!$user->isInSocket()) {
 
-            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'time_ended',
-                  'SocketController@disconnected');
-            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'disconnected',
-                  'SocketController@disconnected');
+            if ($user->room_id !== NULL) {
+                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'time_ended', 'SocketController@disconnected');
+            }
 
-            DisconnectUserJob::dispatch($user, $request->offline !== NULL, FALSE,
-                                        'Disconnected From SocketController Disconnected Method');
+            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'disconnected', 'SocketController@disconnected');
+
+            DisconnectUserJob::dispatch($user, $request->offline !== NULL, FALSE, 'Disconnected From SocketController Disconnected Method');
 
         }
 
@@ -139,18 +133,17 @@ class SocketController extends Controller
 
     }
 
-    public function logger(Request $request)
-    {
-        return true;
-//        $json = json_encode($request->all());
-//
-//        logger($json);
+    public function logger(Request $request) {
+        return TRUE;
+        //        $json = json_encode($request->all());
+        //
+        //        logger($json);
 
-//        $message = '';
-//        foreach ($request->all() as $req) {
-//            $message
-//        }
-//        sendMessage($json, 48);
+        //        $message = '';
+        //        foreach ($request->all() as $req) {
+        //            $message
+        //        }
+        //        sendMessage($json, 48);
 
     }
 
