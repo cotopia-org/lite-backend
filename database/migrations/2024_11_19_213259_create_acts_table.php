@@ -14,10 +14,10 @@ return new class extends Migration {
 
 
             $table->string('type');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignId('workspace_id')->nullable()->constrained()->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignId('room_id')->nullable()->constrained()->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignId('job_id')->nullable()->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('no action')->onUpdate('no action');
+            $table->foreignId('workspace_id')->nullable()->constrained()->onDelete('no action')->onUpdate('no action');
+            $table->foreignId('room_id')->nullable()->constrained()->onDelete('no action')->onUpdate('no action');
+            $table->foreignId('job_id')->nullable()->constrained()->onDelete('no action')->onUpdate('no action');
 
 
             $table->string('description');
