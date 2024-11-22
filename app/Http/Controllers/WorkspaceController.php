@@ -137,7 +137,6 @@ class WorkspaceController extends Controller {
 
         $firstOfMonth = now()->firstOfMonth();
 
-        dd($firstOfMonth);
         $users = $workspace->users;
         $acts = DB::table('activities')->where('workspace_id', $workspace->id)
                   ->select('user_id', DB::raw('SUM(TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60) as sum_minutes'), DB::raw('SUM(IF(job_id IS NULL, TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60, 0)) as idle'), DB::raw('SUM(IF(job_id IS NOT NULL, TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60, 0)) as working'))
