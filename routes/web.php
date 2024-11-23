@@ -211,7 +211,9 @@ Route::get('/scoreboard', function () {
                            ->orderBy('id', 'ASC')->where('user_id', $request->user_id)->get();
 
     $minutes = 0;
+    $data = [];
     foreach ($acts as $act) {
+        $data[] = $act;
         if ($act->type === 'time_started') {
             $end = $acts->where('id', '>', $act->id)->where('type', 'time_ended')->first();
             if ($end === NULL) {
@@ -222,7 +224,10 @@ Route::get('/scoreboard', function () {
             }
         }
     }
-    return \Carbon\CarbonInterval::minutes($minutes)->cascade()->forHumans(['parts' => 3]);
+    return [
+        'minutes' => \Carbon\CarbonInterval::minutes($minutes)->cascade()->forHumans(),
+        'data'    => $data,
+    ];
 
 });
 Route::get('/health', function () {
