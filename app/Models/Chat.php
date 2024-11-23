@@ -104,7 +104,7 @@ class Chat extends Model
     }
 
 
-    public function oldMessages($user)
+    public function sawMessages($user)
     {
 
         $pivot = $this->users->find($user->id)->pivot;

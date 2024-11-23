@@ -123,7 +123,7 @@ class ChatController extends Controller {
     public function sawMessages(Chat $chat) {
         $user = auth()->user();
 
-        $messages = $chat->oldMessages($user)->paginate($request->perPage ?? 50);
+        $messages = $chat->sawMessages($user)->paginate($request->perPage ?? 50);
 
         return api(MessageResource::collection($messages));
 
