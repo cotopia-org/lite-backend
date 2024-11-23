@@ -181,6 +181,7 @@ Route::get('/lastMonth', function () {
 });
 
 Route::get('/acts', function () {
+
     $request = request();
     if ($request->user_id === NULL) {
         $users = \App\Models\User::all();
@@ -200,6 +201,10 @@ Route::get('/acts', function () {
 
 Route::get('/scoreboard', function () {
 
+    \Carbon\CarbonInterval::setCascadeFactors([
+                                                  'minute' => [60, 'seconds'],
+                                                  'hour'   => [60, 'minutes'],
+                                              ]);
     $request = request();
     $today = today();
     $acts = \App\Models\Act::where('created_at', '>=', $today)->whereIn('type', ['time_started', 'time_ended'])
@@ -217,8 +222,7 @@ Route::get('/scoreboard', function () {
             }
         }
     }
-
-    return $minutes / 60;
+    return \Carbon\CarbonInterval::minutes($minutes)->cascade()->forHumans();
 
 });
 Route::get('/health', function () {
