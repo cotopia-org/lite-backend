@@ -213,7 +213,11 @@ Route::get('/scoreboard', function () {
     $minutes = 0;
     $data = [];
     foreach ($acts as $act) {
-        $data[] = $act;
+        $data[] = [
+            'id'         => $act->id,
+            'type'       => $act->type,
+            'created_at' => $act->created_at
+        ];
         if ($act->type === 'time_started') {
             $end = $acts->where('id', '>', $act->id)->where('type', 'time_ended')->first();
             if ($end === NULL) {
