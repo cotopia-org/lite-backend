@@ -18,11 +18,9 @@ use App\Utilities\Constants;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class   MessageController extends Controller
-{
+class   MessageController extends Controller {
 
-    public function send(Request $request)
-    {
+    public function send(Request $request) {
         $request->validate(['text' => 'required', 'chat_id' => 'required']);
 
         $user = auth()->user();
@@ -77,8 +75,7 @@ class   MessageController extends Controller
 
     }
 
-    public function seen(Message $message)
-    {
+    public function seen(Message $message) {
         $user = auth()->user();
 
 
@@ -92,8 +89,7 @@ class   MessageController extends Controller
 
     }
 
-    public function searchMention(Request $request)
-    {
+    public function searchMention(Request $request) {
 
         $users = User::where('username', 'LIKE', $request->q . '%')->get();
         $workspaces = Workspace::where('title', 'LIKE', $request->q . '%')->get();
@@ -107,35 +103,33 @@ class   MessageController extends Controller
 
     }
 
-    public function get(Message $message)
-    {
+    public function get(Message $message) {
 
         $chat = $message->chat;
 
-        $before_messages = $chat->messages()->orderBy('id', 'DESC')->withTrashed()->with([
-                                                                                             'links',
-                                                                                             'mentions',
-                                                                                             'user',
-                                                                                             'files',
-                                                                                         ])
-                                ->where('id', '<=', $message->id)
-                                ->take(20)->get();
+        $before_messages = $chat
+            ->messages()->orderBy('id', 'DESC')->withTrashed()->with([
+                                                                         'links',
+                                                                         'mentions',
+                                                                         'user',
+                                                                         'files',
+                                                                     ])->where('id', '<=', $message->id)->take(20)
+            ->get();
 
-        $after_messages = $chat->messages()->orderBy('id', 'DESC')->withTrashed()->with([
-                                                                                            'links',
-                                                                                            'mentions',
-                                                                                            'user',
-                                                                                            'files',
-                                                                                        ])->where('id', '<', $message)
-                               ->take(20)->get();
+        $after_messages = $chat
+            ->messages()->orderBy('id', 'DESC')->withTrashed()->with([
+                                                                         'links',
+                                                                         'mentions',
+                                                                         'user',
+                                                                         'files',
+                                                                     ])->where('id', '>', $message)->take(20)->get();
 
 
-        return api(MessageListResource::collection($before_messages->merge($after_messages)->sortBy('id')));
+        return api(MessageResource::collection($before_messages->merge($after_messages)->sortBy('id')));
 
     }
 
-    public function pin(Message $message)
-    {
+    public function pin(Message $message) {
         //TODO: check user can pin message in this room
 
         $message->update(['is_pinned' => TRUE]);
@@ -145,8 +139,7 @@ class   MessageController extends Controller
     }
 
 
-    public function unPin(Message $message)
-    {
+    public function unPin(Message $message) {
         //TODO: check user can pin message in this room
 
         $message->update(['is_pinned' => FALSE]);
@@ -156,8 +149,7 @@ class   MessageController extends Controller
     }
 
 
-    public function delete(Message $message)
-    {
+    public function delete(Message $message) {
 
         if (auth()->id() === $message->user_id) {
             $message->delete();
@@ -169,8 +161,7 @@ class   MessageController extends Controller
 
     }
 
-    public function update(Message $message, Request $request)
-    {
+    public function update(Message $message, Request $request) {
 
 
         if (auth()->id() === $message->user_id) {
