@@ -222,7 +222,7 @@ Route::get('/scoreboard', function () {
             }
         }
     }
-    return \Carbon\CarbonInterval::minutes($minutes)->cascade()->forHumans();
+    return \Carbon\CarbonInterval::minutes($minutes)->cascade()->forHumans(['parts' => 3]);
 
 });
 Route::get('/health', function () {
