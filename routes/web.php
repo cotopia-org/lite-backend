@@ -218,7 +218,7 @@ Route::get('/scoreboard', function () {
         }
     }
 
-    return $minutes;
+    return $minutes / 60;
 
 });
 Route::get('/health', function () {
