@@ -16,10 +16,8 @@ use App\Models\Workspace;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
 
-class RoomController extends Controller
-{
-    public function update(Room $room, Request $request)
-    {
+class RoomController extends Controller {
+    public function update(Room $room, Request $request) {
 
 
         $user = auth()->user();
@@ -44,8 +42,7 @@ class RoomController extends Controller
     }
 
 
-    public function create(Request $request)
-    {
+    public function create(Request $request) {
 
         $request->validate([
                                'workspace_id' => 'required',
@@ -73,8 +70,7 @@ class RoomController extends Controller
 
     }
 
-    public function get(Room $room)
-    {
+    public function get(Room $room) {
         //        $user = auth()->user();
         //        $workspace = $user->workspaces()->find($workspace);
         //        if ($workspace === NULL) {
@@ -88,8 +84,7 @@ class RoomController extends Controller
     }
 
 
-    public function switch(Room $room)
-    {
+    public function switch(Room $room) {
         $user = auth()->user();
 
 
@@ -118,18 +113,19 @@ class RoomController extends Controller
         return api(RoomResource::make($room));
     }
 
-    public function join(Room $room)
-    {
+    public function join(Room $room) {
         $user = auth()->user();
 
 
         $before_room = $user->room_id;
+        if ($user->status !== Constants::ONLINE) {
+            return error('Not Online');
+        }
 
 
         if ($before_room === NULL) {
             // It means its first time for join.
-            acted($user->id, $room->workspace_id, $room->id, $user->active_job_id, 'time_started',
-                  'RoomController@join');
+            acted($user->id, $room->workspace_id, $room->id, $user->active_job_id, 'time_started', 'RoomController@join');
 
         }
         $room = $room->joinUser($user);
@@ -164,8 +160,7 @@ class RoomController extends Controller
     }
 
 
-    public function delete(Room $room)
-    {
+    public function delete(Room $room) {
         //TODO CHECK PERMISSION
         $user = auth()->user();
         $user->canDo(Permission::WS_ADD_ROOMS, $room->workspace->id);
@@ -186,8 +181,7 @@ class RoomController extends Controller
     }
 
 
-    public function leave()
-    {
+    public function leave() {
         $user = auth()->user();
         $request = \request();
 
