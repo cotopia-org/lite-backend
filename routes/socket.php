@@ -9,10 +9,12 @@ Route::prefix('socket')->group(function () {
 
 
     Route::post('logger', [SocketController::class, 'logger']);
+
     Route::middleware('auth:sanctum')->group(function () {
         Route::controller(SocketController::class)->group(function () {
             Route::post('/updateCoordinates', 'updateCoordinates')->middleware('checkSocketId');
             Route::post('/connected', 'connected');
+            Route::get('/checkUser', 'checkUser');
             Route::get('/disconnected', 'disconnected');
 
 
