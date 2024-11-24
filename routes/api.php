@@ -149,7 +149,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/{chat}/unseenMessages', 'unseenMessages');
         Route::get('/{chat}/participants', 'participants');
         Route::get('/{chat}/pinnedMessages', 'pinnedMessages');
-        Route::get('/{chat}/getLastUnSeenMessage', 'getLastUnSeenMessage');
+        Route::get('/{chat}/getLastUnSeenMessagePage', 'getLastUnSeenMessagePage');
 
     })->middleware('checkIsUserOnline');
 

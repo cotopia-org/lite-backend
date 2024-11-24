@@ -148,7 +148,7 @@ class ChatController extends Controller
     }
 
 
-    public function getLastUnSeenMessage(Chat $chat)
+    public function getLastUnSeenMessagePage(Chat $chat)
     {
         $perPage = 50;
 
