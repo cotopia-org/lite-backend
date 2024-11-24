@@ -35,6 +35,20 @@ class SocketController extends Controller
     {
 
         $user = auth()->user();
+
+        if ($user->status === Constants::ONLINE) {
+
+
+            if ($user->room_id !== NULL) {
+                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'time_ended',
+                      'User Was Online SocketController@connected');
+            }
+
+            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'disconnected',
+                  'User Was Online SocketController@disconnected');
+
+        }
+
         $user->update([
                           'socket_id' => $request->socket_id,
                           'status'    => Constants::ONLINE
