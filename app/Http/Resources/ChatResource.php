@@ -20,6 +20,12 @@ class ChatResource extends JsonResource
     {
 
         $user = auth()->user();
+
+
+
+
+
+
         return [
             'id'                 => $this->id,
             'title'              => $this->getTitle($user),
