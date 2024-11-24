@@ -138,7 +138,7 @@ class SocketController extends Controller
         $user = auth()->user();
         $request = \request();
 
-        logger($request->socket_status);
+//        logger($request->socket_status);
         if ($request->socket_status === 'enable') {
 
             if ($user->room_id !== NULL) {
