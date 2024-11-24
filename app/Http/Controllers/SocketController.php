@@ -47,6 +47,9 @@ class SocketController extends Controller
             acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'disconnected',
                   'User Was Online SocketController@disconnected');
 
+            DisconnectUserJob::dispatch($user, $request->offline !== NULL, FALSE,
+                                        'User Was Online Disconnected From SocketController Connected Method');
+
         }
 
         $user->update([
