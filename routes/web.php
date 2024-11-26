@@ -202,6 +202,8 @@ Route::get('/acts', function () {
 Route::get('/scoreboard', function () {
 
     \Carbon\CarbonInterval::setCascadeFactors([
+                                                  'seconds' => [1_000, 'milliseconds'],
+
                                                   'minute' => [60, 'seconds'],
                                                   'hour'   => [60, 'minutes'],
                                               ]);
