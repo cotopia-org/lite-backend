@@ -27,13 +27,15 @@ class RoomController extends Controller {
 
         $room->update($request->all());
 
-        File::syncFile($request->background_id, $room, 'background');
-        File::syncFile($request->logo_id, $room, 'logo');
+        //        File::syncFile($request->background_id, $room, 'background');
+        //        File::syncFile($request->logo_id, $room, 'logo');
 
-        //        sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
 
-        if ($request->background_id) {
+        if ($request->background) {
             sendSocket(Constants::roomBackgroundChanged, $room->channel, RoomResource::make($room));
+
+        } else {
+            sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
 
         }
 

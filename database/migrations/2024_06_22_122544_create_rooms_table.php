@@ -8,8 +8,7 @@ return new class () extends Migration {
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
+    public function up(): void {
         Schema::create('rooms', function (Blueprint $table) {
             $table->id();
             $table->string('title');
@@ -19,9 +18,12 @@ return new class () extends Migration {
             $table->string('status')->nullable();
             $table->string('landing_spot')->nullable();
             $table->foreignId('workspace_id')->nullable()->constrained()->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade')
-                  ->onUpdate('cascade'); //For instant meetings.
+            $table
+                ->foreignId('user_id')->nullable()->constrained()->onDelete('cascade')
+                ->onUpdate('cascade'); //For instant meetings.
 
+
+            $table->string('background')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -30,8 +32,7 @@ return new class () extends Migration {
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('rooms');
     }
 };

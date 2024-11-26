@@ -26,7 +26,8 @@ class Room extends Model {
         'status',
         'landing_spot',
         'workspace_id',
-        'user_id'
+        'user_id',
+        'background',
     ];
 
     protected $appends = [
@@ -45,9 +46,9 @@ class Room extends Model {
         return $this->morphMany(File::class, 'fileable');
     }
 
-    public function background() {
-        return $this->files->where('type', 'background')->last();
-    }
+//    public function background() {
+//        return $this->files->where('type', 'background')->last();
+//    }
 
 
     public function isDirectRoom() {

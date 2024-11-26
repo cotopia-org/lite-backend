@@ -16,7 +16,7 @@ class RoomListResource extends JsonResource {
             'id'           => $this->id,
             'title'        => $this->title,
             'is_private'   => $this->is_private,
-            'background'   => FileResource::make($this->background()),
+            'background'   => $this->background,
             'participants' => UserMinimalResource::collection($this->participants()),
 
         ];
