@@ -265,8 +265,7 @@ class UserController extends Controller
                                             ->where("mentions.mentionable_id", $user->id);
                                     },
                                 ])
-                    ->orderBy('lastMessage.created_at', 'DESC')
-                    ->get()
+                    ->get()->sortByDesc('lastMessage.created_at')
             )
         );
     }
