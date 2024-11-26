@@ -59,6 +59,7 @@ class Constants
     const messagePinned = 'messagePinned';
     const messageUnPinned = 'messageUnPinned';
     const messageSeen = 'messageSeen';
+    const messageReacted = 'messageReacted';
     const workspaceRoomUpdated = 'workspaceRoomUpdated';
     const talkCreated = 'talkCreated';
     const  talkResponded = 'talkResponded';

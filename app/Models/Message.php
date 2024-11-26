@@ -41,6 +41,10 @@ class Message extends Model {
         return $this->belongsTo(__CLASS__, 'reply_to');
     }
 
+    public function reacts() {
+        return $this->hasMany(React::class);
+    }
+
     public function files() {
         return $this->morphMany(File::class, 'fileable');
     }
@@ -64,8 +68,8 @@ class Message extends Model {
         }
         $last_message_seen_id = $user->chats->find($this->chat_id)->pivot->last_message_seen_id ?? 0;
 
-//        $last_message_seen_id = DB::table('chat_user')->where('user_id', $user->id)->where('chat_id', $this->chat_id)
-//                                  ->first()->last_message_seen_id ?? 0;
+        //        $last_message_seen_id = DB::table('chat_user')->where('user_id', $user->id)->where('chat_id', $this->chat_id)
+        //                                  ->first()->last_message_seen_id ?? 0;
 
         return $this->id <= $last_message_seen_id;
 

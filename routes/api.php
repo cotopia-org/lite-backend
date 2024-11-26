@@ -112,6 +112,11 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::post('/', 'send');
         Route::put('/{message}', 'update');
         Route::delete('/{message}', 'delete');
+
+
+        Route::post('/{message}/react', 'react');
+
+
     })->middleware('checkIsUserOnline');
 
     Route::controller(JobController::class)->prefix('jobs')->group(function () {

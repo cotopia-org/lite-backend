@@ -10,6 +10,7 @@ use App\Http\Resources\WorkspaceResource;
 use App\Models\File;
 use App\Models\Message;
 use App\Models\Participant;
+use App\Models\React;
 use App\Models\Room;
 use App\Models\Seen;
 use App\Models\User;
@@ -178,5 +179,46 @@ class   MessageController extends Controller {
 
     }
 
+    public function react(Message $message, Request $request) {
+
+        $request->validate([
+                               'emoji' => 'required'
+                           ]);
+
+        $user = auth()->user();
+        $react = React::where('user_id', $user->id)->where('message_id', $message->id)
+                      ->where('chat_id', $message->chat_id)->first();
+
+
+        if ($react === NULL) {
+
+            $data = [
+                'chat_id'    => $message->chat_id,
+                'message_id' => $message->id,
+                'user_id'    => $user->id,
+                'emoji'      => $request->emoji
+            ];
+            $react = React::create([
+                                       'chat_id'    => $message->chat_id,
+                                       'message_id' => $message->id,
+                                       'user_id'    => $user->id,
+                                       'emoji'      => $request->emoji
+                                   ]);
+            sendSocket(Constants::messageReacted, $message->chat->channel, $data);
+
+
+        } elseif ($react->emoji === $request->emoji) {
+            $react->delete();
+        } else {
+            $react->update(['emoji' => $request->emoji]);
+            sendSocket(Constants::messageReacted, $message->chat->channel, $data);
+
+        }
+
+
+        return api(MessageResource::make($message));
+
+
+    }
 
 }
