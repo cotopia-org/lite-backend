@@ -58,6 +58,7 @@ class Constants
     const messageDeleted = 'messageDeleted';
     const messagePinned = 'messagePinned';
     const messageUnPinned = 'messageUnPinned';
+    const livekitEvent = 'livekitEvent';
     const messageSeen = 'messageSeen';
     const messageReacted = 'messageReacted';
     const workspaceRoomUpdated = 'workspaceRoomUpdated';

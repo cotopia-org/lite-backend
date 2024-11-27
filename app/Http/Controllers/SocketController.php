@@ -67,7 +67,12 @@ class SocketController extends Controller
 
     public function events(Request $request)
     {
+        $req = json_decode(json_encode($request->all()))[0];
 
+        if ($req->room !== NULL) {
+            sendSocket(Constants::livekitEvent, 'room-' . $req->room->name, $req);
+
+        }
 
         return TRUE;
         try {
