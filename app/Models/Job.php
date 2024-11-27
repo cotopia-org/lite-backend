@@ -132,8 +132,9 @@ $job->estimate hrs ⏰
     public function getTime($user_id)
     {
 
+        $firstOfMonth = now()->firstOfMonth();
 
-        $acts = $this->activities->where('user_id', $user_id);
+        $acts = $this->activities->where('created_at', '>=', $firstOfMonth)->where('user_id', $user_id);
 
 
         $sum_minutes = 0;

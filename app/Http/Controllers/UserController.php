@@ -51,10 +51,16 @@ class UserController extends Controller
             });
 
         }
+        $firstOfMonth = now()->firstOfMonth();
+
 
         if ($request->workspace_id) {
             $jobs = $jobs
                 ->orderBy("updated_at", "DESC")
+                ->whereHas('activities', function ($query) use ($firstOfMonth) {
+                    $query->where('created_at', '>=', $firstOfMonth);
+
+                })
                 ->where("workspace_id", $request->workspace_id);
         }
 
