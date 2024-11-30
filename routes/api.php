@@ -180,6 +180,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/{tag}', 'get');
         Route::put('/{tag}', 'update');
         Route::post('/{tag}/addMember', 'addMember');
+        Route::post('/{tag}/removeMember', 'removeMember');
 
     });
 
