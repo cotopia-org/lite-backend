@@ -49,6 +49,12 @@ class TagController extends Controller {
     }
 
     public function delete(Tag $tag) {
+
+        $user = auth()->user();
+
+        $user->canDo(Permission::WS_REMOVE_TAG, $tag->workspace_id);
+
+
         $tag->users()->detach();
         $tag->delete();
         return api(TRUE);
