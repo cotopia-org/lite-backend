@@ -56,7 +56,7 @@ class TagController extends Controller {
 
 
         $tag->users()->detach();
-        $tag->delete();
+        $tag->update(['workspace_id' => NULL]);
         return api(TRUE);
     }
 
