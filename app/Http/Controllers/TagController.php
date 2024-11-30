@@ -48,6 +48,12 @@ class TagController extends Controller {
         return api(TagResource::make($tag));
     }
 
+    public function delete(Tag $tag) {
+        $tag->users()->detach();
+        $tag->delete();
+        return api(TRUE);
+    }
+
     public function get(Tag $tag) {
         $user = auth()->user();
 

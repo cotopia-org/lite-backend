@@ -181,6 +181,8 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::put('/{tag}', 'update');
         Route::post('/{tag}/addMember', 'addMember');
         Route::post('/{tag}/removeMember', 'removeMember');
+        Route::delete('/{tag}', 'delete');
+
 
     });
 
