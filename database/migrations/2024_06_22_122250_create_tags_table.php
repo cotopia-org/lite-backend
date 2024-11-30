@@ -8,12 +8,11 @@ return new class () extends Migration {
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
+    public function up(): void {
         Schema::create('tags', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->foreignId('workspace_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('workspace_id')->constrained()->onDelete('no action')->onUpdate('no action');
 
             $table->timestamps();
         });
@@ -22,8 +21,7 @@ return new class () extends Migration {
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('tags');
     }
 };
