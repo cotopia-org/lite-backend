@@ -41,11 +41,7 @@ class UserController extends Controller
         } else {
             $user = User::findOrFail($user);
         }
-        $jobs = $user->jobs()->orderBy("updated_at", "DESC")
-                     ->whereHas('activities', function ($query) use ($firstOfMonth) {
-                         $query->where('created_at', '>=', $firstOfMonth);
-
-                     });
+        $jobs = $user->jobs()->orderBy("updated_at", "DESC");
 
 
         if ($request->suggestions === 1) {
@@ -62,10 +58,10 @@ class UserController extends Controller
         if ($request->workspace_id) {
             $jobs = $jobs
                 ->orderBy("updated_at", "DESC")
-                ->whereHas('activities', function ($query) use ($firstOfMonth) {
-                    $query->where('created_at', '>=', $firstOfMonth);
-
-                })
+//                ->whereHas('activities', function ($query) use ($firstOfMonth) {
+//                    $query->where('created_at', '>=', $firstOfMonth);
+//
+//                })
                 ->where("workspace_id", $request->workspace_id);
         }
 
