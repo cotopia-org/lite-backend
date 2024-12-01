@@ -7,11 +7,9 @@ use App\Http\Resources\TagResource;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 
-class TagController extends Controller
-{
+class TagController extends Controller {
     //TODO: has to check sanctum.
-    public function create(Request $request)
-    {
+    public function create(Request $request) {
         $request->validate([
                                'title'        => 'required',
                                'workspace_id' => 'required|exists:workspaces,id',
@@ -27,8 +25,7 @@ class TagController extends Controller
         return api(TagResource::make($tag));
     }
 
-    public function addMember(Tag $tag, Request $request)
-    {
+    public function addMember(Tag $tag, Request $request) {
 
 
         $request->validate([
@@ -42,16 +39,35 @@ class TagController extends Controller
 
     }
 
-    public function get(Tag $tag)
-    {
+    public function removeMember(Tag $tag, Request $request) {
+        $request->validate([
+                               'user_id' => 'required|exists:users,id',
+                           ]);
+
+        $tag->users()->detach($request->user_id);
+        return api(TagResource::make($tag));
+    }
+
+    public function delete(Tag $tag) {
+
+        $user = auth()->user();
+
+        $user->canDo(Permission::WS_REMOVE_TAG, $tag->workspace_id);
+
+
+        $tag->users()->detach();
+        $tag->delete();
+        return api(TRUE);
+    }
+
+    public function get(Tag $tag) {
         $user = auth()->user();
 
         return api(TagResource::make($tag));
 
     }
 
-    public function update(Tag $tag, Request $request)
-    {
+    public function update(Tag $tag, Request $request) {
 
         $tag->update($request->all());
 

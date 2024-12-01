@@ -2,8 +2,7 @@
 
 namespace App\Enums;
 
-enum Permission: string
-{
+enum Permission: string {
     case ALL = '*';
 
     case CALENDAR_VIEW = 'calendar_view';
@@ -23,7 +22,11 @@ enum Permission: string
     case WS_DELETE = 'delete-ws';
     case WS_ADD_ROOMS = 'add-rooms-to-ws';
     case WS_ADD_JOB = 'add-job-to-ws';
+    case WS_REMOVE_TAG = 'remove-tag-from-ws';
     case WS_ADD_TAG = 'add-tag-to-ws';
+
+
+
 
     case ROOMS_CHANGE_POSITION = 'change-rooms-position';
     case ROOM_GET = 'get-room';
