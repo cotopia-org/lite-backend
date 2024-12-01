@@ -138,7 +138,6 @@ class WorkspaceController extends Controller
 
         $workspaceUsers = DB::table('user_workspace')->where('workspace_id', $workspace->id)->get()->pluck('user_id');
 
-        logger($workspaceUsers);
         $schedules = Schedule::whereIn('user_id', $workspaceUsers)->with([
                                                                              'user' => [
                                                                                  'schedules',
