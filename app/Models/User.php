@@ -314,7 +314,7 @@ class User extends Authenticatable
 
     public function joined($room, $data)
     {
-        if ($this->active_activity_id === NULL) {
+        if ($this->active_activity_id === NULL || $this->active_activity_id === 0) {
 
             $act = $this->activities()->create([
                                                    'join_at'      => now(),
