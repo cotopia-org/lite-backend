@@ -22,10 +22,10 @@ class JobController extends Controller
         $user = auth()->user();
 
         $req = $request->all();
-        $req->level = 0;
+        $req['level'] = 0;
         if ($request->job_id !== NULL) {
             $parent = Job::find($request->job_id);
-            $req->level = $parent->level + 1;
+            $req['level'] = $parent->level + 1;
 
         }
         $job = Job::create($req);
@@ -135,10 +135,10 @@ $job->estimate hrs ⏰
 
 
         $req = $request->all();
-        $req->level = 0;
+        $req['level'] = 0;
         if ($request->job_id !== NULL) {
             $parent = Job::find($request->job_id);
-            $req->level = $parent->level + 1;
+            $req['level'] = $parent->level + 1;
 
         }
 
