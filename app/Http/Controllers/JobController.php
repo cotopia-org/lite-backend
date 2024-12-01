@@ -132,6 +132,14 @@ $job->estimate hrs ⏰
 
         }
 
+        $request->level = $job->level;
+        if ($request->job_id !== NULL) {
+            $parent = Job::find($request->job_id);
+            $request->level = $parent->level + 1;
+
+        }
+
+
         $job->update($request->all());
         if ($request->tags) {
             $job->tags()->sync($request->tags);
