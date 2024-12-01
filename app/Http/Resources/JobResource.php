@@ -34,6 +34,7 @@ class JobResource extends JsonResource
             'estimate'     => $this->estimate,
             'parent'       => $this->job_id,
             'level'        => $this->level,
+            //            'children'     => JobResource::collection($this->jobs),
             //            'total_hours'  => $this->whenPivotLoaded('job_user', function () {
             //                return $this->getTime($this->pivot->user_id)['sum_hours'];
             //            }),

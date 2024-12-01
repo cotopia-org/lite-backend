@@ -12,6 +12,7 @@ use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\WorkspaceResource;
 use App\Models\Activity;
+use App\Models\Job;
 use App\Models\Role;
 use App\Models\Schedule;
 use App\Models\User;
@@ -50,12 +51,17 @@ class WorkspaceController extends Controller
     public function jobs(Workspace $workspace)
     {
 
-        return api(JobResource::collection($workspace->jobs()->with([
-                                                                        'users' => [
-                                                                            'schedules',
-                                                                            'avatar'
-                                                                        ]
-                                                                    ])->get()));
+
+        $jobs = $workspace->jobs()->whereNull('job_id')->with([
+                                                                  'users' => [
+                                                                      'schedules',
+                                                                      'avatar'
+                                                                  ],
+                                                                  'jobs'
+                                                              ])->get();
+        $orderedJobs = Job::getOrderedJobs($jobs);
+
+        return api(JobResource::collection($orderedJobs));
     }
 
     public function users(Workspace $workspace)
