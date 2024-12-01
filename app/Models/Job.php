@@ -73,15 +73,15 @@ $job->estimate hrs ⏰
 
     public function jobs()
     {
-            $this->hasMany(Job::class);
+        $this->hasMany(Job::class);
     }
 
     public static function getOrderedJobs($jobs, &$result = [])
     {
         foreach ($jobs as $job) {
             $result[] = $job; // Add the parent
-            if ($job->children) {
-                self::getOrderedJobs($job->children, $result); // Add children recursively
+            if ($job->jobs) {
+                self::getOrderedJobs($job->jobs, $result); // Add children recursively
             }
         }
         return $result;
