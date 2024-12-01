@@ -53,7 +53,6 @@ class WorkspaceController extends Controller
 
 
         $jobs = $workspace->jobs()->whereNull('job_id')->get();
-        dd($jobs);
         $orderedJobs = Job::getOrderedJobs($jobs);
 
         return api(JobResource::collection($orderedJobs));
