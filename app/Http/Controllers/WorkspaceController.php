@@ -52,7 +52,7 @@ class WorkspaceController extends Controller
     {
 
 
-        $jobs = $workspace->jobs()->whereNull('job_id')->with('jobs')->get();
+        $jobs = $workspace->jobs()->whereNull('job_id')->get();
         dd($jobs);
         $orderedJobs = Job::getOrderedJobs($jobs);
 
