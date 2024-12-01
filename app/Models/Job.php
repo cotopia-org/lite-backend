@@ -80,7 +80,7 @@ $job->estimate hrs ⏰
     {
         foreach ($jobs as $job) {
             $result[] = $job; // Add the parent
-            if ($job->jobs) {
+            if ($job->jobs()->count() > 0) {
                 self::getOrderedJobs($job->jobs, $result); // Add children recursively
             }
         }
