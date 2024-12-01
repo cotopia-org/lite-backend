@@ -21,13 +21,14 @@ class JobController extends Controller
 
         $user = auth()->user();
 
-        $request->level = 0;
+        $req = $request->all();
+        $req->level = 0;
         if ($request->job_id !== NULL) {
             $parent = Job::find($request->job_id);
-            $request->level = $parent->level + 1;
+            $req->level = $parent->level + 1;
 
         }
-        $job = Job::create($request->all());
+        $job = Job::create($req);
 
         if ($request->tags) {
             $job->tags()->attach($request->tags);
@@ -132,15 +133,17 @@ $job->estimate hrs ⏰
 
         }
 
-        $request->level = $job->level;
+
+        $req = $request->all();
+        $req->level = 0;
         if ($request->job_id !== NULL) {
             $parent = Job::find($request->job_id);
-            $request->level = $parent->level + 1;
+            $req->level = $parent->level + 1;
 
         }
 
 
-        $job->update($request->all());
+        $job->update($req);
         if ($request->tags) {
             $job->tags()->sync($request->tags);
         }
