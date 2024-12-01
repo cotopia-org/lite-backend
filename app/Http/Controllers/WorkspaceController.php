@@ -52,13 +52,8 @@ class WorkspaceController extends Controller
     {
 
 
-        $jobs = $workspace->jobs()->whereNull('job_id')->with([
-                                                                  'users' => [
-                                                                      'schedules',
-                                                                      'avatar'
-                                                                  ],
-                                                                  'jobs'
-                                                              ])->get();
+        $jobs = $workspace->jobs()->whereNull('job_id')->with('jobs')->get();
+        dd($jobs);
         $orderedJobs = Job::getOrderedJobs($jobs);
 
         return api(JobResource::collection($orderedJobs));
