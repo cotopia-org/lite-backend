@@ -73,7 +73,7 @@ $job->estimate hrs ⏰
 
     public function jobs()
     {
-        $this->hasMany(Job::class, 'job_id', 'id');
+        return $this->hasMany(Job::class, 'job_id', 'id');
     }
 
     public static function getOrderedJobs($jobs, &$result = [])
