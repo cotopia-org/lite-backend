@@ -21,7 +21,12 @@ class JobController extends Controller
 
         $user = auth()->user();
 
+        $request->level = 0;
+        if ($request->job_id !== NULL) {
+            $parent = Job::find($request->job_id);
+            $request->level = $parent->level + 1;
 
+        }
         $job = Job::create($request->all());
 
         if ($request->tags) {
