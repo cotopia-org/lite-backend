@@ -25,6 +25,7 @@ return new class () extends Migration {
 
 
             $table->integer('job_id')->nullable();
+            $table->integer('level')->default(0);
             // TODO - Foreign key constraint is incorrectly formed
 //            $table->foreignId('workspace_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
 //            $table->foreignId('job_id')->constrained()->onDelete('cascade')->onUpdate('cascade');

@@ -27,6 +27,8 @@ class JobResource extends JsonResource
             'description'  => $this->description,
             'status'       => $this->status,
             'estimate'     => $this->estimate,
+            'parent'       => $this->job_id,
+            'level'        => $this->level,
             //            'total_hours'  => $this->whenPivotLoaded('job_user', function () {
             //                return $this->getTime($this->pivot->user_id)['sum_hours'];
             //            }),

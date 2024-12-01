@@ -28,6 +28,8 @@ class Job extends Model
         'start_at',
         'duration',
         'message_id',
+        'job_id',
+        'level'
     ];
 
     protected $casts = [
@@ -67,6 +69,11 @@ $job->estimate hrs ⏰
 
 
         });
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Job::class, 'job_id');
     }
 
     public function tags()
