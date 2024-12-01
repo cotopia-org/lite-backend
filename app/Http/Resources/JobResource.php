@@ -19,9 +19,9 @@ class JobResource extends JsonResource
         $total_hours = $this->total_hours;
         if ($total_hours === NULL) {
 
-            $users = $this->users();
-            if (count($users) > 0) {
-                $total_hours = $this->getTime($this->users()->first()->id)['sum_minutes'];
+            $user = $this->users()->first();
+            if ($user !== NULL) {
+                $total_hours = $this->getTime($user->id)['sum_minutes'];
 
             }
         }
