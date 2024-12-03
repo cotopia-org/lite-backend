@@ -41,7 +41,7 @@ class UserController extends Controller {
 
 
         if ($request->suggestions) {
-            $tags = $user->tags()->pluck('id');
+            $tags = $user->tags()->get()->pluck('id');
 
 
             $jobs = $jobs->whereHas('tags', function ($query) use ($tags) {
