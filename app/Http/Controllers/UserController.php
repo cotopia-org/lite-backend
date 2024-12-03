@@ -45,7 +45,7 @@ class UserController extends Controller {
 
 
             $jobs = $jobs->whereHas('tags', function ($query) use ($tags) {
-                $query->whereIn('id', $tags);
+                $query->whereIn('tag_id', $tags);
             });
 
         }
