@@ -40,7 +40,7 @@ class UserController extends Controller {
         $jobs = $user->jobs()->orderBy("updated_at", "DESC");
 
 
-        if ($request->suggestions === 1) {
+        if ($request->suggestions) {
             $tags = $user->tags()->pluck('id');
 
 
