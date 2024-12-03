@@ -6,6 +6,7 @@ use App\Http\Resources\ChatResource;
 use App\Http\Resources\MessageResource;
 use App\Http\Resources\UserMinimalResource;
 use App\Models\Chat;
+use App\Models\Message;
 use App\Models\User;
 use App\Models\Workspace;
 use App\Utilities\Constants;
@@ -13,11 +14,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
-class ChatController extends Controller
-{
+class ChatController extends Controller {
 
-    public function createDirect(Request $request)
-    {
+    public function createDirect(Request $request) {
         $request->validate([
 
 
@@ -50,8 +49,7 @@ class ChatController extends Controller
 
     }
 
-    public function createGroup(Request $request)
-    {
+    public function createGroup(Request $request) {
         $request->validate([
 
                                'title' => 'required',
@@ -99,36 +97,31 @@ class ChatController extends Controller
     }
 
 
-    public function createChannel(Request $request)
-    {
+    public function createChannel(Request $request) {
         return error('Cant create channels yet.');
 
     }
 
 
-    public function mentionedMessages(Chat $chat)
-    {
+    public function mentionedMessages(Chat $chat) {
         $user = auth()->user();
         return api(MessageResource::collection($chat->mentionedMessages($user)));
 
     }
 
-    public function participants(Chat $chat)
-    {
+    public function participants(Chat $chat) {
 
         return api(UserMinimalResource::collection($chat->users));
 
     }
 
-    public function pinnedMessages(Chat $chat)
-    {
+    public function pinnedMessages(Chat $chat) {
 
         return api(MessageResource::collection($chat->pinnedMessages()));
 
     }
 
-    public function sawMessages(Chat $chat)
-    {
+    public function sawMessages(Chat $chat) {
         $user = auth()->user();
 
         $messages = $chat->sawMessages($user)->paginate($request->perPage ?? 50);
@@ -137,8 +130,7 @@ class ChatController extends Controller
 
     }
 
-    public function unseenMessages(Chat $chat)
-    {
+    public function unseenMessages(Chat $chat) {
         $user = auth()->user();
 
         $messages = $chat->unSeens($user);
@@ -148,8 +140,7 @@ class ChatController extends Controller
     }
 
 
-    public function getLastUnSeenMessagePage(Chat $chat)
-    {
+    public function getLastUnSeenMessagePage(Chat $chat) {
         $perPage = 50;
 
         $user = auth()->user();
@@ -165,8 +156,21 @@ class ChatController extends Controller
                    ]);
     }
 
-    public function messages(Chat $chat)
-    {
+    public function getMessagePage(Chat $chat, Message $message) {
+        $perPage = 50;
+
+        $user = auth()->user();
+
+
+        $messagePosition = $chat->messages()->where('id', '<=', $message->id)->count();
+
+
+        return api([
+                       'page_number' => ceil($messagePosition / $perPage)
+                   ]);
+    }
+
+    public function messages(Chat $chat) {
 
 
         $user = auth()->user();
@@ -188,8 +192,7 @@ class ChatController extends Controller
     }
 
 
-    public function delete(Chat $chat)
-    {
+    public function delete(Chat $chat) {
 
         $user = auth()->user();
         $chat->users()->detach($user->id);
