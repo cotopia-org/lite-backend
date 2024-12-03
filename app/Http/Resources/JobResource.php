@@ -32,7 +32,7 @@ class JobResource extends JsonResource
             'description'  => $this->description,
             'status'       => $this->status,
             'estimate'     => $this->estimate,
-            'parent'       => $this->job_id,
+            'parent'       => JobResource::make($this->parent),
             'level'        => $this->level,
             //            'children'     => JobResource::collection($this->jobs),
             //            'total_hours'  => $this->whenPivotLoaded('job_user', function () {
