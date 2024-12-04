@@ -179,6 +179,8 @@ class   MessageController extends Controller {
 
     }
 
+
+
     public function react(Message $message, Request $request) {
 
         $request->validate([

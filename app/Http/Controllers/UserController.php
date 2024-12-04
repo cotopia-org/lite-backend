@@ -20,20 +20,16 @@ use App\Utilities\Constants;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class UserController extends Controller
-{
-    public function me()
-    {
+class UserController extends Controller {
+    public function me() {
         return api(UserResource::make(auth()->user()));
     }
 
-    public function settings()
-    {
+    public function settings() {
         return SettingResource::collection(auth()->user()->settings);
     }
 
-    public function jobs(Request $request, $user)
-    {
+    public function jobs(Request $request, $user) {
         $firstOfMonth = now()->firstOfMonth();
 
         if ($user === "me") {
@@ -44,12 +40,12 @@ class UserController extends Controller
         $jobs = $user->jobs()->orderBy("updated_at", "DESC");
 
 
-        if ($request->suggestions === 1) {
-            $tags = $user->tags()->pluck('id');
+        if ($request->suggestions) {
+            $tags = $user->tags->pluck('id');
 
 
             $jobs = $jobs->whereHas('tags', function ($query) use ($tags) {
-                $query->whereIn('id', $tags);
+                $query->whereIn('tag_id', $tags);
             });
 
         }
@@ -58,10 +54,10 @@ class UserController extends Controller
         if ($request->workspace_id) {
             $jobs = $jobs
                 ->orderBy("updated_at", "DESC")
-//                ->whereHas('activities', function ($query) use ($firstOfMonth) {
-//                    $query->where('created_at', '>=', $firstOfMonth);
-//
-//                })
+                //                ->whereHas('activities', function ($query) use ($firstOfMonth) {
+                //                    $query->where('created_at', '>=', $firstOfMonth);
+                //
+                //                })
                 ->where("workspace_id", $request->workspace_id);
         }
 
@@ -69,8 +65,7 @@ class UserController extends Controller
         return api(JobResource::collection($jobs->get()));
     }
 
-    public function scheduleFulfillment(Request $request, $user)
-    {
+    public function scheduleFulfillment(Request $request, $user) {
         if ($user === "me") {
             $user = auth()->user();
         } else {
@@ -81,9 +76,7 @@ class UserController extends Controller
 
         //
         $activities = $user
-            ->activities()
-            ->where("created_at", ">=", $firstOfMonth)
-            ->get();
+            ->activities()->where("created_at", ">=", $firstOfMonth)->get();
 
         $schedules = $user->thisWeekSchedules();
 
@@ -91,8 +84,7 @@ class UserController extends Controller
         $schedule_total = $user->getScheduledHoursInWeek();
         foreach ($schedules as $schedule) {
             $acts = $activities
-                ->where("left_at", ">=", $schedule["start"])
-                ->where("join_at", "<=", $schedule["end"]);
+                ->where("left_at", ">=", $schedule["start"])->where("join_at", "<=", $schedule["end"]);
 
             if (count($acts) > 0) {
                 $left_at = now();
@@ -114,8 +106,7 @@ class UserController extends Controller
                    ]);
     }
 
-    public function tags(Request $request, $user)
-    {
+    public function tags(Request $request, $user) {
         if ($user === "me") {
             $user = auth()->user();
         } else {
@@ -124,27 +115,23 @@ class UserController extends Controller
         $tags = $user->tags();
         if ($request->workspace_id) {
             $tags = $tags
-                ->orderBy("id", "DESC")
-                ->where("workspace_id", $request->workspace_id);
+                ->orderBy("id", "DESC")->where("workspace_id", $request->workspace_id);
         }
         return api(TagResource::collection($tags->get()));
     }
 
-    public function search(Request $request)
-    {
+    public function search(Request $request) {
         //TODO: have to use meiliserach instead
         $search = $request->search;
         $users = User::where(function ($query) use ($search) {
             $query
-                ->where("name", "LIKE", $search . "%")
-                ->orWhere("username", "LIKE", $search . "%")
+                ->where("name", "LIKE", $search . "%")->orWhere("username", "LIKE", $search . "%")
                 ->orWhere("email", "LIKE", $search . "%");
         })->get();
         return api(UserMinimalResource::collection($users));
     }
 
-    public function updateCoordinates(Request $request)
-    {
+    public function updateCoordinates(Request $request) {
         $user = auth()->user();
         $request->validate([
                                "coordinates" => "required",
@@ -162,8 +149,7 @@ class UserController extends Controller
         return api($response);
     }
 
-    public function toggleMegaphone()
-    {
+    public function toggleMegaphone() {
         $user = auth()->user();
 
         $user->update([
@@ -178,8 +164,7 @@ class UserController extends Controller
         return api($response);
     }
 
-    public function unGhost()
-    {
+    public function unGhost() {
         $user = auth()->user();
         $user->update([
                           "status" => Constants::ONLINE,
@@ -190,100 +175,64 @@ class UserController extends Controller
         return api($response);
     }
 
-    public function update(Request $request)
-    {
+    public function update(Request $request) {
         $user = auth()->user();
         $user->update([
                           "name"               => $request->name ?? $user->name,
                           "voice_status"       => $request->voice_status ?? $user->voice_status,
                           "video_status"       => $request->video_status ?? $user->video_status,
-                          "screenshare_status" =>
-                              $request->screenshare_status ?? $user->screenshare_status,
-                          "livekit_connected"  =>
-                              $request->livekit_connected ?? $user->livekit_connected,
+                          "screenshare_status" => $request->screenshare_status ?? $user->screenshare_status,
+                          "livekit_connected"  => $request->livekit_connected ?? $user->livekit_connected,
                       ]);
 
         File::syncFile($request->avatar_id, $user, "avatar");
         $response = UserMinimalResource::make($user);
 
-        sendSocket(
-            Constants::userUpdated,
-            $user->workspace->channel,
-            $response
-        );
+        sendSocket(Constants::userUpdated, $user->workspace?->channel, $response);
 
         return api($response);
     }
 
-    public function activities(Request $request)
-    {
+    public function activities(Request $request) {
         $user = auth()->user();
 
-        return api(
-            $user->getTime(
-                $request->period,
-                NULL,
-                NULL,
-                NULL,
-                $user->workspace_id
-            )["sum_minutes"]
-        );
+        return api($user->getTime($request->period, NULL, NULL, NULL, $user->workspace_id)["sum_minutes"]);
     }
 
-    public function chats(Request $request)
-    {
+    public function chats(Request $request) {
         $user = auth()->user();
 
-        return api(
-            ChatResource::collection(
-                $user
-                    ->chats()->has('messages')
-                    ->with([
-                               //                                                                     'messages'    => ['files', 'mentions', 'links'],
-                               "lastMessage" => ["files", "mentions", "links"],
-                               "users"       => ["avatar"],
-                               "mentions",
-                           ])
-                    ->withCount([
-                                    "messages" => function ($query) {
-                                        $query
-                                            ->where(
-                                                "messages.id",
-                                                ">",
-                                                DB::raw("chat_user.last_message_seen_id")
-                                            )
-                                            ->where(
-                                                "messages.created_at",
-                                                ">=",
-                                                DB::raw("chat_user.created_at")
-                                            );
-                                    },
-                                    "mentions" => function ($query) use ($user) {
-                                        $query
-                                            ->where(
-                                                "mentions.message_id",
-                                                ">",
-                                                DB::raw("chat_user.last_message_seen_id")
-                                            )
-                                            ->where(
-                                                "mentions.mentionable_type",
-                                                User::class
-                                            )
-                                            ->where("mentions.mentionable_id", $user->id);
-                                    },
-                                ])
-                    ->get()->sortByDesc('lastMessage.created_at')
-            )
-        );
+        return api(ChatResource::collection($user
+                                                ->chats()->has('messages')->with([
+                                                                                     //                                                                     'messages'    => ['files', 'mentions', 'links'],
+                                                                                     "lastMessage" => [
+                                                                                         "files",
+                                                                                         "mentions",
+                                                                                         "links"
+                                                                                     ],
+                                                                                     "users"       => ["avatar"],
+                                                                                     "mentions",
+                                                                                 ])->withCount([
+                                                                                                   "messages" => function ($query) {
+                                                                                                       $query
+                                                                                                           ->where("messages.id", ">", DB::raw("chat_user.last_message_seen_id"))
+                                                                                                           ->where("messages.created_at", ">=", DB::raw("chat_user.created_at"));
+                                                                                                   },
+                                                                                                   "mentions" => function ($query) use ($user) {
+                                                                                                       $query
+                                                                                                           ->where("mentions.message_id", ">", DB::raw("chat_user.last_message_seen_id"))
+                                                                                                           ->where("mentions.mentionable_type", User::class)
+                                                                                                           ->where("mentions.mentionable_id", $user->id);
+                                                                                                   },
+                                                                                               ])->get()
+                                                ->sortByDesc('lastMessage.created_at')));
     }
 
-    public function talks()
-    {
+    public function talks() {
         return api(TalkResource::collection(auth()->user()->talks));
     }
 
-    public function schedules($user)
-    {
+    public function schedules($user) {
         if ($user === "me") {
             $user = auth()->user();
         } else {
