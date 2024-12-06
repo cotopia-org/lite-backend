@@ -326,7 +326,7 @@ class User extends Authenticatable {
     }
 
 
-    public function getTime($startAt = NULL, $endAt = NULL, $workspace = NULL) {
+    public function getTime($startAt = NULL, $endAt = NULL, $workspace_id = NULL) {
 
 
         $query = DB::table('activities')->where('user_id', $this->id)
@@ -339,8 +339,8 @@ class User extends Authenticatable {
         if ($endAt !== NULL) {
             $query->where('created_at', '<=', $endAt);
         }
-        if ($workspace !== NULL) {
-            $query->where('workspace_id', $workspace->id);
+        if ($workspace_id !== NULL) {
+            $query->where('workspace_id', $workspace_id);
         }
 
         $act = $query
