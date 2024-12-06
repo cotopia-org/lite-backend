@@ -24,7 +24,7 @@ class PaymentResource extends JsonResource {
             'id'          => $this->id,
             'status'      => $this->status,
             'amount'      => $amount,
-            'total_hours' => $total_hours,
+            'total_hours' => $total_hours['sum_minutes'] / 60,
             'bonus'       => $this->bonus,
             'round'       => $this->round,
             'type'        => $this->type,
