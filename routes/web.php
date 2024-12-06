@@ -62,7 +62,7 @@ Route::get('/lastMonth', function () {
     $acts = DB::table('activities')
               ->select('user_id', DB::raw('SUM(TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60) as sum_minutes'))
               ->where('created_at', '>=', $firstOfMonth)->where('created_at', '<=', $lastOfMonth)->groupBy('user_id')
-              ->get();
+              ->where('workspace_id', 1)->get();
     $d = [];
 
 
