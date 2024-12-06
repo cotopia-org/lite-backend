@@ -344,18 +344,13 @@ class User extends Authenticatable {
             $query->where('workspace_id', $workspace->id);
         }
 
-        $acts = $query->get();
-        $d = [];
-        foreach ($acts as $act) {
-
-            $d[] = [
-                'sum_minutes'     => (float)$act->sum_minutes,
-                'idle_minutes'    => (float)$act->idle,
-                'working_minutes' => (float)$act->working,
-                'user'            => $this,
-            ];
-        }
-        return api(array_values($d));
+        $act = $query->first();
+        return [
+            'sum_minutes'     => (float)$act?->sum_minutes,
+            'idle_minutes'    => (float)$act?->idle,
+            'working_minutes' => (float)$act?->working,
+            'user'            => $this,
+        ];
     }
 
     public function thisWeekSchedules() {
