@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ContractResource;
 use App\Http\Resources\PaymentResource;
 use App\Models\Contract;
+use App\Models\Payment;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ContractController extends Controller {
     public function create(Request $request) {
+
 
         $request->validate([
                                'type'                   => 'required',
@@ -28,10 +31,21 @@ class ContractController extends Controller {
                                'role'                   => 'required',
                                'contractor_sign_status' => 'required',
                                'user_id'                => 'required',
+                               'workspace_id'           => 'required',
                            ]);
 
 
         $contract = Contract::create($request->all());
+
+
+        $payment = Payment::create([
+                                       'status'      => 'pending',
+                                       'amount'      => 0,
+                                       'total_hours' => 0,
+                                       'type'        => 'salary',
+                                       'user_id'     => $request->user_id,
+                                       'contract_id' => $contract->id
+                                   ]);
 
 
         return api(ContractResource::make($contract));

@@ -26,6 +26,10 @@ class Workspace extends Model {
         return $this->hasMany(Chat::class);
     }
 
+
+
+
+
     public function schedules() {
         return $this->hasMany(Schedule::class);
     }
@@ -57,6 +61,9 @@ class Workspace extends Model {
     public function tags() {
         return $this->hasMany(Tag::class);
     }
+
+
+
 
     public function hasUser($user) {
         return $this->users->contains($user->id);

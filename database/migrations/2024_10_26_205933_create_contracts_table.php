@@ -42,6 +42,7 @@ return new class extends Migration {
             $table->boolean('contractor_sign_status')->default(FALSE);
 
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('workspace_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
 
 
             $table->timestamps();

@@ -28,6 +28,7 @@ class Contract extends Model {
         'user_sign_status',
         'contractor_sign_status',
         'user_id',
+        'workspace_id',
     ];
 
     protected $casts = [
