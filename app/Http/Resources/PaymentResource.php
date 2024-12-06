@@ -17,9 +17,11 @@ class PaymentResource extends JsonResource {
         $user = $this->user;
 
         $contract = $this->contract;
-        logger($contract->start_at, $contract->end_at, $contract->workspace_id);
+
         $total_hours = $user->getTime($contract->start_at, $contract->end_at, $contract->workspace_id);
         $amount = $contract->amount * ($total_hours['sum_minutes'] / 60);
+
+        logger($total_hours['sum_minutes']);
 
         return [
             'id'          => $this->id,
