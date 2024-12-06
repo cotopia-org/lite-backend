@@ -343,7 +343,9 @@ class User extends Authenticatable {
             $query->where('workspace_id', $workspace->id);
         }
 
-        $act = $query->first();
+        $act = $query
+            ->groupBy('user_id') // Ensure this matches the selected non-aggregate column
+            ->first();
         return [
             'sum_minutes'     => (float)$act?->sum_minutes,
             'idle_minutes'    => (float)$act?->idle,
