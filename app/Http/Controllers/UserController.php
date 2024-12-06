@@ -196,7 +196,8 @@ class UserController extends Controller {
     public function activities(Request $request) {
         $user = auth()->user();
 
-        return api($user->getTime($request->period, NULL, NULL, NULL, $user->workspace_id)["sum_minutes"]);
+
+        return api($user->getTime(today(), today()->addDay(), $user->workspace_id)["sum_minutes"]);
     }
 
     public function chats(Request $request) {
