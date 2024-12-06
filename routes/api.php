@@ -12,6 +12,7 @@ use App\Http\Controllers\PostmanExportController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TalkController;
@@ -173,6 +174,12 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::post('/', 'create');
         Route::get('/{payment}', 'get');
         Route::put('/{payment}', 'update');
+
+    });
+
+    Route::controller(SearchController::class)->prefix('search')->group(function () {
+        Route::get('/', 'search');
+
 
     });
 
