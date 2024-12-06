@@ -31,6 +31,6 @@ class SearchController extends Controller {
         });
 
 
-        return api(array_merge($users, $tags));
+        return api(array_merge($users->toArray(), $tags->toArray()));
     }
 }
