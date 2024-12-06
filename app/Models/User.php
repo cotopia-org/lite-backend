@@ -346,11 +346,18 @@ class User extends Authenticatable {
         $act = $query
             ->groupBy('user_id') // Ensure this matches the selected non-aggregate column
             ->first();
+
+
+        \Carbon\CarbonInterval::setCascadeFactors([
+                                                      'minute' => [60, 'seconds'],
+                                                      'hour'   => [60, 'minutes'],
+                                                  ]);
         return [
             'sum_minutes'     => (float)$act?->sum_minutes,
             'idle_minutes'    => (float)$act?->idle,
             'working_minutes' => (float)$act?->working,
-            'user'            => $this,
+            'sum_hours'       => \Carbon\CarbonInterval::minutes($act?->sum_minutes)->cascade()->forHumans(),
+
         ];
     }
 
