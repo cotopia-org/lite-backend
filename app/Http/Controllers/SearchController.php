@@ -13,7 +13,7 @@ class SearchController extends Controller {
         $q = $request->q;
 
 
-        $users = User::where('username', 'LIKE', $q . '%')->get()->map(function ($user) {
+        $users = User::where('username', 'LIKE', '%' . $q . '%')->get()->map(function ($user) {
             return [
                 'id'    => $user->id,
                 'title' => $user->username,
@@ -22,7 +22,7 @@ class SearchController extends Controller {
             ];
         });
 
-        $tags = Tag::where('title', 'LIKE', $q . '%')->get()->map(function ($tag) {
+        $tags = Tag::where('title', 'LIKE', '%' . $q . '%')->get()->map(function ($tag) {
             return [
                 'id'    => $tag->id,
                 'title' => $tag->title,
