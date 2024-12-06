@@ -22,7 +22,7 @@ class Payment extends Model {
         return $this->belongsTo(User::class);
     }
 
-    public function contarct() {
+    public function contract() {
         return $this->belongsTo(Contract::class);
     }
 }
