@@ -329,9 +329,8 @@ class User extends Authenticatable {
     public function getTime($startAt = NULL, $endAt = NULL, $workspace = NULL) {
 
 
-        $query = DB::table('activities')
-                   ->select('user_id', DB::raw('SUM(TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60) as sum_minutes'), DB::raw('SUM(IF(job_id IS NULL, TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60, 0)) as idle'), DB::raw('SUM(IF(job_id IS NOT NULL, TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60, 0)) as working'))
-                   ->where('user_id', $this->id);
+        $query = DB::table('activities')->where('user_id', $this->id)
+                   ->select('user_id', DB::raw('SUM(TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60) as sum_minutes'), DB::raw('SUM(IF(job_id IS NULL, TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60, 0)) as idle'), DB::raw('SUM(IF(job_id IS NOT NULL, TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60, 0)) as working'));
 
 
         if ($startAt !== NULL) {
