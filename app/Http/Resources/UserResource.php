@@ -22,14 +22,6 @@ class UserResource extends JsonResource {
         }
 
 
-        $role = NULL;
-        if ($this->workspace_id !== NULL) {
-            $user_in_workspace = $this->workspaces()->find($this->workspace_id);
-
-            $role = $user_in_workspace->pivot->role;
-        }
-
-
         return [
             'id'                      => $this->id,
             'name'                    => $this->name,
@@ -51,7 +43,13 @@ class UserResource extends JsonResource {
             'last_login'              => $this->updated_at,
             'is_bot'                  => $this->is_bot,
             'active_job'              => JobResource::make($activeJob),
-            'role'                    => $role,
+            'workspaces'              => $this->workspaces->map(function ($workspace) {
+                return [
+                    'title' => $workspace->title,
+                    'id'    => $workspace->id,
+                    'role'  => $workspace->pivot->role,
+                ];
+            }),
             'schedule_hours_in_week'  => $this->getScheduledHoursInWeek(),
 
         ];
