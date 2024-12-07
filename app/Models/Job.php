@@ -8,8 +8,7 @@ use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Job extends Model
-{
+class Job extends Model {
     use HasFactory;
 
     public const STATUSES = [
@@ -37,8 +36,7 @@ class Job extends Model
         'start_at' => 'datetime',
     ];
 
-    protected static function booted(): void
-    {
+    protected static function booted(): void {
 
 
         static::updated(function (Job $job) {
@@ -71,13 +69,11 @@ $job->estimate hrs ⏰
         });
     }
 
-    public function jobs()
-    {
+    public function jobs() {
         return $this->hasMany(Job::class, 'job_id', 'id');
     }
 
-    public static function getOrderedJobs($jobs, &$result = [])
-    {
+    public static function getOrderedJobs($jobs, &$result = []) {
         foreach ($jobs as $job) {
             $result[] = $job;
             $jobsOfJob = $job->jobs;
@@ -88,19 +84,16 @@ $job->estimate hrs ⏰
         return $result;
     }
 
-    public function parent()
-    {
+    public function parent() {
         return $this->belongsTo(Job::class, 'job_id');
     }
 
-    public function tags()
-    {
+    public function tags() {
         return $this->belongsToMany(Tag::class);
 
     }
 
-    public function start($user)
-    {
+    public function start($user) {
         if ($this->status !== Constants::IN_PROGRESS) {
 
 
@@ -125,8 +118,7 @@ $job->estimate hrs ⏰
     }
 
 
-    public function end($user, $status = Constants::COMPLETED)
-    {
+    public function end($user, $status = Constants::COMPLETED) {
         if ($this->status === Constants::IN_PROGRESS) {
 
             $now = now();
@@ -148,18 +140,19 @@ $job->estimate hrs ⏰
 
     }
 
-    public function activities()
-    {
+    public function activities() {
         return $this->hasMany(Activity::class);
     }
 
-    public function getTime($user_id)
-    {
+    public function getTime($user_id, $period = 'all_time') {
 
         $firstOfMonth = now()->firstOfMonth();
 
-        $acts = $this->activities->where('created_at', '>=', $firstOfMonth)->where('user_id', $user_id);
+        $acts = $this->activities->where('user_id', $user_id);
 
+        if ($period === 'this_month') {
+            $acts = $acts->where('created_at', '>=', $firstOfMonth);
+        }
 
         $sum_minutes = 0;
         foreach ($acts as $act) {
@@ -181,22 +174,20 @@ $job->estimate hrs ⏰
                                           ]);
 
         return [
-//            'job'         => $this,
-'sum_minutes' => $sum_minutes,
-'sum_hours'   => CarbonInterval::minutes($sum_minutes)->cascade()->forHumans(NULL, TRUE),
+            //            'job'         => $this,
+            'sum_minutes' => $sum_minutes,
+            'sum_hours'   => CarbonInterval::minutes($sum_minutes)->cascade()->forHumans(NULL, TRUE),
 
         ];
     }
 
-    public function lastActivity()
-    {
+    public function lastActivity() {
 
         return $this->activities()->whereNull('left_at')->first();
 
     }
 
-    public function joinUser($user, $role = 'developer')
-    {
+    public function joinUser($user, $role = 'developer') {
         if (!$this->users->contains($user->id)) {
             $this->users()->attach($user, ['role' => $role]);
             //TODO: Socket, user joined to job.
@@ -207,13 +198,11 @@ $job->estimate hrs ⏰
 
     }
 
-    public function users()
-    {
+    public function users() {
         return $this->belongsToMany(User::class)->withPivot('role');
     }
 
-    public function workspace()
-    {
+    public function workspace() {
         return $this->belongsTo(Workspace::class);
     }
 
