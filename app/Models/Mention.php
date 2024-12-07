@@ -24,7 +24,7 @@ class Mention extends Model {
     }
 
     public function type() {
-        switch (typeOf($this->mentionable)) {
+        switch (get_class($this->mentionable)) {
             case User::class:
                 return 'user';
 
@@ -43,7 +43,7 @@ class Mention extends Model {
     }
 
     public function title() {
-        switch (typeOf($this->mentionable)) {
+        switch (get_class($this->mentionable)) {
             case User::class:
                 return $this->mentionable->username;
 
