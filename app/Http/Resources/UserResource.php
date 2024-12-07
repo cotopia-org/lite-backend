@@ -6,15 +6,13 @@ use App\Models\Job;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
-{
+class UserResource extends JsonResource {
     /**
      * Transform the resource into an array.
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
-    {
+    public function toArray(Request $request): array {
 
 
         $activeJob = $this->activeJob;
@@ -23,6 +21,10 @@ class UserResource extends JsonResource
 
         }
 
+
+        $user_in_workspace = $this->workspaces()->find($this->workspace_id);
+
+        $role = $user_in_workspace->pivot->role;
 
         return [
             'id'                      => $this->id,
@@ -45,6 +47,7 @@ class UserResource extends JsonResource
             'last_login'              => $this->updated_at,
             'is_bot'                  => $this->is_bot,
             'active_job'              => JobResource::make($activeJob),
+            'role'                    => $role,
             'schedule_hours_in_week'  => $this->getScheduledHoursInWeek(),
 
         ];
