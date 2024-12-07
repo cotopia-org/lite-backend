@@ -84,6 +84,11 @@ $job->estimate hrs ⏰
         return $result;
     }
 
+
+    public function mentions() {
+        return $this->hasMany(Mention::class);
+    }
+
     public function parent() {
         return $this->belongsTo(Job::class, 'job_id');
     }

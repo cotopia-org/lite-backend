@@ -17,7 +17,7 @@ class SearchController extends Controller {
         $workspace = $user->workspace;
 
         $users = $workspace->users();
-        $tags = $workspace->users();
+        $tags = $workspace->tags();
 
         $users = $users->where('username', 'LIKE', '%' . $q . '%')->get()->map(function ($user) {
             return [

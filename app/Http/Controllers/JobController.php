@@ -5,14 +5,13 @@ namespace App\Http\Controllers;
 use App\Events\JobCreated;
 use App\Http\Resources\JobResource;
 use App\Models\Job;
+use App\Models\Tag;
 use App\Models\User;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
 
-class JobController extends Controller
-{
-    public function create(Request $request)
-    {
+class JobController extends Controller {
+    public function create(Request $request) {
         $request->validate([
                                'title'        => 'required',
                                'description'  => 'required',
@@ -30,10 +29,6 @@ class JobController extends Controller
         }
         $job = Job::create($req);
 
-        if ($request->tags) {
-            $job->tags()->attach($request->tags);
-        }
-
         if ($job->status === Constants::IN_PROGRESS) {
 
 
@@ -43,8 +38,7 @@ class JobController extends Controller
 
 
             if ($user->active_job_id !== NULL) {
-                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended',
-                      'JobController@create');
+                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'JobController@create');
 
             }
             acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started', 'JobController@create');
@@ -79,11 +73,24 @@ $job->estimate hrs ⏰
 
         });
 
+
+        if ($request->mentions) {
+            $models = ['user' => User::class, 'tag' => Tag::class];
+            foreach ($request->mentions as $mention) {
+                $job->mentions()->create([
+                                             'user_id'          => $user->id,
+                                             'mentionable_type' => $models[$mention['model_type']],
+                                             'mentionable_id'   => $mention['model_id'],
+
+                                         ]);
+            }
+        }
+
+
         return api(JobResource::make($job));
     }
 
-    public function get(Job $job)
-    {
+    public function get(Job $job) {
         $user = auth()->user();
         if (!$user->jobs->contains($job)) {
             abort(404);
@@ -94,8 +101,7 @@ $job->estimate hrs ⏰
 
     }
 
-    public function update(Job $job, Request $request)
-    {
+    public function update(Job $job, Request $request) {
         $user = auth()->user();
 
         if (!$user->jobs->contains($job)) {
@@ -114,8 +120,7 @@ $job->estimate hrs ⏰
 
 
             if ($user->active_job_id !== NULL) {
-                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended',
-                      'JobController@update');
+                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'JobController@update');
 
             }
             acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started', 'JobController@update');
@@ -126,8 +131,7 @@ $job->estimate hrs ⏰
 
         } elseif ($job->id === $user->active_job_id) {
 
-            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended',
-                  'JobController@update');
+            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'JobController@update');
 
             $user->updateActiveJob();
 
@@ -144,19 +148,43 @@ $job->estimate hrs ⏰
 
 
         $job->update($req);
-        if ($request->tags) {
-            $job->tags()->sync($request->tags);
-        }
+
         $jobResource = JobResource::make($job);
 
         sendSocket('jobUpdated', $job->workspace->channel, $jobResource);
 
 
+        $currentMentionIds = $job->mentions()->pluck('id')->toArray();
+
+        $newMentions = collect($request->mentions)->filter(fn($mention) => !isset($mention['id']))->toArray();
+        $existingMentions = collect($request->mentions)->filter(fn($mention) => isset($mention['id']))->pluck('id')
+                                                       ->toArray();
+
+
+        $mentionsToDelete = array_diff($currentMentionIds, $existingMentions);
+        if (!empty($mentionsToDelete)) {
+            $job->mentions()->whereIn('id', $mentionsToDelete)->delete();
+        }
+
+
+        foreach ($newMentions as $mention) {
+            if (!isset($mentionData['id'])) {
+                $models = ['user' => User::class, 'tag' => Tag::class];
+
+                $job->mentions()->create([
+                                             'user_id'          => $user->id,
+                                             'mentionable_type' => $models[$mention['model_type']],
+                                             'mentionable_id'   => $mention['model_id'],
+
+                                         ]);
+            }
+        }
+
+
         return api($jobResource);
     }
 
-    public function delete(Job $job)
-    {
+    public function delete(Job $job) {
 
         return api(TRUE);
         $user = auth()->user();
@@ -172,8 +200,7 @@ $job->estimate hrs ⏰
     }
 
 
-    public function removeUser(Job $job, Request $request)
-    {
+    public function removeUser(Job $job, Request $request) {
         $request->validate([
                                'user_id' => 'required|exists:users,id',
                            ]);
