@@ -21,18 +21,18 @@ class SearchController extends Controller {
 
         $users = $users->where('username', 'LIKE', '%' . $q . '%')->get()->map(function ($user) {
             return [
-                'id'    => $user->id,
-                'title' => $user->username,
-                'type'  => 'user',
+                'model_id' => $user->id,
+                'title'    => $user->username,
+                'type'     => 'user',
 
             ];
         });
 
         $tags = $tags->where('title', 'LIKE', '%' . $q . '%')->get()->map(function ($tag) {
             return [
-                'id'    => $tag->id,
-                'title' => $tag->title,
-                'type'  => 'tag'
+                'model_id' => $tag->id,
+                'title'    => $tag->title,
+                'type'     => 'tag'
             ];
         });
 
