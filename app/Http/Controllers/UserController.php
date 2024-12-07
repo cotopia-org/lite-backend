@@ -13,6 +13,7 @@ use App\Http\Resources\TalkResource;
 use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\UserResource;
 use App\Models\File;
+use App\Models\Job;
 use App\Models\Room;
 use App\Models\User;
 use App\Models\Workspace;
@@ -32,23 +33,18 @@ class UserController extends Controller {
     public function jobs(Request $request, $user) {
         $firstOfMonth = now()->firstOfMonth();
 
+
+        $suggestion = FALSE;
+        $period = $request->period ?? 'all_time';
+
         if ($user === "me") {
             $user = auth()->user();
+
+
         } else {
             $user = User::findOrFail($user);
         }
         $jobs = $user->jobs()->orderBy("updated_at", "DESC");
-
-
-        if ($request->suggestions) {
-            $tags = $user->tags->pluck('id');
-
-
-            $jobs = $jobs->whereHas('tags', function ($query) use ($tags) {
-                $query->whereIn('tag_id', $tags);
-            });
-
-        }
 
 
         if ($request->workspace_id) {
@@ -59,6 +55,12 @@ class UserController extends Controller {
                 //
                 //                })
                 ->where("workspace_id", $request->workspace_id);
+        }
+
+        if ($period === 'this_month') {
+            $jobs = $jobs->whereHas('activities', function ($query) use ($firstOfMonth) {
+                $query->where('created_at', '>=', $firstOfMonth);
+            });
         }
 
 
