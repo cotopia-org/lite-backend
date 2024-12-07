@@ -22,9 +22,13 @@ class UserResource extends JsonResource {
         }
 
 
-        $user_in_workspace = $this->workspaces()->find($this->workspace_id);
+        $role = NULL;
+        if ($this->workspace_id !== NULL) {
+            $user_in_workspace = $this->workspaces()->find($this->workspace_id);
 
-        $role = $user_in_workspace->pivot->role;
+            $role = $user_in_workspace->pivot->role;
+        }
+
 
         return [
             'id'                      => $this->id,
