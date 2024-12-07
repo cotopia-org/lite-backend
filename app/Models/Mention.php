@@ -23,6 +23,40 @@ class Mention extends Model {
         return $this->belongsTo(Job::class);
     }
 
+    public function type() {
+        switch (typeOf($this->mentionable)) {
+            case User::class:
+                return 'user';
+
+            case Tag::class:
+                return 'tag';
+
+            case Workspace::class:
+                return 'workspace';
+
+            case Room::class:
+                return 'room';
+
+            default:
+                break;
+        }
+    }
+
+    public function title() {
+        switch (typeOf($this->mentionable)) {
+            case User::class:
+                return $this->mentionable->username;
+
+            case Tag::class:
+            case Workspace::class:
+            case Room::class:
+                return $this->mentionable->title;
+
+            default:
+                break;
+        }
+    }
+
     public function message() {
         return $this->belongsTo(Message::class);
     }

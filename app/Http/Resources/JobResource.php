@@ -40,6 +40,7 @@ class JobResource extends JsonResource {
             'total_hours'  => $total_hours,
             'created_at'   => $this->created_at,
             'old'          => $this->old,
+            'mentions'     => MentionResource::collection($this->mentions)
             //            'members'      => UserMinimalResource::collection($users),
         ];
     }
