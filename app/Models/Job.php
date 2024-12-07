@@ -28,7 +28,8 @@ class Job extends Model {
         'duration',
         'message_id',
         'job_id',
-        'level'
+        'level',
+        'old',
     ];
 
     protected $casts = [

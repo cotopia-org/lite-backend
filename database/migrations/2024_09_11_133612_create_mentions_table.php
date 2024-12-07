@@ -8,14 +8,14 @@ return new class extends Migration {
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
+    public function up(): void {
         Schema::create('mentions', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('message_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('message_id')->nullable()->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignId('chat_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('job_id')->nullable()->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('chat_id')->nullable()->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->integer('start_position')->nullable();
             $table->morphs('mentionable');
 
@@ -26,8 +26,7 @@ return new class extends Migration {
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('mentions');
     }
 };

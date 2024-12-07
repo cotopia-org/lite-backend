@@ -39,6 +39,7 @@ class JobResource extends JsonResource {
             'tags'         => TagMinimalResource::collection($this->tags),
             'total_hours'  => $total_hours,
             'created_at'   => $this->created_at,
+            'old'          => $this->old,
             //            'members'      => UserMinimalResource::collection($users),
         ];
     }
