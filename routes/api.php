@@ -57,6 +57,8 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/chats', 'chats');
         Route::get('/{user}/jobs', 'jobs');
         Route::get('/{user}/tags', 'tags');
+        Route::get('/{user}/payments', 'payments');
+        Route::get('/{user}/contracts', 'contracts');
         Route::get('/{user}/schedules', 'schedules');
         Route::get('/{user}/scheduleFulfillment', 'scheduleFulfillment');
         Route::get('/talks', 'talks');

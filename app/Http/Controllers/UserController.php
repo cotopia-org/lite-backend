@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ActivityResource;
 use App\Http\Resources\ChatResource;
+use App\Http\Resources\ContractResource;
 use App\Http\Resources\JobResource;
+use App\Http\Resources\PaymentResource;
 use App\Http\Resources\RoomResource;
 use App\Http\Resources\ScheduleResource;
 use App\Http\Resources\SettingResource;
@@ -235,5 +237,35 @@ class UserController extends Controller {
         //For commit test.
 
         return api(ScheduleResource::collection($user->schedules));
+    }
+
+
+    public function payments($user) {
+
+        if ($user === "me") {
+            $user = auth()->user();
+        } else {
+            $user = User::findOrFail($user);
+        }
+
+
+        return api(PaymentResource::collection($user->payments));
+
+
+    }
+
+
+    public function contract($user) {
+
+        if ($user === "me") {
+            $user = auth()->user();
+        } else {
+            $user = User::findOrFail($user);
+        }
+
+
+        return api(ContractResource::collection($user->contracts));
+
+
     }
 }
