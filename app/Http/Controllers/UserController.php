@@ -34,13 +34,10 @@ class UserController extends Controller {
         $firstOfMonth = now()->firstOfMonth();
 
 
-        $suggestion = FALSE;
         $period = $request->period ?? 'all_time';
 
         if ($user === "me") {
             $user = auth()->user();
-
-
         } else {
             $user = User::findOrFail($user);
         }
@@ -48,13 +45,7 @@ class UserController extends Controller {
 
 
         if ($request->workspace_id) {
-            $jobs = $jobs
-                ->orderBy("updated_at", "DESC")
-                //                ->whereHas('activities', function ($query) use ($firstOfMonth) {
-                //                    $query->where('created_at', '>=', $firstOfMonth);
-                //
-                //                })
-                ->where("workspace_id", $request->workspace_id);
+            $jobs = $jobs->where("workspace_id", $request->workspace_id);
         }
 
         if ($period === 'this_month') {
