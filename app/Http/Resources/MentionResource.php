@@ -20,6 +20,7 @@ class MentionResource extends JsonResource {
             'start_position'   => $this->start_position,
             'mentionable_type' => $this->mentionable_type,
             'mentionable_id'   => $this->mentionable_id,
+            'model_id'   => $this->mentionable_id,
             'created_at'       => $this->created_at,
             'type'             => $this->type(),
             'title'            => $this->title()

@@ -79,7 +79,7 @@ $job->estimate hrs ⏰
             foreach ($request->mentions as $mention) {
                 $job->mentions()->create([
                                              'user_id'          => $user->id,
-                                             'mentionable_type' => $models[$mention['model_type']],
+                                             'mentionable_type' => $models[$mention['type']],
                                              'mentionable_id'   => $mention['model_id'],
 
                                          ]);
@@ -157,8 +157,8 @@ $job->estimate hrs ⏰
         $currentMentionIds = $job->mentions()->pluck('id')->toArray();
 
         $newMentions = collect($request->mentions)->filter(fn($mention) => !isset($mention['id']))->toArray();
-        $existingMentions = collect($request->mentions)->filter(fn($mention) => isset($mention['id']))->pluck('id')
-                                                       ->toArray();
+        $existingMentions = collect($request->mentions)
+            ->filter(fn($mention) => isset($mention['id']))->pluck('id')->toArray();
 
 
         $mentionsToDelete = array_diff($currentMentionIds, $existingMentions);
@@ -173,7 +173,7 @@ $job->estimate hrs ⏰
 
                 $job->mentions()->create([
                                              'user_id'          => $user->id,
-                                             'mentionable_type' => $models[$mention['model_type']],
+                                             'mentionable_type' => $models[$mention['type']],
                                              'mentionable_id'   => $mention['model_id'],
 
                                          ]);
