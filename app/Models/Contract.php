@@ -36,6 +36,9 @@ class Contract extends Model {
         'end_at'   => 'datetime',
     ];
 
+
+    protected array $dates = ['start_at', 'end_at'];
+
     public function user() {
         return $this->belongsTo(User::class);
     }
