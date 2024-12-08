@@ -40,6 +40,20 @@ class Contract extends Model {
         return $this->belongsTo(User::class);
     }
 
+    public function renew() {
+        $contract = self::create($this->toArray());
+
+
+        $payment = Payment::create([
+                                       'status'      => 'pending',
+                                       'amount'      => NULL,
+                                       'total_hours' => NULL,
+                                       'type'        => 'salary',
+                                       'user_id'     => $this->user_id,
+                                       'contract_id' => $contract->id
+                                   ]);
+    }
+
     public function payments() {
         return $this->hasMany(Payment::class);
     }

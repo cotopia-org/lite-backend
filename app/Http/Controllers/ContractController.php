@@ -64,6 +64,9 @@ class ContractController extends Controller {
     }
 
 
+
+
+
     public function payments(Contract $contract) {
         $payments = $contract->payments;
 
