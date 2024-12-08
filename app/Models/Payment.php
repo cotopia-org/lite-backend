@@ -26,7 +26,7 @@ class Payment extends Model {
 
                 $contract = $this->contract;
 
-                $total_hours = $this->total_hour;
+                $total_hours = $this->total_hours;
                 return $contract->amount * ($total_hours['sum_minutes'] / 60);
             }
             return $value;
