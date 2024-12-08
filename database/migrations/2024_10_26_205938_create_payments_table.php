@@ -18,7 +18,7 @@ return new class extends Migration {
 
             $table->float('amount')->nullable();
 
-            $table->float('total_hours');
+            $table->float('total_hours')->nullable();
 
             $table->float('bonus')->default(0);
             $table->float('round')->default(0);
