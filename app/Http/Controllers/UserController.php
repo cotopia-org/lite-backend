@@ -255,7 +255,7 @@ class UserController extends Controller {
     }
 
 
-    public function contract($user) {
+    public function contracts($user) {
 
         if ($user === "me") {
             $user = auth()->user();

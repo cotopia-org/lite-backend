@@ -33,4 +33,14 @@ class PaymentController extends Controller {
 
         return api(PaymentResource::make($payment));
     }
+
+
+    public function update(Request $request, Payment $payment) {
+
+
+        $payment->update($request->all());
+
+
+        return api(PaymentResource::make($payment));
+    }
 }
