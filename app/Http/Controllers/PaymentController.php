@@ -38,7 +38,12 @@ class PaymentController extends Controller {
     public function update(Request $request, Payment $payment) {
 
 
-        $payment->update($request->all());
+        $payment->update([
+                             'status' => $request->status,
+                             'amount' => $request->amount,
+                             'bonus'  => $request->bonus,
+                             'round'  => $request->round
+                         ]);
 
 
         return api(PaymentResource::make($payment));
