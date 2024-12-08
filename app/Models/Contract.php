@@ -36,8 +36,8 @@ class Contract extends Model {
         'end_at'   => 'datetime',
     ];
 
+    protected $dates = ['start_at', 'end_at'];
 
-    protected array $dates = ['start_at', 'end_at'];
 
     public function user() {
         return $this->belongsTo(User::class);
@@ -47,9 +47,9 @@ class Contract extends Model {
 
 
         $attrs = $this->toArray();
-        dd($attrs['start_at']);
-        $attrs['start_at'] = $attrs['start_at']->addMonth();
-        $attrs['end_at'] = $attrs['end_at']->addMonth();
+        dd($this->start_at);
+        $attrs['start_at'] = $this->start_at->addMonth();
+        $attrs['end_at'] = $this->end_at->addMonth();
         $contract = self::create($attrs);
 
 
