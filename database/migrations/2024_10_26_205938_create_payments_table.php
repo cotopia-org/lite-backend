@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('status')->default('pending');
 
 
-            $table->float('amount');
+            $table->float('amount')->nullable();
 
             $table->float('total_hours');
 

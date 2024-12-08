@@ -34,10 +34,10 @@ return new class extends Migration {
             $table->integer('max_hours')->default(250);
 
             $table->string('payment_method')->default('trc20');
-            $table->string('payment_address');
+            $table->string('payment_address')->nullable();
 
             $table->string('payment_period')->default('monthly');
-            $table->string('role');
+            $table->string('role')->nullable();
             $table->boolean('user_sign_status')->default(FALSE);
             $table->boolean('contractor_sign_status')->default(FALSE);
 

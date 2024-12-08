@@ -40,7 +40,7 @@ class ContractController extends Controller {
 
         $payment = Payment::create([
                                        'status'      => 'pending',
-                                       'amount'      => 0,
+                                       'amount'      => NULL,
                                        'total_hours' => 0,
                                        'type'        => 'salary',
                                        'user_id'     => $request->user_id,
