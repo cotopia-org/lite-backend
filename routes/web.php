@@ -11,8 +11,8 @@ Route::get('/', function () {
     return redirect('https://lite.cotopia.social');
 });
 Route::get('/tester', function () {
-    $user = \App\Models\User::first();
-    dd($user->getTime());
+    $c = \App\Models\Contract::find(8);
+    $c->renew();
 });
 
 
