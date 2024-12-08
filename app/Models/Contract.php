@@ -44,6 +44,7 @@ class Contract extends Model {
 
 
         $attrs = $this->toArray();
+        dd($attrs['start_at']);
         $attrs['start_at'] = $attrs['start_at']->addMonth();
         $attrs['end_at'] = $attrs['end_at']->addMonth();
         $contract = self::create($attrs);
