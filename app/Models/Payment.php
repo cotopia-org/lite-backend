@@ -42,7 +42,9 @@ class Payment extends Model {
 
                 return $user->getTime($contract->start_at, $contract->end_at, $contract->workspace_id);
             }
-            return $value;
+            return [
+                'sum_minutes' => $value * 60,
+            ];
         });
     }
 
