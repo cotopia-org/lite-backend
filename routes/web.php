@@ -2,6 +2,7 @@
 
 use Agence104\LiveKit\RoomServiceClient;
 use App\Models\Activity;
+use App\Models\Contract;
 use App\Models\Job;
 use App\Utilities\Constants;
 use Illuminate\Support\Facades\Http;
@@ -12,8 +13,12 @@ Route::get('/', function () {
 });
 Route::get('/tester', function () {
 
-    $c = \App\Models\Contract::find(8);
-    $c->renew();
+
+    foreach (Contract::all() as $contract) {
+        $contract->renew();
+
+    }
+    dd('Okay');
 });
 
 
