@@ -41,7 +41,12 @@ class Contract extends Model {
     }
 
     public function renew() {
-        $contract = self::create($this->toArray());
+
+
+        $attrs = $this->toArray();
+        $attrs['start_at'] = $attrs['start_at']->addMonth();
+        $attrs['end_at'] = $attrs['end_at']->addMonth();
+        $contract = self::create($attrs);
 
 
         $payment = Payment::create([
