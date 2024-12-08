@@ -11,6 +11,7 @@ Route::get('/', function () {
     return redirect('https://lite.cotopia.social');
 });
 Route::get('/tester', function () {
+
     $c = \App\Models\Contract::find(8);
     $c->renew();
 });
