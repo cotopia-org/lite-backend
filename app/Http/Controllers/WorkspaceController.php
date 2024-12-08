@@ -56,7 +56,7 @@ class WorkspaceController extends Controller {
     public function users(Workspace $workspace) {
         return api(UserResource::collection($workspace
                                                 ->users()
-                                                ->with('schedules', 'avatar', 'activeJob', 'activeJob.activities')
+                                                ->with('schedules', 'avatar', 'activeJob', 'activeJob.activities', 'contracts', 'contracts.payments')
                                                 ->get()));
     }
 

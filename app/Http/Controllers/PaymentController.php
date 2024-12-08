@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\PaymentResource;
 use App\Models\Payment;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller {
@@ -24,11 +25,24 @@ class PaymentController extends Controller {
                                'round',
                                'type',
                                'user_id',
-                               'contract_id'
                            ]);
 
 
-        $payment = Payment::create($request->all());
+        $user = User::find($request->user_id);
+
+
+        $contract_id = $user->contracts()->orderBy('id', 'desc')->first()->id;
+
+        $payment = Payment::create([
+                                       'status'      => $request->status,
+                                       'amount'      => $request->amount,
+                                       'total_hours' => $request->total_hours,
+                                       'bonus'       => $request->bonus,
+                                       'round'       => $request->round,
+                                       'type'        => $request->type,
+                                       'user_id'     => $request->user_id,
+                                       'contract_id' => $contract_id,
+                                   ]);
 
 
         return api(PaymentResource::make($payment));
