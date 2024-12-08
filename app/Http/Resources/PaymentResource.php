@@ -25,7 +25,7 @@ class PaymentResource extends JsonResource {
         return [
             'id'          => $this->id,
             'status'      => $this->status,
-            'amount'      => $this->amount === 0 ? $amount : $this->amount,
+            'amount'      => $this->amount ?? $amount,
             'total_hours' => $total_hours,
             'bonus'       => $this->bonus,
             'round'       => $this->round,
