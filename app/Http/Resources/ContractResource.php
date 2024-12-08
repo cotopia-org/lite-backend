@@ -36,7 +36,6 @@ class ContractResource extends JsonResource {
             'contractor_sign_status' => $this->contractor_sign_status,
             'user_id'                => $this->user_id,
             'workspace_id'           => $this->workspace_id,
-            'last_payment'           => PaymentResource::make($this->payments->last())
         ];
     }
 }
