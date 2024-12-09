@@ -3,7 +3,7 @@
 return [
 
 
-    'per_hour' => "# Hourly work contract {style=text-align:center}
+    'per_hour' => "# Hourly work contract
 
 1. Parties:
    1. this contract is between **:workspace_name** also will be referred to as first party and **:username** also will be referred as the second party
