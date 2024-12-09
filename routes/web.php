@@ -14,11 +14,7 @@ Route::get('/', function () {
 Route::get('/tester', function () {
 
 
-    foreach (Contract::all() as $contract) {
-        $contract->renew();
-
-    }
-    dd('Okay');
+    dd(nl2br(__('contracts.per_hour')));
 });
 
 
