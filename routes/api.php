@@ -168,6 +168,8 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/{contract}', 'get');
         Route::put('/{contract}', 'update');
         Route::get('/{contract}/payments', 'payments');
+        Route::get('/{contract}/toggleContractorSign', 'toggleContractorSign');
+        Route::get('/{contract}/toggleUserSign', 'toggleUserSign');
 
     });
 

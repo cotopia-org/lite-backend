@@ -64,7 +64,46 @@ class ContractController extends Controller {
     }
 
 
+    public function toggleUserSign(Contract $contract) {
 
+        $user = auth()->user();
+
+
+        if ($contract->user_sign_status && $contract->contractor_sign_status) {
+            return error('Cant revoke sign because contractor has signed the contract');
+        }
+
+        if ($contract->user_id === $user->id) {
+
+            $contract->update([
+                                  'user_sign_status' => !$contract->user_sign_status
+
+                              ]);
+        }
+        return api(ContractResource::make($contract));
+
+
+    }
+
+
+    public function toggleContractorSign(Contract $contract) {
+
+        $user = auth()->user();
+
+
+        if ($contract->user_sign_status && $contract->contractor_sign_status) {
+            return error('Cant revoke sign because contractor has signed the contract');
+        }
+
+
+        $contract->update([
+                              'contractor_sign_status' => !$contract->contractor_sign_status
+
+                          ]);
+        return api(ContractResource::make($contract));
+
+
+    }
 
 
     public function payments(Contract $contract) {
