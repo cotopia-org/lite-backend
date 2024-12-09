@@ -40,7 +40,7 @@ class UserController extends Controller {
         $tags = $user->tags();
         $mentions = $user
             ->mentions()->whereNotNull('job_id')->where('mentionable_type', Tag::class)
-            ->whereIn('mentionable_id', $tags->pluck('id'))->get();
+            ->whereIn('mentionable_id', $tags->get()->pluck('id'))->get();
 
         return JobResource::collection($mentions);
 
