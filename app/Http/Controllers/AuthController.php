@@ -35,7 +35,10 @@ class AuthController extends Controller {
 
     public function register(Request $request) {
         $request->validate([
-                               'username' => 'required',
+                               'username' => [
+                                   'required',
+                                   'regex:/^[a-z0-9_]{5,20}$/',
+                               ],
                                'email'    => 'required',
                                'password' => 'required',
                            ]);
@@ -46,6 +49,7 @@ class AuthController extends Controller {
         if ($user !== NULL) {
             return error('User already exists');
         }
+        //remove dots and @ from username
 
         /** @var User $user */
         $user = User::create([

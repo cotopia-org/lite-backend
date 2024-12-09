@@ -17,6 +17,7 @@ use App\Http\Resources\UserResource;
 use App\Models\File;
 use App\Models\Job;
 use App\Models\Room;
+use App\Models\Tag;
 use App\Models\User;
 use App\Models\Workspace;
 use App\Utilities\Constants;
@@ -32,14 +33,28 @@ class UserController extends Controller {
         return SettingResource::collection(auth()->user()->settings);
     }
 
+    public function mentionedJobs() {
+        $user = auth()->user();
+
+
+        $tags = $user->tags();
+        $mentions = $user
+            ->mentions()->whereNotNull('job_id')->where('mentionable_type', Tag::class)
+            ->whereIn('mentionable_id', $tags->pluck('id'))->get();
+
+        return JobResource::collection($mentions);
+
+    }
+
     public function jobs(Request $request, $user) {
         $firstOfMonth = now()->firstOfMonth();
 
 
         $period = $request->period ?? 'all_time';
-
         if ($user === "me") {
             $user = auth()->user();
+
+
         } else {
             $user = User::findOrFail($user);
         }
