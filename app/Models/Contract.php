@@ -49,7 +49,7 @@ class Contract extends Model {
     public function text() {
 
         return __('contracts.per_hour', [
-            'workspace_name' => $this->worksapce->title,
+            'workspace_name' => $this->workspace->title,
             'username'       => $this->user->username,
             'start_at'       => $this->start_at->toDateTimeString(),
             'end_at'         => $this->end_at->toDateTimeString(),
