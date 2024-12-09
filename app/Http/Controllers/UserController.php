@@ -16,6 +16,7 @@ use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\UserResource;
 use App\Models\File;
 use App\Models\Job;
+use App\Models\Mention;
 use App\Models\Room;
 use App\Models\Tag;
 use App\Models\User;
@@ -38,9 +39,11 @@ class UserController extends Controller {
 
 
         $tags = $user->tags();
-        $mentions = $user
-            ->mentions()->whereNotNull('job_id')->orWhere('mentionable_type', Tag::class)
-            ->orWhereIn('mentionable_id', $tags->get()->pluck('id'))->get();
+        $user_mentions = $user->mentions()->whereNotNull('job_id')->get();
+        $tag_mentions = Mention::whereNotNull('job_id')->where('mentionable_type', Tag::class)
+                               ->whereIn('mentionable_id', $tags->get()->pluck('id'))->get();
+
+        $mentions = $user_mentions->merge($tag_mentions);
 
         return api(JobResource::collection(Job::find($mentions->pluck('job_id'))));
 
