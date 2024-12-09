@@ -32,6 +32,7 @@ class Contract extends Model {
         'text',
     ];
 
+
     protected $casts = [
         'start_at' => 'datetime',
         'end_at'   => 'datetime',
@@ -42,6 +43,20 @@ class Contract extends Model {
 
     public function user() {
         return $this->belongsTo(User::class);
+    }
+
+
+    public function text() {
+
+        return __('contracts.per_hour', [
+            'workspace_name' => $this->worksapce->title,
+            'username'       => $this->user->username,
+            'start_at'       => $this->start_at->toDateTimeString(),
+            'end_at'         => $this->end_at->toDateTimeString(),
+            'per_hour'       => $this->amount,
+            'min_hours'      => $this->min_hours,
+            'max_hours'      => $this->max_hours
+        ],        'en');
     }
 
     public function renew() {
