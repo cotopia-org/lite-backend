@@ -19,7 +19,7 @@ class JobController extends Controller {
                                'workspace_id' => 'required|exists:workspaces,id',
                            ]);
 
-        $user = $this->user;
+        $user = auth()->user();
 
         $req = $request->all();
         $req['level'] = 0;
