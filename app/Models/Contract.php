@@ -59,6 +59,10 @@ class Contract extends Model {
         ],        'en');
     }
 
+    public function workspace() {
+        return $this->belongsTo(Workspace::class);
+    }
+
     public function renew() {
 
 
