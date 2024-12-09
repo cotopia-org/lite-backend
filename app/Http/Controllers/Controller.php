@@ -12,9 +12,7 @@ abstract class Controller extends \Illuminate\Routing\Controller {
      */
     public function __construct() {
         $user = auth()->user();
-        if ($user === NULL) {
-            error('Unauthorized', 401);
-        }
+
 
         $this->user = $user;
     }

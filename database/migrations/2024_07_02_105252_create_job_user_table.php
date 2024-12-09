@@ -8,14 +8,14 @@ return new class () extends Migration {
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
+    public function up(): void {
         Schema::create('job_user', function (Blueprint $table) {
             $table->id();
 
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('job_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->string('role')->nullable();
+            $table->string('status')->nullable();
 
             $table->timestamps();
         });
@@ -24,8 +24,7 @@ return new class () extends Migration {
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('job_user');
     }
 };

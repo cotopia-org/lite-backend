@@ -53,19 +53,35 @@ class Job extends Model {
                 $status = 'Completed 🟢';
             }
 
-            $text = "Job #$job->id by @$user->username
 
-**$job->title**
+            $text = $this->getMessageText($user);
 
-$job->description
-
-$status
-
-$job->estimate hrs ⏰
-";
 
             updateMesssage(Message::find($job->message_id), $text);
 
+
+        });
+    }
+
+
+    public function getMessageText($user) {
+        $nl = PHP_EOL;
+
+        return "Job #$this->id by @$user->username$nl**$this->title**$nl $this->description $nl In Progress 🔵$nl $this->estimate hrs ⏰";
+
+    }
+
+    public function sendMessage($user) {
+        $text = $this->getMessageText($user);
+
+        $msg = sendMessage($text, 39);
+
+
+        $job = $this;
+        self::withoutEvents(function () use ($job, $msg) {
+            $job->update([
+                             'message_id' => $msg->id
+                         ]);
 
         });
     }

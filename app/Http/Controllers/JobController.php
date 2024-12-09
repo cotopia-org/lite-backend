@@ -15,10 +15,11 @@ class JobController extends Controller {
         $request->validate([
                                'title'        => 'required',
                                'description'  => 'required',
+                               'estimate'     => 'required',
                                'workspace_id' => 'required|exists:workspaces,id',
                            ]);
 
-        $user = auth()->user();
+        $user = $this->user;
 
         $req = $request->all();
         $req['level'] = 0;
@@ -48,30 +49,11 @@ class JobController extends Controller {
         }
 
 
-        $user->jobs()->attach($job, ['role' => 'owner']);
+        $user->jobs()->attach($job, ['role' => 'owner', 'status' => $request->status]);
 
         //        event(new JobCreated($job));
 
-        $text = "Job #$job->id by @$user->username
-
-**$job->title**
-
-$job->description
-
-In Progress 🔵
-
-$job->estimate hrs ⏰
-";
-
-        $msg = sendMessage($text, 39);
-
-
-        Job::withoutEvents(function () use ($job, $msg) {
-            $job->update([
-                             'message_id' => $msg->id
-                         ]);
-
-        });
+        $job->sendMessage($user);
 
 
         if ($request->mentions) {
@@ -199,6 +181,14 @@ $job->estimate hrs ⏰
         return api(TRUE);
     }
 
+
+    public function accept(Job $job) {
+        $user = auth()->user();
+
+        $user->jobs()->attach($job, ['role' => 'member', 'status' => Constants::IN_PROGRESS]);
+
+
+    }
 
     public function removeUser(Job $job, Request $request) {
         $request->validate([
