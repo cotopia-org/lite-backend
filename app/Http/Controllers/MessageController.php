@@ -72,6 +72,9 @@ class   MessageController extends Controller {
                                                                                                              'last_message_seen_id' => $message->id
                                                                                                          ]);
 
+
+        $res = MessageResource::make($message);
+        sendSocket('messageReceived', 'chat-' . $request->chat_id, $res);
         return api(MessageResource::make($message));
 
     }
@@ -178,7 +181,6 @@ class   MessageController extends Controller {
 
 
     }
-
 
 
     public function react(Message $message, Request $request) {
