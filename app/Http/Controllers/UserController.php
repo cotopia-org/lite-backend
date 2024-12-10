@@ -51,6 +51,7 @@ class UserController extends Controller {
 
         $final_jobs = $mentions_ids->diff($user_jobs_ids);
 
+        logger($final_jobs);
         return api(JobResource::collection(Job::find($final_jobs)));
 
     }
