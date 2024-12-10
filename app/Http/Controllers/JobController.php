@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Permission;
 use App\Events\JobCreated;
 use App\Http\Resources\JobResource;
 use App\Models\Job;
@@ -9,19 +10,26 @@ use App\Models\Tag;
 use App\Models\User;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class JobController extends Controller {
     public function create(Request $request) {
 
-        return error('Sorry cant now.');
+
         $request->validate([
                                'title'        => 'required',
                                'description'  => 'required',
                                'estimate'     => 'required',
                                'workspace_id' => 'required|exists:workspaces,id',
+                               'job_id'       => 'required|exists:jobs,id',
+                               'mentions'     => 'required',
                            ]);
 
         $user = auth()->user();
+
+        $user->canDo(Permission::WS_ADD_JOB, $request->workspace_id);
+
 
         $req = $request->all();
         $req['level'] = 0;
@@ -32,13 +40,13 @@ class JobController extends Controller {
         }
         $job = Job::create($req);
 
+
         if ($job->status === Constants::IN_PROGRESS) {
 
 
-            $user->jobs()->where('jobs.id', '!=', $job->id)->whereStatus(Constants::IN_PROGRESS)->update([
-                                                                                                             'status' => Constants::PAUSED
-                                                                                                         ]);
-
+            DB::table('job_user')->where('user_id', $user->id)->where('status', Constants::IN_PROGRESS)->update([
+                                                                                                                    'status' => Constants::PAUSED
+                                                                                                                ]);
 
             if ($user->active_job_id !== NULL) {
                 acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'JobController@create');
@@ -46,7 +54,7 @@ class JobController extends Controller {
             }
             acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started', 'JobController@create');
 
-            $user->updateActiveJob($job->id);
+            //            $user->updateActiveJob($job->id);
 
         }
 
@@ -88,36 +96,15 @@ class JobController extends Controller {
     public function update(Job $job, Request $request) {
         $user = auth()->user();
 
-        if (!$user->jobs->contains($job)) {
-            abort(404);
-        }
-        //TODO: code upper, need to changed to user->can('update-job-1') method.
-
-        if ($request->status === Constants::IN_PROGRESS) {
+        $user->canDo(Permission::JOB_UPDATE, $job->workspace_id);
 
 
-            foreach ($user->jobs()->whereStatus(Constants::IN_PROGRESS)->get() as $j) {
-                $j->update([
-                               'status' => Constants::PAUSED
-                           ]);
-            }
+        if ($request->status !== Constants::IN_PROGRESS) {
 
 
-            if ($user->active_job_id !== NULL) {
-                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'JobController@update');
-
-            }
-            acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started', 'JobController@update');
-
-
-            $user->updateActiveJob($job->id);
-
-
-        } elseif ($job->id === $user->active_job_id) {
-
-            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'JobController@update');
-
-            $user->updateActiveJob();
+            DB::table('job_user')->where('job_id', $job->id)->update([
+                                                                         'status' => $request->status
+                                                                     ]);
 
         }
 
@@ -168,49 +155,71 @@ class JobController extends Controller {
         return api($jobResource);
     }
 
-    public function delete(Job $job) {
 
-        return api(TRUE);
+
+    public function updateStatus(Job $job, Request $request) {
+        $request->validate([
+                               'status' => [
+                                   'required',
+                                   Rule::in(Constants::IN_PROGRESS, Constants::PAUSED, Constants::COMPLETED),
+                               ]
+                           ]);
         $user = auth()->user();
 
-        if (!$user->jobs->contains($job)) {
-            abort(404);
-        }
-        //TODO: code upper, need to changed to user->can('update-job-1') method.
-        $job->users()->detach();
-        $job->delete();
+        if ($request->status === Constants::IN_PROGRESS) {
+            DB::table('job_user')->where('user_id', $user->id)->where('status', Constants::IN_PROGRESS)->update([
+                                                                                                                    'status' => Constants::PAUSED
+                                                                                                                ]);
 
-        return api(TRUE);
+
+            if ($user->active_job_id !== NULL) {
+                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'JobController@create');
+
+            }
+            acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started', 'JobController@create');
+
+
+        }
+
+
+        DB::table('job_user')->where('user_id', $user->id)->where('job_id', $job->id)->update([
+                                                                                                  'status' => $request->status
+                                                                                              ]);
+
+
+        return api(JobResource::make($job));
+
+
     }
 
 
     public function accept(Job $job) {
         $user = auth()->user();
 
+
+        DB::table('job_user')->where('user_id', $user->id)->where('status', Constants::IN_PROGRESS)->update([
+                                                                                                                'status' => Constants::PAUSED
+                                                                                                            ]);
+
         $user->jobs()->attach($job, ['role' => 'member', 'status' => Constants::IN_PROGRESS]);
+
+
+        if ($user->active_job_id !== NULL) {
+            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'JobController@create');
+
+        }
+        acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started', 'JobController@create');
 
 
     }
 
-    public function removeUser(Job $job, Request $request) {
-        $request->validate([
-                               'user_id' => 'required|exists:users,id',
-                           ]);
+    public function dismiss(Job $job, Request $request) {
 
         $user = auth()->user();
-        if (!$user->jobs->contains($job)) {
-            abort(404);
-        }
+        $user->jobs()->attach($job, ['role' => 'member', 'status' => Constants::DISMISSED]);
 
-        $jobUser = User::find($request->user_id);
+        return api(TRUE);
 
-        if ($jobUser->active_job_id === $job->id) {
-            $jobUser->update(['active_job_id' => NULL]);
-        }
-
-        $job->users()->detach($jobUser->id);
-
-        return api(JobResource::make($job));
 
     }
 }

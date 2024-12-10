@@ -127,7 +127,11 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::post('/', 'create');
         Route::get('/{job}', 'get');
         Route::put('/{job}', 'update');
-        Route::delete('/{job}', 'delete');
+
+        Route::get('/{job}/updateStatus', 'updateStatus');
+        Route::get('/{job}/accept', 'accept');
+        Route::get('/{job}/dismiss', 'dismiss');
+
 
     })->middleware('checkIsUserOnline');
 

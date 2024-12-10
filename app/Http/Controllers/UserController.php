@@ -69,7 +69,7 @@ class UserController extends Controller {
         }
 
         if ($period === 'this_month') {
-            $jobs = $jobs->whereHas('activities', function ($query) use ($firstOfMonth) {
+            $jobs = $jobs->whereHas('acts', function ($query) use ($firstOfMonth) {
                 $query->where('created_at', '>=', $firstOfMonth);
             });
         }

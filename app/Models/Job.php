@@ -166,41 +166,44 @@ class Job extends Model {
         return $this->hasMany(Activity::class);
     }
 
+    public function acts() {
+        return $this->hasMany(Act::class);
+    }
+
     public function getTime($user_id, $period = 'all_time') {
 
-        $firstOfMonth = now()->firstOfMonth();
 
-        $acts = $this->activities->where('user_id', $user_id);
+        //        \Carbon\CarbonInterval::setCascadeFactors([
+        //                                                      'seconds' => [1_000, 'milliseconds'],
+        //
+        //                                                      'minute' => [60, 'seconds'],
+        //                                                      'hour'   => [60, 'minutes'],
+        //                                                  ]);
+        $now = now();
+
+
+        $query = Act::whereIn('type', ['job_started', 'job_ended'])->where('job', $this->id)->where('user_id', $user_id)
+                    ->orderBy('id', 'ASC');
 
         if ($period === 'this_month') {
-            $acts = $acts->where('created_at', '>=', $firstOfMonth);
+            $query = $query->where('created_at', '>=', now()->firstOfMonth());
         }
+        $acts = $query->get();
 
-        $sum_minutes = 0;
+        $minutes = 0;
         foreach ($acts as $act) {
 
+            if ($act->type === 'job_started') {
+                $end = $acts->where('id', '>', $act->id)->where('type', 'job_ended')->first();
+                if ($end === NULL) {
+                    $minutes += $act->created_at->diffInMinutes($now);
+                } else {
+                    $minutes += $act->created_at->diffInMinutes($end->created_at);
 
-            $left_at = now();
-            if ($act->left_at !== NULL) {
-                $left_at = $act->left_at;
+                }
             }
-
-            $diff = $act->join_at->diffInMinutes($left_at);
-            $sum_minutes += $diff;
-
-
         }
-        CarbonInterval::setCascadeFactors([
-                                              'minute' => [60, 'seconds'],
-                                              'hour'   => [60, 'minutes'],
-                                          ]);
-
-        return [
-            //            'job'         => $this,
-            'sum_minutes' => $sum_minutes,
-            'sum_hours'   => CarbonInterval::minutes($sum_minutes)->cascade()->forHumans(NULL, TRUE),
-
-        ];
+        return $minutes;
     }
 
     public function lastActivity() {
