@@ -156,6 +156,9 @@ class JobController extends Controller {
 
 
     public function updateStatus(Job $job, Request $request) {
+        if ($job->old) {
+            return error('Cant update old jobs, sorry!');
+        }
         $request->validate([
                                'status' => [
                                    'required',
