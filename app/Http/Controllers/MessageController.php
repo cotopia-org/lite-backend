@@ -73,8 +73,8 @@ class   MessageController extends Controller {
                                                                                                          ]);
 
 
-        $res = MessageResource::make($message);
-        sendSocket('messageReceived', 'chat-' . $request->chat_id, $res);
+        //        $res = MessageResource::make($message);
+        //        sendSocket('messageReceived', 'chat-' . $request->chat_id, $res);
         return api(MessageResource::make($message));
 
     }
