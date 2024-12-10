@@ -35,7 +35,7 @@ class UserResource extends JsonResource {
             'video_size'              => $this->video_size,
             'last_login'              => $this->updated_at,
             'is_bot'                  => $this->is_bot,
-            'active_job'              => JobResource::make($this->activeJob()->first()),
+            'active_job'              => JobResource::make($this->activeJob->first()),
             'active_contract'         => ContractResource::make($this->contracts->last()),
             'workspaces'              => $this->workspaces->map(function ($workspace) {
                 return [
