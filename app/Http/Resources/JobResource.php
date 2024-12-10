@@ -33,6 +33,7 @@ class JobResource extends JsonResource {
                 return [
                     'id'            => $user->id,
                     'total_minutes' => $job->getTime($user->id, $period),
+                    'role'          => $user->pivot->role,
                 ];
             }),
         ];
