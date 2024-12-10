@@ -54,7 +54,7 @@ class Job extends Model {
             }
 
 
-            $text = $this->getMessageText($user);
+            $text = self::getMessageText($user);
 
 
             updateMesssage(Message::find($job->message_id), $text);
