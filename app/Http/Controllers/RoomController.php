@@ -62,7 +62,8 @@ class RoomController extends Controller {
 
         $room = $workspace->rooms()->create([
                                                 'title'   => $request->title,
-                                                'user_id' => $user->id
+                                                'user_id' => $user->id,
+                                                'type'    => $request->type ?? 'flow',
                                             ]);
 
         $res = RoomResource::make($room);

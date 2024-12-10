@@ -20,6 +20,7 @@ class RoomResource extends JsonResource {
             'participants' => UserMinimalResource::collection($this->users),
             'landing_spot' => $this->landing_spot,
             'background'   => $this->background,
+            'type'         => $this->type,
 
         ];
     }
