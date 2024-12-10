@@ -14,7 +14,7 @@ return [
 
 
 3. Contract Subject
-   1. The second party agrees to be present on the Discord platform for a minimum of **:min_hours** hours and a maximum of **:max_hours** hours during the contract period.
+   1. The second party agrees to be present on the Lite platform for a minimum of **:min_hours** hours and a maximum of **:max_hours** hours during the contract period.
    2. The first party agrees to deposit **:per_hour** USDT per hour of the second party's work to the account introduced by the second party.
 
 

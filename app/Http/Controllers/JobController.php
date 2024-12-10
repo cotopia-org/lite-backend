@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 
 class JobController extends Controller {
     public function create(Request $request) {
+
+        return error('Sorry cant now.');
         $request->validate([
                                'title'        => 'required',
                                'description'  => 'required',
