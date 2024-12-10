@@ -76,8 +76,7 @@ class User extends Authenticatable {
 
     public function activeJob() {
         return $this
-            ->belongsToMany(Job::class)->withPivot('role', 'status')->wherePivot('status', Constants::IN_PROGRESS)
-            ->first();
+            ->belongsToMany(Job::class)->withPivot('role', 'status')->wherePivot('status', Constants::IN_PROGRESS);
     }
 
     public static function byUsername($username) {
