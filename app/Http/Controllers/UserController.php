@@ -46,7 +46,7 @@ class UserController extends Controller {
         $mentions = $user_mentions->merge($tag_mentions);
 
 
-        $user_jobs_ids = $user->jobs;
+        $user_jobs_ids = $user->jobs->pluck('id');
         $mentions_ids = $mentions->pluck('job_id');
 
         $final_jobs = $mentions_ids->diff($user_jobs_ids);
