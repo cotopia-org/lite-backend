@@ -49,7 +49,7 @@ class UserController extends Controller {
         $user_jobs_ids = $user->jobs()->get()->pluck('id');
         $mentions_ids = $mentions->pluck('job_id');
 
-        $final_jobs = array_diff($mentions_ids, $user_jobs_ids);
+        $final_jobs = $mentions_ids->diff($user_jobs_ids);
 
         return api(JobResource::collection(Job::find($final_jobs)));
 
