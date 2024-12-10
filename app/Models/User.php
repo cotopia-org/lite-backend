@@ -131,7 +131,7 @@ class User extends Authenticatable {
 
     public function jobs() {
         return $this
-            ->belongsToMany(Job::class)->withPivot('role', 'status')->wherePivotNotIn('status', [Constants::DISMISSED]);
+            ->belongsToMany(Job::class)->withPivot('role', 'status');
     }
 
     public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany {
