@@ -75,7 +75,9 @@ class User extends Authenticatable {
     }
 
     public function activeJob() {
-        return $this->belongsTo(Job::class, 'active_job_id');
+        return $this
+            ->belongsToMany(Job::class)->withPivot('role', 'status')->wherePivot('status', Constants::IN_PROGRESS)
+            ->first();
     }
 
     public static function byUsername($username) {
@@ -131,7 +133,7 @@ class User extends Authenticatable {
 
     public function jobs() {
         return $this
-            ->belongsToMany(Job::class)->withPivot('role', 'status')->wherePivotNotIn('status', [
+            ->belongsToMany(Job::class)->withTimestamps()->withPivot('role', 'status')->wherePivotNotIn('status', [
                 Constants::DISMISSED,
             ]);
     }
@@ -271,7 +273,7 @@ class User extends Authenticatable {
     public function updateActiveJob($job_id = NULL) {
 
         $this->update(['active_job_id' => $job_id]);
-        $this->refreshActivity();
+        //        $this->refreshActivity();
     }
 
     public function refreshActivity() {

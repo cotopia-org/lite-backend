@@ -54,7 +54,6 @@ class JobController extends Controller {
             }
             acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started', 'JobController@create');
 
-            //            $user->updateActiveJob($job->id);
 
         }
 
