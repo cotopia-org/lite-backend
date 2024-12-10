@@ -33,6 +33,20 @@ class Payment extends Model {
         });
     }
 
+
+    protected function status(): Attribute {
+        return Attribute::make(get: function ($value) {
+
+
+            $contract = $this->contract;
+
+            if (!$contract->end_at->isPast()) {
+                return 'ongoing';
+            }
+            return $value;
+        });
+    }
+
     protected function totalHours(): Attribute {
         return Attribute::make(get: function ($value) {
             if ($value === NULL) {

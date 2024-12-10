@@ -55,8 +55,8 @@ class PaymentController extends Controller {
         $payment->update([
                              'status' => $request->status,
                              'amount' => $request->amount,
-                             'bonus'  => $request->bonus,
-                             'round'  => $request->round
+                             'bonus'  => $request->bonus ?? 0,
+                             'round'  => $request->roun ?? 0
                          ]);
 
 
