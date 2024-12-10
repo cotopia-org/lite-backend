@@ -130,7 +130,7 @@ class User extends Authenticatable {
     }
 
     public function jobs() {
-        return $this->belongsToMany(Job::class)->withPivot('role');
+        return $this->belongsToMany(Job::class)->withPivot('role','status');
     }
 
     public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany {
