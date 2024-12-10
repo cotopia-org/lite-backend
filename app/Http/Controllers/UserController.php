@@ -45,7 +45,8 @@ class UserController extends Controller {
 
         $mentions = $user_mentions->merge($tag_mentions);
 
-        return api(JobResource::collection(Job::find($mentions->pluck('job_id'))));
+        return api(JobResource::collection(Job::whereNot('user_id', $user->id)
+                                              ->whereIn('id', $mentions->pluck('job_id'))->get()));
 
     }
 

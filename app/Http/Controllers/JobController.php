@@ -156,7 +156,6 @@ class JobController extends Controller {
     }
 
 
-
     public function updateStatus(Job $job, Request $request) {
         $request->validate([
                                'status' => [
