@@ -114,28 +114,9 @@ class ContractController extends Controller {
     }
 
     public function update(Request $request, Contract $contract) {
-        $contract->update([
-                              'type'                   => $request->type,
-                              'amount'                 => $request->amount,
-                              'currency'               => $request->currency,
-                              'start_at'               => $request->start_at,
-                              'end_at'                 => $request->end_at,
-                              'auto_renewal'           => $request->auto_renewal,
-                              'renewal_count'          => $request->renewal_count,
-                              'renew_time_period_type' => $request->renew_time_period_type,
-                              'renew_time_period'      => $request->renew_time_period,
-                              'renew_notice'           => $request->renew_notice,
-                              'user_status'            => $request->user_status,
-                              'contractor_status'      => $request->contractor_status,
-                              'min_hours'              => $request->min_hours,
-                              'max_hours'              => $request->max_hours,
-                              'payment_method'         => $request->payment_method,
-                              'payment_address'        => $request->payment_address,
-                              'payment_period'         => $request->payment_period,
-                              'role'                   => $request->role,
-                              'user_sign_status'       => $request->user_sign_status,
-                              'contractor_sign_status' => $request->contractor_sign_status,
-                          ]);
+
+
+        $contract->update($request->except('user_id'));
         return api(ContractResource::make($contract));
 
     }
