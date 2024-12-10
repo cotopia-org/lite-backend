@@ -182,8 +182,8 @@ class Job extends Model {
         $now = now();
 
 
-        $query = Act::whereIn('type', ['job_started', 'job_ended'])->where('job', $this->id)->where('user_id', $user_id)
-                    ->orderBy('id', 'ASC');
+        $query = Act::whereIn('type', ['job_started', 'job_ended'])->where('job_id', $this->id)
+                    ->where('user_id', $user_id)->orderBy('id', 'ASC');
 
         if ($period === 'this_month') {
             $query = $query->where('created_at', '>=', now()->firstOfMonth());
