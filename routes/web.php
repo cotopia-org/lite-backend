@@ -13,8 +13,9 @@ Route::get('/', function () {
 });
 Route::get('/tester', function () {
 
-
-    dd(nl2br(__('contracts.per_hour')));
+    $first = [1, 2, 3, 4, 5];
+    $second = [2, 3, 4, 6];
+    dd(array_diff($second, $first));
 });
 
 

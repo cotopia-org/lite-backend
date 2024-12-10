@@ -195,24 +195,28 @@ class JobController extends Controller {
     public function accept(Job $job) {
         $user = auth()->user();
 
+        $job_user = DB::table('job_user')->where('user_id', $user->id)->where('job_id', $job->id)->first();
+        if ($job_user === NULL) {
+            DB::table('job_user')->where('user_id', $user->id)->where('status', Constants::IN_PROGRESS)->update([
+                                                                                                                    'status' => Constants::PAUSED
+                                                                                                                ]);
 
-        DB::table('job_user')->where('user_id', $user->id)->where('status', Constants::IN_PROGRESS)->update([
-                                                                                                                'status' => Constants::PAUSED
-                                                                                                            ]);
-
-        $user->jobs()->attach($job, ['role' => 'member', 'status' => Constants::IN_PROGRESS]);
+            $user->jobs()->attach($job, ['role' => 'member', 'status' => Constants::IN_PROGRESS]);
 
 
-        if ($user->active_job_id !== NULL) {
-            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'JobController@create');
+            if ($user->active_job_id !== NULL) {
+                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'JobController@create');
+
+            }
+            acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started', 'JobController@create');
 
         }
-        acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started', 'JobController@create');
+        return api(TRUE);
 
 
     }
 
-    public function dismiss(Job $job, Request $request) {
+    public function dismiss(Job $job) {
 
         $user = auth()->user();
         $user->jobs()->attach($job, ['role' => 'member', 'status' => Constants::DISMISSED]);
