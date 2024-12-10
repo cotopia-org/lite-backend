@@ -13,9 +13,11 @@ Route::get('/', function () {
 });
 Route::get('/tester', function () {
 
-    $first = [1, 2, 3, 4, 5];
-    $second = [2, 3, 4, 6];
-    dd(array_diff($second, $first));
+    foreach (Job::all() as $job) {
+        \Illuminate\Support\Facades\DB::table('job_user')->where('job_id', $job->id)->update([
+                                                                                                 'status' => $job->status
+                                                                                             ]);
+    }
 });
 
 
