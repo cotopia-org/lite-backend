@@ -93,6 +93,11 @@ class JobController extends Controller {
     }
 
     public function update(Job $job, Request $request) {
+
+        if ($job->old) {
+            return error('Cant update old jobs, sorry!');
+        }
+
         $user = auth()->user();
 
         $user->canDo(Permission::JOB_UPDATE, $job->workspace_id);
