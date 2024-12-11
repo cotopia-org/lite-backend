@@ -464,7 +464,7 @@ class User extends Authenticatable {
     public function canDo($ability, $workspace_id) {
         $user_in_workspace = $this->workspaces->find($workspace_id);
         if ($user_in_workspace === NULL) {
-            return error('You cant do this.');
+            return error('You dont have permission to do this action.');
         }
         $role = $user_in_workspace->pivot->role;
 
@@ -474,7 +474,7 @@ class User extends Authenticatable {
         $permissions = Constants::ROLE_PERMISSIONS[$role];
 
         if (!in_array($ability, $permissions, TRUE)) {
-            return error('You cant do this.');
+            return error('You dont have permission to do this action.');
 
         }
 
