@@ -468,7 +468,7 @@ class User extends Authenticatable {
         }
         $role = $user_in_workspace->pivot->role;
 
-        if ($role === 'super-admin') {
+        if ($role === 'super-admin' || $role === 'owner') {
             return TRUE;
         }
         $permissions = Constants::ROLE_PERMISSIONS[$role];
