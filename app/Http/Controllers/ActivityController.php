@@ -15,8 +15,8 @@ class ActivityController extends Controller {
             ->where('created_at', '<=', $request->end_at)->get()->map(function ($activity) {
                 return [
                     'id'           => $activity->id,
-                    'join_at'      => $activity->join_at->toDateTimeString(),
-                    'left_at'      => $activity->left_at?->toDateTimeString(),
+                    'join_at'      => $activity->join_at->timezone('Asia/Tehran')->toDateTimeString(),
+                    'left_at'      => $activity->left_at?->timezone('Asia/Tehran')->toDateTimeString(),
                     'job_id'       => $activity->job_id,
                     'room_id'      => $activity->room_id,
                     'workspace_id' => $activity->workspace_id,
