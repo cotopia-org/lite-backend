@@ -16,11 +16,11 @@ class ActivityController extends Controller {
                 return [
                     'id'           => $activity->id,
                     'join_at'      => $activity->join_at->toDateTimeString(),
-                    'left_at'      => $activity->left_at->toDateTimeString(),
+                    'left_at'      => $activity->left_at?->toDateTimeString(),
                     'job_id'       => $activity->job_id,
                     'room_id'      => $activity->room_id,
                     'workspace_id' => $activity->workspace_id,
-                    'diff'         => $activity->left_at->diffInMinutes($activity->join_at),
+                    'diff'         => $activity->left_at?->diffInMinutes($activity->join_at),
 
                 ];
             });
