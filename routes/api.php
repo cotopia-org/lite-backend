@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ContractController;
@@ -204,6 +205,12 @@ Route::middleware('auth:sanctum')->group(callback: function () {
     });
 
 
+
+    Route::controller(ActivityController::class)->prefix('activities')->group(function () {
+        Route::get('/{user}', 'get');
+
+
+    });
 });
 
 Route::any('/github/webhook', 'App\Http\Controllers\GithubController@webhook');
