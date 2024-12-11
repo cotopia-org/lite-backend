@@ -54,6 +54,7 @@ class JobController extends Controller {
             }
             acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started', 'JobController@create');
 
+            $user->updateActiveJob($job->id);
 
         }
 
@@ -179,11 +180,12 @@ class JobController extends Controller {
 
 
             if ($user->active_job_id !== NULL) {
-                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'JobController@create');
+                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'JobController@updateStatus');
 
             }
-            acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started', 'JobController@create');
+            acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started', 'JobController@updateStatus');
 
+            $user->updateActiveJob($job->id);
 
         }
 
@@ -212,10 +214,11 @@ class JobController extends Controller {
 
 
             if ($user->active_job_id !== NULL) {
-                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'JobController@create');
+                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'JobController@accept');
 
             }
-            acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started', 'JobController@create');
+            acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started', 'JobController@accept');
+            $user->updateActiveJob($job->id);
 
         }
         return api(TRUE);

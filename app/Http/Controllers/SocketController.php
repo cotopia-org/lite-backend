@@ -40,7 +40,7 @@ class SocketController extends Controller {
                 acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'time_ended', 'User Was Online SocketController@connected');
             }
 
-            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'disconnected', 'User Was Online SocketController@disconnected');
+            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'disconnected', 'User Was Online SocketController@connected');
 
             DisconnectUserJob::dispatch($user, $request->offline !== NULL, FALSE, 'User Was Online Disconnected From SocketController Connected Method');
 
@@ -51,6 +51,13 @@ class SocketController extends Controller {
                           'status'    => Constants::ONLINE
                       ]);
         acted($user->id, NULL, NULL, $user->active_job_id, 'connected', 'SocketController@conected');
+
+
+        if ($user->active_job_id !== NULL) {
+            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_started', 'SocketController@connected');
+
+        }
+
 
         return api([
                        'id'       => $user->id,
@@ -143,6 +150,10 @@ class SocketController extends Controller {
 
             acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'disconnected', 'SocketController@disconnected');
 
+            if ($user->active_job_id !== NULL) {
+                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'SocketController@disconnected');
+
+            }
             DisconnectUserJob::dispatch($user, $request->offline !== NULL, FALSE, 'Disconnected From SocketController Disconnected Method');
 
         }

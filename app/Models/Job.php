@@ -182,6 +182,10 @@ class Job extends Model {
         $now = now();
 
 
+
+//        $starts = Act::where('type', 'job_started')->where('job_id', $this->id)
+//                     ->where('user_id', $user_id)->orderBy('id', 'ASC')->get();
+
         $query = Act::whereIn('type', ['job_started', 'job_ended'])->where('job_id', $this->id)
                     ->where('user_id', $user_id)->orderBy('id', 'ASC');
 
