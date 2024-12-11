@@ -82,6 +82,7 @@ Route::get('/lastMonth', function () {
             'email'       => $user->email,
             'name'        => $user->email,
             'sum_minutes' => (float)$act->sum_minutes,
+            'act'         => $act,
             'sum_hours'   => \Carbon\CarbonInterval::minutes($act->sum_minutes)->cascade()->forHumans(),
 
         ];
