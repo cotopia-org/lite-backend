@@ -11,8 +11,8 @@ class ActivityController extends Controller {
 
 
         $acts = $user
-            ->activities()->where('created_at', '>=', $request->start_at)->where('created_at', '<=', $request->end_at)
-            ->get()->map(function ($activity) {
+            ->activities()->orderBy('id', 'ASC')->where('created_at', '>=', $request->start_at)
+            ->where('created_at', '<=', $request->end_at)->get()->map(function ($activity) {
                 return [
                     'id'           => $activity->id,
                     'join_at'      => $activity->join_at->toDateTimeString(),
