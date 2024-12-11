@@ -13,7 +13,8 @@ Route::get('/', function () {
 });
 Route::get('/tester', function () {
 
-    dd('Tester');
+    $job = Job::find(203);
+    dd($job->getTime(1));
 });
 
 
