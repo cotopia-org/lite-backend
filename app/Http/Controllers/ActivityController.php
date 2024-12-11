@@ -21,6 +21,7 @@ class ActivityController extends Controller {
                     'room_id'      => $activity->room_id,
                     'workspace_id' => $activity->workspace_id,
                     'diff'         => $activity->join_at?->diffInMinutes($activity->left_at),
+                    'data'         => $activity->data,
 
                 ];
             });
