@@ -53,10 +53,7 @@ class SocketController extends Controller {
         acted($user->id, NULL, NULL, $user->active_job_id, 'connected', 'SocketController@conected');
 
 
-        if ($user->active_job_id !== NULL) {
-            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_started', 'SocketController@connected');
 
-        }
 
 
         return api([

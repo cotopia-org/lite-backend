@@ -129,6 +129,10 @@ class RoomController extends Controller {
         if ($before_room === NULL) {
             // It means its first time for join.
             acted($user->id, $room->workspace_id, $room->id, $user->active_job_id, 'time_started', 'RoomController@join');
+            if ($user->active_job_id !== NULL) {
+                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_started', 'RoomController@join');
+
+            }
 
         }
         $room = $room->joinUser($user);
