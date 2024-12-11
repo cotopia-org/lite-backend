@@ -10,8 +10,9 @@ class ActivityController extends Controller {
     public function get(User $user, Request $request) {
 
 
-        $acts = $user->activities()->where('created_at', '>=', $request->start_at)
-                     ->where('created_at', '>=', $request->end_at)->get();
+        $acts = $user
+            ->activities()->where('created_at', '>=', $request->start_at)->where('created_at', '<=', $request->end_at)
+            ->get();
 
         return api($acts);
 
