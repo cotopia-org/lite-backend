@@ -14,13 +14,13 @@ class ActivityController extends Controller {
             ->activities()->where('created_at', '>=', $request->start_at)->where('created_at', '<=', $request->end_at)
             ->get()->map(function ($activity) {
                 return [
-                    'id'           => $this->id,
-                    'join_at'      => $this->join_at->toDateTimeString(),
-                    'left_at'      => $this->left_at->toDateTimeString(),
-                    'job_id'       => $this->job_id,
-                    'room_id'      => $this->room_id,
-                    'workspace_id' => $this->workspace_id,
-                    'diff'         => $this->left_at->diffInMinutes($this->join_at),
+                    'id'           => $activity->id,
+                    'join_at'      => $activity->join_at->toDateTimeString(),
+                    'left_at'      => $activity->left_at->toDateTimeString(),
+                    'job_id'       => $activity->job_id,
+                    'room_id'      => $activity->room_id,
+                    'workspace_id' => $activity->workspace_id,
+                    'diff'         => $activity->left_at->diffInMinutes($this->join_at),
 
                 ];
             });
