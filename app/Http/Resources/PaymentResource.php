@@ -23,7 +23,7 @@ class PaymentResource extends JsonResource {
             'round'       => $this->round,
             'type'        => $this->type,
             'user'        => UserSuperMinimalResource::make($this->user),
-            'contract_id' => ContractResource::collection($this->contract)
+            'contract'    => ContractResource::make($this->contract)
         ];
     }
 }
