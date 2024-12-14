@@ -235,4 +235,9 @@ class JobController extends Controller {
 
 
     }
+
+    public function jobs(Job $job) {
+
+        return api(JobResource::collection($job->jobs));
+    }
 }
