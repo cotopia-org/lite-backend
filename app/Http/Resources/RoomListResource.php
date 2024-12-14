@@ -18,6 +18,7 @@ class RoomListResource extends JsonResource {
             'is_private'   => $this->is_private,
             'background'   => $this->background,
             'participants' => UserMinimalResource::collection($this->participants()),
+            'type'         => $this->type,
 
         ];
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\Permission;
 use App\Http\Resources\CalendarResource;
+use App\Http\Resources\JobCollection;
 use App\Http\Resources\JobResource;
 use App\Http\Resources\RoomListResource;
 use App\Http\Resources\ScheduleResource;
@@ -49,8 +50,9 @@ class WorkspaceController extends Controller {
 
         if (\request()->page) {
 
+            $jobs = $workspace->jobs()->whereNull('job_id')->paginate(10);
 
-            return api(JobResource::collection($workspace->jobs()->whereNull('job_id')->paginate(10))->resource);
+            return api(new JobCollection($jobs));
         }
         $jobs = $workspace->jobs()->whereNull('job_id')->get();
         $orderedJobs = Job::getOrderedJobs($jobs);
