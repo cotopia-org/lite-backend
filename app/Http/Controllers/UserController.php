@@ -14,6 +14,7 @@ use App\Http\Resources\TagResource;
 use App\Http\Resources\TalkResource;
 use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\UserResource;
+use App\Jobs\DisconnectUserJob;
 use App\Models\File;
 use App\Models\Job;
 use App\Models\Mention;
@@ -292,4 +293,57 @@ class UserController extends Controller {
 
 
     }
+
+
+    public function beAfk() {
+        $user = auth()->user();
+        $user->update([
+                          "status" => Constants::AFK,
+                      ]);
+        $response = UserMinimalResource::make($user);
+
+
+        if ($user->room_id !== NULL) {
+            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'time_ended', 'UserController@afk');
+        }
+
+        acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'disconnected', 'UserController@afk');
+
+        if ($user->active_job_id !== NULL) {
+            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'UserController@afk');
+
+        }
+        $user->left('Disconnected for Afk in UserController@afk');
+
+
+        sendSocket(Constants::userUpdated, $user->room->channel, $response);
+        return api($response);
+
+
+    }
+
+
+    public function beOnline() {
+        $user = auth()->user();
+
+        $user->update([
+                          "status" => Constants::ONLINE,
+                      ]);
+        $response = UserMinimalResource::make($user);
+
+        $room = $user->room;
+
+        acted($user->id, $room->workspace_id, $room->id, $user->active_job_id, 'time_started', 'UserController@beOnline');
+        if ($user->active_job_id !== NULL) {
+            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_started', 'UserController@beOnline');
+
+        }
+        $user->joined($room, 'Connected From UserController beOnline Method');
+
+
+        sendSocket(Constants::userUpdated, $user->room->channel, $response);
+        return api($response);
+    }
+
+
 }

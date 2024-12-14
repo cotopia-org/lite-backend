@@ -40,6 +40,7 @@ class Constants {
     const ONLINE = 'online';
     const OFFLINE = 'offline';
     const GHOST = 'ghost';
+    const AFK = 'afk';
 
     const API_SUCCESS_MSG = 'success';
     const API_FAILED_MSG = 'failed';
@@ -70,6 +71,10 @@ class Constants {
     const  REJECTED = 'rejected';
     const  LATER = 'later';
     const  NO_RESPONSE = 'no_response';
+
+
+
+
 
     const userLeftFromRoom = 'userLeftFromRoom';
     const userJoinedToRoom = 'userJoinedToRoom';

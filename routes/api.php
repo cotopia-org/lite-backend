@@ -72,6 +72,8 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::post('/search', 'search');
         Route::put('/update', 'update');
         Route::get('/settings', 'settings');
+        Route::get('/beAfk', 'beAfk');
+        Route::get('/beOnline', 'beOnline');
     });
 
     Route::controller(WorkspaceController::class)->prefix('workspaces')->group(function () {
@@ -203,7 +205,6 @@ Route::middleware('auth:sanctum')->group(callback: function () {
 
 
     });
-
 
 
     Route::controller(ActivityController::class)->prefix('activities')->group(function () {
