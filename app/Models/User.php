@@ -44,7 +44,7 @@ class User extends Authenticatable {
         'video_size',
         'is_megaphone',
         'socket_id',
-        'avatar',
+        //        'avatar',
         'is_bot',
         'verified',
         'livekit_connected',
