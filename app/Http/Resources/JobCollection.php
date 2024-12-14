@@ -16,7 +16,7 @@ class JobCollection extends ResourceCollection {
         return [
             'data' => JobResource::collection($this->collection),
 
-            'meta' => $this->meta
+            'meta' => []
         ];
     }
 }

@@ -51,8 +51,11 @@ class WorkspaceController extends Controller {
         if (\request()->page) {
 
             $jobs = $workspace->jobs()->whereNull('job_id')->paginate(10);
-
-            return api(new JobCollection($jobs));
+            return api(JobResource::collection($jobs), [
+                'total'       => $jobs->total(),
+                'perPage'     => $jobs->perPage(),
+                'currentPage' => $jobs->currentPage(),
+            ]);
         }
         $jobs = $workspace->jobs()->whereNull('job_id')->get();
         $orderedJobs = Job::getOrderedJobs($jobs);
