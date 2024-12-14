@@ -50,7 +50,7 @@ class WorkspaceController extends Controller {
 
         if (\request()->has('page')) {
 
-            $jobs = $workspace->jobs()->whereNull('job_id')->orderByDesc('id')->paginate(10);
+            $jobs = $workspace->jobs()->orderByDesc('id')->paginate(10);
             return api(JobResource::collection($jobs), [
                 'total'       => $jobs->total(),
                 'perPage'     => $jobs->perPage(),
