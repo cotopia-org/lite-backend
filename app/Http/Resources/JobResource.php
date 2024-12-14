@@ -36,6 +36,8 @@ class JobResource extends JsonResource {
                     'role'          => $user->pivot->role,
                     'status'        => $user->pivot->status,
                     'created_at'    => $user->pivot->created_at,
+                    'username'      => $user->username,
+                    'avatar'        => FileResource::make($user->avatar),
                 ];
             }),
         ];
