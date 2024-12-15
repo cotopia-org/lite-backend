@@ -157,6 +157,8 @@ Route::middleware('auth:sanctum')->group(callback: function () {
     })->middleware('checkIsUserOnline');
 
     Route::controller(ChatController::class)->prefix('chats')->group(function () {
+        Route::get('/{chat}/', 'get');
+
         Route::post('/createDirect', 'createDirect');
         Route::post('/createGroup', 'createGroup');
         Route::post('/createChannel', 'createChannel');

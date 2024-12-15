@@ -96,12 +96,10 @@ class ChatController extends Controller {
 
     }
 
-
     public function createChannel(Request $request) {
         return error('Cant create channels yet.');
 
     }
-
 
     public function mentionedMessages(Chat $chat) {
         $user = auth()->user();
@@ -138,7 +136,6 @@ class ChatController extends Controller {
 
 
     }
-
 
     public function getLastUnSeenMessagePage(Chat $chat) {
         $perPage = 50;
@@ -191,11 +188,18 @@ class ChatController extends Controller {
 
     }
 
-
     public function delete(Chat $chat) {
 
         $user = auth()->user();
         $chat->users()->detach($user->id);
         return api(TRUE);
+    }
+
+
+    public function get(Chat $chat) {
+
+
+        return api(ChatResource::make($chat));
+
     }
 }

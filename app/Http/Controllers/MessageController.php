@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\DB;
 class   MessageController extends Controller {
 
     public function send(Request $request) {
-        $request->validate(['text' => 'required', 'chat_id' => 'required']);
+        $request->validate(['text' => 'required', 'chat_id' => 'required', 'nonce_id']);
 
         $user = auth()->user();
 
