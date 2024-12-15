@@ -28,7 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
             $status = 400;
             if ($request->is('api/*')) {
 
-                return api(NULL, $message, $code, $status);
+                return api(NULL, [], $message, $code, $status);
 
             }
         });

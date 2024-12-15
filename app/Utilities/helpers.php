@@ -116,7 +116,7 @@ function api($data = NULL, $meta = [], $message = Constants::API_SUCCESS_MSG, $c
 }
 
 function api_gateway_error($message = Constants::API_FAILED_MSG) {
-    return api(NULL, Constants::API_FAILED_MSG, 0, Response::HTTP_INTERNAL_SERVER_ERROR);
+    return api(NULL, [],Constants::API_FAILED_MSG, 0, Response::HTTP_INTERNAL_SERVER_ERROR);
 }
 
 /**
