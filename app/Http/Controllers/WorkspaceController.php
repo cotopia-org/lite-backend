@@ -45,12 +45,18 @@ class WorkspaceController extends Controller {
         return api(TagResource::collection($workspace->tags));
     }
 
-    public function jobs(Workspace $workspace) {
+    public function jobs(Workspace $workspace, Request $request) {
 
 
-        if (\request()->has('page')) {
+        if ($request->has('page')) {
 
-            $jobs = $workspace->jobs()->orderByDesc('id')->paginate(10);
+
+            $jobs = $workspace->jobs()->orderByDesc('id');
+
+            if ($request->status !== 'all') {
+                $jobs = $jobs->where('status', $request->status);
+            }
+            $jobs = $jobs->paginate(10);
             return api(JobResource::collection($jobs), [
                 'total'       => $jobs->total(),
                 'perPage'     => $jobs->perPage(),
