@@ -240,4 +240,13 @@ class JobController extends Controller {
 
         return api(JobResource::collection($job->jobs));
     }
+
+
+    public function addMember(Job $job, Request $request) {
+
+    }
+
+    public function removeMember(Job $job, Request $request) {
+
+    }
 }

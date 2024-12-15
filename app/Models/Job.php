@@ -54,7 +54,7 @@ class Job extends Model {
             }
 
 
-            $text = self::getMessageText($user);
+            $text = self::getMessageText($user, $job);
 
 
             updateMesssage(Message::find($job->message_id), $text);
@@ -64,15 +64,16 @@ class Job extends Model {
     }
 
 
-    public function getMessageText($user) {
+    public static function getMessageText($user, $job) {
         $nl = PHP_EOL;
 
-        return "Job #$this->id by @$user->username$nl**$this->title**$nl $this->description $nl In Progress 🔵$nl $this->estimate hrs ⏰";
+
+        return "Job #$job->id by @$user->username$nl**$job->title**$nl $job->description $nl In Progress 🔵$nl $job->estimate hrs ⏰";
 
     }
 
     public function sendMessage($user) {
-        $text = $this->getMessageText($user);
+        $text = self::getMessageText($user, $this);
 
         $msg = sendMessage($text, 39);
 
@@ -182,9 +183,8 @@ class Job extends Model {
         $now = now();
 
 
-
-//        $starts = Act::where('type', 'job_started')->where('job_id', $this->id)
-//                     ->where('user_id', $user_id)->orderBy('id', 'ASC')->get();
+        //        $starts = Act::where('type', 'job_started')->where('job_id', $this->id)
+        //                     ->where('user_id', $user_id)->orderBy('id', 'ASC')->get();
 
         $query = Act::whereIn('type', ['job_started', 'job_ended'])->where('job_id', $this->id)
                     ->where('user_id', $user_id)->orderBy('id', 'ASC');
