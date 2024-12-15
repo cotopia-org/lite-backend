@@ -58,6 +58,21 @@ class Message extends Model {
     }
 
 
+    public function seens() {
+        $users = $this->chat->users;
+        $seens = [];
+
+        foreach ($users as $user) {
+            if ($user->pivot->last_message_seen_id >= $this->id) {
+                $seens[] = $user->id;
+            }
+        }
+
+        return $seens;
+
+
+    }
+
     public function links() {
         return $this->hasMany(Link::class);
     }

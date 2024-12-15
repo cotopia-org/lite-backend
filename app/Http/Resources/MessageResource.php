@@ -19,7 +19,7 @@ class MessageResource extends JsonResource {
             'text'       => $this->deleted_at === NULL ? $this->text : 'This message has been deleted',
             'files'      => FileResource::collection($this->files),
             'chat_id'    => $this->chat_id,
-            'seen'       => $this->saw(auth()->user()),
+//            'seen'       => $this->saw(auth()->user()),
             'nonce_id'   => (int)$this->nonce_id,
             'is_edited'  => $this->is_edited,
             'is_pinned'  => $this->is_pinned,
@@ -30,6 +30,7 @@ class MessageResource extends JsonResource {
             'created_at' => $this->created_at->timestamp,
             'updated_at' => $this->updated_at?->timestamp,
             'deleted_at' => $this->deleted_at?->timestamp,
+            'seens'      => $this->seens()
 
         ];
     }
