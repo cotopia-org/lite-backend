@@ -12,6 +12,7 @@ use App\Http\Resources\ScheduleResource;
 use App\Http\Resources\SettingResource;
 use App\Http\Resources\TagResource;
 use App\Http\Resources\TalkResource;
+use App\Http\Resources\UserJobResource;
 use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\UserResource;
 use App\Jobs\DisconnectUserJob;
@@ -82,7 +83,7 @@ class UserController extends Controller {
         }
 
 
-        return api(JobResource::collection($jobs->get()));
+        return api(UserJobResource::collection($jobs->get()));
     }
 
     public function scheduleFulfillment(Request $request, $user) {

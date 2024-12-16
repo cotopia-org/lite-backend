@@ -30,17 +30,15 @@ class UserJobResource extends JsonResource {
                 return $this->pivot->created_at;
             }),
 
-            'old'        => $this->old,
-            'mentions'   => MentionResource::collection($this->mentions),
-            'members'    => $this->users->map(function ($user) use ($job, $period) {
-                return [
-                    'id'            => $user->id,
-                    'total_minutes' => $job->getTime($user->id, $period),
-                    'role'          => $user->pivot->role,
-                    'status'        => $user->pivot->status,
-                    'created_at'    => $user->pivot->created_at,
-                ];
+            'old'           => $this->old,
+            'mentions'      => MentionResource::collection($this->mentions),
+            'total_minutes' => $this->whenPivotLoaded('job_user', function () use ($job, $period) {
+                return $job->getTime($this->pivot->user_id, $period);
             }),
+            'role' => $this->whenPivotLoaded('job_user', function ()  {
+                return $this->pivot->role;
+            }),
+
         ];
     }
 }
