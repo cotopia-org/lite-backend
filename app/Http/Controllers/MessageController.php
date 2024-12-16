@@ -87,6 +87,12 @@ class   MessageController extends Controller {
                                                                                                              'last_message_seen_id' => $message->id
                                                                                                          ]);
 
+        sendSocket(Constants::messageSeen, 'chat-' . $message->chat_id, [
+            'chat_id'    => $message->chat_id,
+            'message_id' => $message->id,
+            'user_id'    => $user->id,
+        ]);
+
 
         return api(TRUE);
 
