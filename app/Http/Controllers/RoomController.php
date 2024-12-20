@@ -131,6 +131,7 @@ class RoomController extends Controller {
 
         if ($user->activeContract() !== NULL) {
             if ($user->activeContract()->in_schedule && !isNowInUserSchedule($user, $room->workspace_id)) {
+                return error('You cant sorry');
                 $time_start = FALSE;
 
             }
