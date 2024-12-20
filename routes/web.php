@@ -29,7 +29,8 @@ Route::get('/tester', function () {
                                             'job_id'       => $userJob->job_id,
                                             'type'         => 'job_ended',
                                             'description'  => 'CUSTOM BY ADMIN',
-                                            'created_at'   => $userJob->created_at === NULL ? $job->updated_at->addHours(Job::find($userJob->job_id)->estimate) : $userJob->created_at->addHours(Job::find($userJob->job_id)->estimate),
+                                            'created_at'   => $userJob->created_at === NULL ? $job->updated_at->addHours(Job::find($userJob->job_id)->estimate) : \Carbon\Carbon::make($userJob->created_at)
+                                                                                                                                                                                ->addHours(Job::find($userJob->job_id)->estimate),
                                         ]);
 
 
