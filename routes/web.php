@@ -14,7 +14,6 @@ Route::get('/', function () {
 Route::get('/tester', function () {
 
 
-
     $userJobs = \Illuminate\Support\Facades\DB::table('job_user')->whereNot('status', Constants::IN_PROGRESS)->get();
 
     foreach ($userJobs as $userJob) {
@@ -22,6 +21,7 @@ Route::get('/tester', function () {
         if ($end === NULL) {
             $start = \App\Models\Act::where('job_id', $userJob->job_id)->whereType('job_started')->first();
             if ($start !== NULL) {
+                $job = Job::find($userJob->job_id);
                 \App\Models\Act::create([
                                             'user_id'      => $userJob->user_id,
                                             'workspace_id' => 1,
@@ -29,7 +29,7 @@ Route::get('/tester', function () {
                                             'job_id'       => $userJob->job_id,
                                             'type'         => 'job_ended',
                                             'description'  => 'CUSTOM BY ADMIN',
-                                            'created_at'   => $userJob->created_at->addHours(Job::find($userJob->job_id)->estimate),
+                                            'created_at'   => $userJob->created_at === NULL ? $job->updated_at->addHours(Job::find($userJob->job_id)->estimate) : $userJob->created_at->addHours(Job::find($userJob->job_id)->estimate),
                                         ]);
 
 
