@@ -15,7 +15,7 @@ Route::get('/tester', function () {
 
 
 
-    $userJobs = \Illuminate\Support\Facades\DB::table('job_users')->whereNot('status', Constants::IN_PROGRESS)->get();
+    $userJobs = \Illuminate\Support\Facades\DB::table('job_user')->whereNot('status', Constants::IN_PROGRESS)->get();
 
     foreach ($userJobs as $userJob) {
         $end = \App\Models\Act::where('job_id', $userJob->job_id)->whereType('job_ended')->first();
