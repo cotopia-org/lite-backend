@@ -216,9 +216,27 @@ class UserController extends Controller {
 
     public function activities(Request $request) {
         $user = auth()->user();
+        $time_start = TRUE;
+
+
+        if ($user->activeContract() !== NULL) {
+            if ($user->activeContract()->in_schedule && !isNowInUserSchedule($user, $room->workspace_id)) {
+                $time_start = FALSE;
+
+            }
+        }
+
+        if ($request->new) {
+
+            return api([
+                           'minutes'    => $user->getTime(today(), today()->addDay(), $user->workspace_id)["sum_minutes"],
+                           'time_count' => $time_start
+                       ]);
+        }
 
 
         return api($user->getTime(today(), today()->addDay(), $user->workspace_id)["sum_minutes"]);
+
     }
 
     public function chats(Request $request) {
