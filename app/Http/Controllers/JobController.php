@@ -187,11 +187,16 @@ class JobController extends Controller {
 
             $user->updateActiveJob($job->id);
 
+        } elseif ($job->id === $user->active_job_id) {
+            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'JobController@updateStatus');
+            $user->updateActiveJob(NULL);
+
         }
 
 
         DB::table('job_user')->where('user_id', $user->id)->where('job_id', $job->id)->update([
-                                                                                                  'status' => $request->status
+                                                                                                  'status'     => $request->status,
+                                                                                                  'updated_at' => now()
                                                                                               ]);
 
 

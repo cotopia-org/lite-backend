@@ -11,7 +11,8 @@ class Act extends Model {
         'workspace_id',
         'job_id',
         'room_id',
-        'description'
+        'description',
+        'created_at'
     ];
 
 

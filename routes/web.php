@@ -13,8 +13,30 @@ Route::get('/', function () {
 });
 Route::get('/tester', function () {
 
-    $job = Job::find(203);
-    dd($job->getTime(1));
+
+    $working_users = \App\Models\User::whereNotNull('active_job_id')->get();
+
+    foreach ($working_users as $user) {
+
+        $user_job = \Illuminate\Support\Facades\DB::table('job_user')->where('user_id', $user->id)
+                                                  ->where('job_id', $user->active_job_id)->first();
+        if ($user_job->status !== Constants::IN_PROGRESS) {
+            \App\Models\Act::create([
+                                        'user_id'      => $user->id,
+                                        'workspace_id' => 1,
+                                        'room_id'      => 105,
+                                        'job_id'       => $user->active_job_id,
+                                        'type'         => 'job_ended',
+                                        'description'  => 'CUSTOM BY ADMIN',
+                                        'created_at'   => $user->created_at->addHours($user->activeJob->estimate),
+                                    ]);
+            $user->update(['active_job_id' => NULL]);
+        }
+    }
+
+    return 'okay';
+
+
 });
 
 
