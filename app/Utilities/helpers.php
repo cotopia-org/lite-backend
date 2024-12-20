@@ -83,7 +83,7 @@ function isNowInUserSchedule($user, $workspace_id) {
 
     foreach ($schedules as $schedule) {
         foreach ($schedule->days as $day) {
-            if ((int)$day === $now->weekday()) {
+            if ((int)$day->day === $now->weekday()) {
 
                 foreach ($day->times as $time) {
 
