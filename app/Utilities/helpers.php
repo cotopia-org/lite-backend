@@ -76,6 +76,34 @@ function userJoinedToRoomEmit($user_id, $room_id) {
 
 }
 
+function isNowInUserSchedule($user, $workspace_id) {
+    $now = now();
+
+    $schedules = $user->schedules()->where('workspace_id', $workspace_id)->get();
+
+    foreach ($schedules as $schedule) {
+        foreach ($schedule->days as $day) {
+            if ((int)$day === $now->weekday()) {
+
+                foreach ($day->times as $time) {
+
+                    $end = now()->setTimeFromTimeString($time->end)->timezone($schedule->timezone);
+                    $start = now()->setTimeFromTimeString($time->start)->timezone($schedule->timezone);
+                    if ($now->copy()->timezone($schedule->timezone)->between($start, $end)) {
+                        return TRUE;
+                    }
+
+                }
+
+            }
+        }
+    }
+
+    return FALSE;
+
+
+}
+
 function acted($user_id, $workspace_id, $room_id, $job_id, $type, $description) {
 
 
@@ -116,7 +144,7 @@ function api($data = NULL, $meta = [], $message = Constants::API_SUCCESS_MSG, $c
 }
 
 function api_gateway_error($message = Constants::API_FAILED_MSG) {
-    return api(NULL, [],Constants::API_FAILED_MSG, 0, Response::HTTP_INTERNAL_SERVER_ERROR);
+    return api(NULL, [], Constants::API_FAILED_MSG, 0, Response::HTTP_INTERNAL_SERVER_ERROR);
 }
 
 /**

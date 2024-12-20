@@ -14,33 +14,27 @@ Route::get('/', function () {
 Route::get('/tester', function () {
 
 
-    $userJobs = \Illuminate\Support\Facades\DB::table('job_user')->whereNot('status', Constants::IN_PROGRESS)->get();
-
-    foreach ($userJobs as $userJob) {
-        $end = \App\Models\Act::where('job_id', $userJob->job_id)->whereType('job_ended')->first();
-        if ($end === NULL) {
-            $start = \App\Models\Act::where('job_id', $userJob->job_id)->whereType('job_started')->first();
-            if ($start !== NULL) {
-                $job = Job::find($userJob->job_id);
-                \App\Models\Act::create([
-                                            'user_id'      => $userJob->user_id,
-                                            'workspace_id' => 1,
-                                            'room_id'      => 105,
-                                            'job_id'       => $userJob->job_id,
-                                            'type'         => 'job_ended',
-                                            'description'  => 'CUSTOM BY ADMIN',
-                                            'created_at'   => $userJob->created_at === NULL ? $job->updated_at->addHours(Job::find($userJob->job_id)->estimate) : \Carbon\Carbon::make($userJob->created_at)
-                                                                                                                                                                                ->addHours(Job::find($userJob->job_id)->estimate),
-                                        ]);
+    return 'okay';
 
 
-            }
+});
+
+
+Route::get('/isNowInUserSchedule', function () {
+
+    $user_id = request('user_id');
+    if ($user_id === NULL) {
+
+        $data = [];
+        foreach (\App\Models\User::all() as $user) {
+            $data[$user->id] = isNowInUserSchedule($user, 1);
         }
-
+        return $data;
 
     }
 
-    return 'okay';
+    $user = \App\Models\User::find($user_id);
+    return isNowInUserSchedule($user, 1);
 
 
 });
