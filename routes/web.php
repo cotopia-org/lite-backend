@@ -14,24 +14,29 @@ Route::get('/', function () {
 Route::get('/tester', function () {
 
 
-    $working_users = \App\Models\User::whereNotNull('active_job_id')->get();
 
-    foreach ($working_users as $user) {
+    $userJobs = \Illuminate\Support\Facades\DB::table('job_users')->whereNot('status', Constants::IN_PROGRESS)->get();
 
-        $user_job = \Illuminate\Support\Facades\DB::table('job_user')->where('user_id', $user->id)
-                                                  ->where('job_id', $user->active_job_id)->first();
-        if ($user_job !== NULL && $user_job->status !== Constants::IN_PROGRESS) {
-            \App\Models\Act::create([
-                                        'user_id'      => $user->id,
-                                        'workspace_id' => 1,
-                                        'room_id'      => 105,
-                                        'job_id'       => $user->active_job_id,
-                                        'type'         => 'job_ended',
-                                        'description'  => 'CUSTOM BY ADMIN',
-                                        'created_at'   => $user_job->created_at->addHours(Job::find($user->active_job_id)->estimate),
-                                    ]);
-            $user->update(['active_job_id' => NULL]);
+    foreach ($userJobs as $userJob) {
+        $end = \App\Models\Act::where('job_id', $userJob->job_id)->whereType('job_ended')->first();
+        if ($end === NULL) {
+            $start = \App\Models\Act::where('job_id', $userJob->job_id)->whereType('job_started')->first();
+            if ($start !== NULL) {
+                \App\Models\Act::create([
+                                            'user_id'      => $userJob->user_id,
+                                            'workspace_id' => 1,
+                                            'room_id'      => 105,
+                                            'job_id'       => $userJob->job_id,
+                                            'type'         => 'job_ended',
+                                            'description'  => 'CUSTOM BY ADMIN',
+                                            'created_at'   => $userJob->created_at->addHours(Job::find($userJob->job_id)->estimate),
+                                        ]);
+
+
+            }
         }
+
+
     }
 
     return 'okay';
