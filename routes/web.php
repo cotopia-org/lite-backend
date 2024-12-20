@@ -29,7 +29,7 @@ Route::get('/isNowInUserSchedule', function () {
         foreach (\App\Models\User::all() as $user) {
             $data[$user->id] = isNowInUserSchedule($user, 1);
         }
-        return ['data' => $data, 'now' => now()];
+        return ['data' => $data, 'now' => now()->weekday()];
 
     }
 

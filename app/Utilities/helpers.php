@@ -87,8 +87,8 @@ function isNowInUserSchedule($user, $workspace_id) {
 
                 foreach ($day->times as $time) {
 
-                    $end = now()->setTimeFromTimeString($time->end)->timezone($schedule->timezone);
-                    $start = now()->setTimeFromTimeString($time->start)->timezone($schedule->timezone);
+                    $end = now()->timezone($schedule->timezone)->setTimeFromTimeString($time->end);
+                    $start = now()->timezone($schedule->timezone)->setTimeFromTimeString($time->start);
                     if ($now->copy()->timezone($schedule->timezone)->between($start, $end)) {
                         return TRUE;
                     }
