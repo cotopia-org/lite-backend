@@ -220,7 +220,7 @@ class UserController extends Controller {
 
 
         if ($user->activeContract() !== NULL) {
-            if ($user->activeContract()->in_schedule && !isNowInUserSchedule($user, $room->workspace_id)) {
+            if ($user->activeContract()->in_schedule && !isNowInUserSchedule($user, $user->workspace_id)) {
                 $time_start = FALSE;
 
             }
