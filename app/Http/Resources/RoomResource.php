@@ -21,6 +21,7 @@ class RoomResource extends JsonResource {
             'landing_spot' => $this->landing_spot,
             'background'   => $this->background,
             'type'         => $this->type,
+            'time_start'   => $this->time_start,
 
         ];
     }

@@ -133,7 +133,6 @@ class RoomController extends Controller {
             if ($user->activeContract()->in_schedule && !isNowInUserSchedule($user, $room->workspace_id)) {
                 $time_start = FALSE;
 
-                return error('Sorry you cant join room right now, because you didnt schedule for now');
             }
         }
 
@@ -149,6 +148,7 @@ class RoomController extends Controller {
         }
         $room = $room->joinUser($user);
 
+        $room->time_start = $time_start;
 
         $res = RoomResource::make($room);
 
