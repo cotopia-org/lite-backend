@@ -126,7 +126,19 @@ class RoomController extends Controller {
         }
 
 
-        if ($before_room === NULL) {
+        $time_start = TRUE;
+
+
+        if ($user->activeContract() !== NULL) {
+            if ($user->activeContract()->in_schedule && !isNowInUserSchedule($user, $room->workspace_id)) {
+                $time_start = FALSE;
+
+                return error('Sorry you cant join room right now, because you didnt schedule for now');
+            }
+        }
+
+
+        if ($before_room === NULL && $time_start) {
             // It means its first time for join.
             acted($user->id, $room->workspace_id, $room->id, $user->active_job_id, 'time_started', 'RoomController@join');
             if ($user->active_job_id !== NULL) {
@@ -159,7 +171,10 @@ class RoomController extends Controller {
         userJoinedToRoomEmit($user->id, $room->id);
 
 
-        $user->joined($room, 'Connected From RoomController Join Method');
+        if ($time_start) {
+            $user->joined($room, 'Connected From RoomController Join Method');
+
+        }
 
 
         return api($res);

@@ -29,6 +29,7 @@ class Contract extends Model {
         'contractor_sign_status',
         'user_id',
         'workspace_id',
+        'in_schedule',
         'text',
     ];
 

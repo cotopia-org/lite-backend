@@ -38,6 +38,7 @@ class ContractResource extends JsonResource {
             'workspace_id'           => $this->workspace_id,
             'created_at'             => $this->created_at,
             'updated_at'             => $this->updated_at,
+            'in_schedule'            => $this->in_schedule,
             'text'                   => $this->text(),
         ];
     }

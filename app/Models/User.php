@@ -74,6 +74,14 @@ class User extends Authenticatable {
         ];
     }
 
+
+    public function activeContract() {
+
+        $startOfMonth = today()->startOfMonth();
+        $endOfMonth = today()->endOfMonth();
+        return $this->contracts()->where('start_at', '>=', $startOfMonth)->where('end_at', '<=', $endOfMonth)->first();
+    }
+
     public function activeJob() {
         return $this
             ->belongsToMany(Job::class)->withPivot('role', 'status')->wherePivot('status', Constants::IN_PROGRESS);

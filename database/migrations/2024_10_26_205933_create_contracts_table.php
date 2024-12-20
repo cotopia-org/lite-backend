@@ -44,6 +44,7 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('workspace_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
 
+            $table->boolean('in_schedule')->default(FALSE);
 
             $table->timestamps();
         });
