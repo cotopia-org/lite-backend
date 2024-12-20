@@ -28,7 +28,7 @@ Route::get('/tester', function () {
                                         'job_id'       => $user->active_job_id,
                                         'type'         => 'job_ended',
                                         'description'  => 'CUSTOM BY ADMIN',
-                                        'created_at'   => $user->created_at->addHours($user->activeJob->estimate),
+                                        'created_at'   => $user->created_at->addHours(Job::find($user->active_job_id)->estimate),
                                     ]);
             $user->update(['active_job_id' => NULL]);
         }
