@@ -20,7 +20,7 @@ Route::get('/tester', function () {
 
         $user_job = \Illuminate\Support\Facades\DB::table('job_user')->where('user_id', $user->id)
                                                   ->where('job_id', $user->active_job_id)->first();
-        if ($user_job->status !== Constants::IN_PROGRESS) {
+        if ($user_job !== NULL && $user_job->status !== Constants::IN_PROGRESS) {
             \App\Models\Act::create([
                                         'user_id'      => $user->id,
                                         'workspace_id' => 1,
