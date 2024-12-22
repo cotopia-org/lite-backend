@@ -142,7 +142,7 @@ class UserController extends Controller {
         return api([
                        "total_week_schedules"               => $totalScheduleDuration,
                        "total_week_activities_in_schedules" => $totalOverlapDuration,
-                       "percentage"                         => $fulfilledPercentage,
+                       "percentage"                         => round($fulfilledPercentage, 2),
                    ]);
     }
 
