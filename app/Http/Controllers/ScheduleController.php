@@ -18,20 +18,17 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
-class ScheduleController extends Controller
-{
+class   ScheduleController extends Controller {
 
 
-    public function all()
-    {
+    public function all() {
 
 
         return api(ScheduleResource::collection(Schedule::orderByDesk('id')->get()));
 
     }
 
-    public function create(Request $request)
-    {
+    public function create(Request $request) {
 
         $types = get_enum_values(AvailabilityType::cases());
 
@@ -48,8 +45,8 @@ class ScheduleController extends Controller
 
         foreach ($request->days as $day) {
             foreach ($day['times'] as $time) {
-                $start = str_replace(':', '', $time);
-                $end = str_replace(':', '', $time);
+                $start = str_replace(':', '', $time['start']);
+                $end = str_replace(':', '', $time['end']);
                 if ($start >= $end) {
                     return error('End time can not be lower than start time');
                 }
@@ -57,8 +54,7 @@ class ScheduleController extends Controller
         }
         $schedule = auth()->user()->schedules()->create([
                                                             'availability_type'   => $request->availability_type,
-                                                            'days'                => json_encode($request->days,
-                                                                                                 JSON_THROW_ON_ERROR),
+                                                            'days'                => json_encode($request->days, JSON_THROW_ON_ERROR),
                                                             'is_recurrence'       => $request->is_recurrence ?? FALSE,
                                                             'recurrence_start_at' => $request->recurrence_start_at ?? now()->timezone($timezone),
                                                             'recurrence_end_at'   => $request->recurrence_end_at,
@@ -71,8 +67,7 @@ class ScheduleController extends Controller
     }
 
 
-    public function update(Request $request, Schedule $schedule)
-    {
+    public function update(Request $request, Schedule $schedule) {
 
         if (auth()->user()->isOwner($schedule->user_id)) {
 
@@ -95,8 +90,7 @@ class ScheduleController extends Controller
     }
 
 
-    public function delete(Schedule $schedule)
-    {
+    public function delete(Schedule $schedule) {
 
         if (auth()->user()->isOwner($schedule->user_id)) {
             $schedule->delete();

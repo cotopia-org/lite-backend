@@ -123,7 +123,7 @@ class UserController extends Controller {
         return api([
                        "total_week_schedules"               => $schedule_total["minutes"],
                        "total_week_activities_in_schedules" => $sum_minutes,
-                       "percentage"                         => ($sum_minutes / $schedule_total["minutes"]) * 100,
+                       "percentage"                         => $schedule_total["minutes"] === 0 ? 0 : ($sum_minutes / $schedule_total["minutes"]) * 100,
                    ]);
     }
 
