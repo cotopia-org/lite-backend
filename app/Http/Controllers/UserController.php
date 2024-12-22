@@ -16,6 +16,7 @@ use App\Http\Resources\UserJobResource;
 use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\UserResource;
 use App\Jobs\DisconnectUserJob;
+use App\Models\Activity;
 use App\Models\File;
 use App\Models\Job;
 use App\Models\Mention;
@@ -95,39 +96,50 @@ class UserController extends Controller {
 
         $firstOfMonth = today()->firstOfMonth();
 
-        //
-        //        $activities = $user
-        //            ->activities()->where("created_at", ">=", $firstOfMonth)->get();
-
         $schedules = $user->thisWeekSchedules();
 
-        $sum_minutes = 0;
-        $schedule_total = $user->getScheduledHoursInWeek();
+        $totalScheduleDuration = 0;
+        $totalOverlapDuration = 0;
         foreach ($schedules as $schedule) {
-            $acts = $user
-                ->activities()->where("created_at", ">=", $firstOfMonth)
-                ->where("join_at", ">=", $schedule["start"])->where(function ($query) use ($schedule) {
-                    $query
-                        ->where("left_at", "<=", $schedule["end"])->orWhereNull("left_at");
-                })->get();
 
-            if (count($acts) > 0) {
-                $left_at = now();
 
-                foreach ($acts as $act) {
-                    if ($act->left_at !== NULL) {
-                        $left_at = $act->left_at;
-                    }
+            $scheduleStart = $schedule['start'];
+            $scheduleEnd = $schedule['end'];
+            $scheduleDuration = $scheduleStart->diffInMinutes($scheduleEnd);
+            $totalScheduleDuration += $scheduleDuration;
 
-                    $diff = $act->join_at->diffInMinutes($left_at);
-                    $sum_minutes += $diff;
+            $overlappingActivities = Activity::where(function ($query) use ($scheduleStart, $scheduleEnd) {
+                $query->whereBetween('join_at', [$scheduleStart, $scheduleEnd])
+                      ->orWhereBetween('end_at', [$scheduleStart, $scheduleEnd])
+                      ->orWhere(function ($subQuery) use ($scheduleStart, $scheduleEnd) {
+                          $subQuery->where('join_at', '<=', $scheduleStart)
+                                   ->where('end_at', '>=', $scheduleEnd);
+                      });
+            })->get();
+
+
+            foreach ($overlappingActivities as $activity) {
+                $activityStart = $activity->join_at;
+                $activityEnd = $activity->left_at;
+
+                $overlapStart = max($scheduleStart, $activityStart);
+                $overlapEnd = min($scheduleEnd, $activityEnd);
+
+                if ($overlapStart < $overlapEnd) {
+                    $totalOverlapDuration += $overlapStart->diffInMinutes($overlapEnd);
                 }
             }
+
+
         }
+
+
+        $fulfilledPercentage = ($totalOverlapDuration / $totalScheduleDuration) * 100;
+
         return api([
-                       "total_week_schedules"               => $schedule_total["minutes"],
-                       "total_week_activities_in_schedules" => $sum_minutes,
-                       "percentage"                         => $schedule_total["minutes"] === 0 ? 0 : ($sum_minutes / $schedule_total["minutes"]) * 100,
+                       "total_week_schedules"               => $totalScheduleDuration,
+                       "total_week_activities_in_schedules" => $totalOverlapDuration,
+                       "percentage"                         => $fulfilledPercentage,
                    ]);
     }
 
