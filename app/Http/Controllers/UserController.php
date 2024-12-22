@@ -109,12 +109,13 @@ class UserController extends Controller {
             $totalScheduleDuration += $scheduleDuration;
 
             $overlappingActivities = Activity::where(function ($query) use ($scheduleStart, $scheduleEnd) {
-                $query->whereBetween('join_at', [$scheduleStart, $scheduleEnd])
-                      ->orWhereBetween('end_at', [$scheduleStart, $scheduleEnd])
-                      ->orWhere(function ($subQuery) use ($scheduleStart, $scheduleEnd) {
-                          $subQuery->where('join_at', '<=', $scheduleStart)
-                                   ->where('end_at', '>=', $scheduleEnd);
-                      });
+                $query
+                    ->whereBetween('join_at', [$scheduleStart, $scheduleEnd])
+                    ->orWhereBetween('left_at', [$scheduleStart, $scheduleEnd])
+                    ->orWhere(function ($subQuery) use ($scheduleStart, $scheduleEnd) {
+                        $subQuery
+                            ->where('join_at', '<=', $scheduleStart)->where('left_at', '>=', $scheduleEnd);
+                    });
             })->get();
 
 
