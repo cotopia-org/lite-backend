@@ -106,7 +106,7 @@ class UserController extends Controller {
         foreach ($schedules as $schedule) {
             $acts = $activities
                 ->where("left_at", ">=", $schedule["start"])->where("join_at", "<=", $schedule["end"]);
-
+            dd($acts);
             if (count($acts) > 0) {
                 $left_at = now();
 
