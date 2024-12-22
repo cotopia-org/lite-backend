@@ -97,7 +97,7 @@ class UserController extends Controller {
 
         //
         $activities = $user
-            ->activities()->where("created_at", ">=", $firstOfMonth)->get();
+            ->activities()->where("created_at", ">=", $firstOfMonth);
 
         $schedules = $user->thisWeekSchedules();
 
@@ -105,7 +105,7 @@ class UserController extends Controller {
         $schedule_total = $user->getScheduledHoursInWeek();
         foreach ($schedules as $schedule) {
             $acts = $activities
-                ->where("left_at", ">=", $schedule["start"])->where("join_at", "<=", $schedule["end"]);
+                ->where("left_at", ">=", $schedule["start"])->where("join_at", "<=", $schedule["end"])->get();
             dd($acts);
             if (count($acts) > 0) {
                 $left_at = now();
