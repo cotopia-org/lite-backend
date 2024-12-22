@@ -425,8 +425,8 @@ class User extends Authenticatable {
 
                     $date = $weekDates[$day->day]['date'];
                     $data[] = [
-                        'start' => $date->copy()->setTimeFromTimeString($time->start),
-                        'end'   => $date->copy()->setTimeFromTimeString($time->end),
+                        'start' => $date->copy()->setTimeFromTimeString($time->start)->timezone('UTC'),
+                        'end'   => $date->copy()->setTimeFromTimeString($time->end)->timezone('UTC'),
                     ];
 
                 }
