@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\Chat;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -16,7 +17,7 @@ class ChatCreated {
     /**
      * Create a new event instance.
      */
-    public function __construct(Chat $chat) {
+    public function __construct(public Chat $chat) {
         //
     }
 

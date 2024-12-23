@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ChatCreated;
 use App\Http\Resources\ChatResource;
 use App\Http\Resources\MessageResource;
 use App\Http\Resources\UserMinimalResource;
@@ -47,10 +48,7 @@ class ChatController extends Controller {
         $chat->users()->attach($users);
 
 
-
-
-
-
+        event(new ChatCreated($chat));
 
 
         return api(ChatResource::make($chat));
