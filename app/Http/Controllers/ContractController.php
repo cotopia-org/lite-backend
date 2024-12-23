@@ -117,6 +117,12 @@ class ContractController extends Controller {
 
 
         $contract->update($request->except('user_id'));
+
+
+        $contract->update([
+                              'user_sign_status'       => FALSE,
+                              'contractor_sign_status' => FALSE,
+                          ]);
         return api(ContractResource::make($contract));
 
     }
