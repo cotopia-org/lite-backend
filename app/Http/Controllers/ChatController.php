@@ -45,6 +45,14 @@ class ChatController extends Controller {
 
 
         $chat->users()->attach($users);
+
+
+
+
+
+
+
+
         return api(ChatResource::make($chat));
 
     }

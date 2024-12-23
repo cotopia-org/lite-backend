@@ -6,6 +6,7 @@ use App\Models\Contract;
 use App\Models\Job;
 use App\Utilities\Constants;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -13,7 +14,10 @@ Route::get('/', function () {
 });
 Route::get('/tester', function () {
 
-
+    Redis::publish('chat-created', json_encode([
+                                                   'user_id' => 1,
+                                                   'chat_id' => 'TESTER'
+                                               ], JSON_THROW_ON_ERROR));
     return 'okay';
 
 

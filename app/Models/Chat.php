@@ -26,6 +26,9 @@ class Chat extends Model
     ];
 
 
+
+
+
     public function getTitle($user)
     {
         $title = $this->title;
