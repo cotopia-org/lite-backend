@@ -97,6 +97,7 @@ class ChatController extends Controller {
         }
         //            $participants[] = [$user->id, ['role' => 'super-admin']];
         $chat->users()->attach($participants);
+        event(new ChatCreated($chat));
 
         return api(ChatResource::make($chat));
 
