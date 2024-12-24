@@ -235,7 +235,7 @@ class   MessageController extends Controller {
 
 
         if ($message->translated_text === NULL) {
-            $prompt = 'If text below was in persian language translate it to english if it was english translate it to persian do not change anything in text and just send me text not anymore';
+            $prompt = 'If text below was in persian language translate it to english if it was english translate it to persian do not change anything in text and just send me text not anymore, Dont translate words after @ and # and dont translate links';
             $prompt .= PHP_EOL;
             $prompt .= $message->text;
 
