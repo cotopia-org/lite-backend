@@ -94,7 +94,7 @@ class UserController extends Controller {
             $user = User::findOrFail($user);
         }
 
-        $firstOfMonth = today()->firstOfMonth();
+        //        $firstOfMonth = today()->firstOfMonth();
 
         $schedules = $user->thisWeekSchedules();
 

@@ -32,6 +32,7 @@ Route::get('/tester', function () {
         if ($i === $todayWeekDay) {
             $weekDates[$i] = [
                 'date'      => $today,
+                'dayName'   => $today->dayName,
                 'scheduled' => FALSE
 
             ];
@@ -39,6 +40,7 @@ Route::get('/tester', function () {
         if ($i > $todayWeekDay) {
             $weekDates[$i] = [
                 'date'      => $today->copy()->addDays($i - $todayWeekDay),
+                'dayName'   => $today->copy()->addDays($i - $todayWeekDay)->dayName,
                 'scheduled' => FALSE
 
             ];
@@ -47,6 +49,7 @@ Route::get('/tester', function () {
         if ($i < $todayWeekDay) {
             $weekDates[$i] = [
                 'date'      => $today->copy()->subDays($todayWeekDay - $i),
+                'dayName'   => $today->copy()->subDays($todayWeekDay - $i)->dayName,
                 'scheduled' => FALSE,
 
 
