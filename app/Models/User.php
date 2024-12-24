@@ -376,7 +376,7 @@ class User extends Authenticatable {
     public function thisWeekSchedules() {
 
         $schedules = $this->schedules;
-        $today = today();
+        $today = today()->subWeek();
         $weekDays = [
             Carbon::SATURDAY  => 0,
             Carbon::SUNDAY    => 1,
@@ -390,7 +390,7 @@ class User extends Authenticatable {
         $todayWeekDay = $weekDays[$today->dayOfWeek];
         $weekDates = [];
 
-        for ($i = 0; $i <= 6; $i++) {
+        for ($i = 0; $i <= 7; $i++) {
             if ($i === $todayWeekDay) {
                 $weekDates[$i] = [
                     'date'      => $today,
