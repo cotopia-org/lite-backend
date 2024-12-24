@@ -17,7 +17,7 @@ class MessageResource extends JsonResource {
             'id'              => $this->id,
             'user'            => $this->user_id,
             'text'            => $this->deleted_at === NULL ? $this->text : 'This message has been deleted',
-            'translated_text' => $this->translated_text,
+            'translated_text' => $this->translated_text_temp,
             'files'           => FileResource::collection($this->files),
             'chat_id'         => $this->chat_id,
             //            'seen'       => $this->saw(auth()->user()),

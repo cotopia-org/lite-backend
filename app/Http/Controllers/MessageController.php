@@ -198,16 +198,16 @@ class   MessageController extends Controller {
         $user = auth()->user();
         $react = React::where('user_id', $user->id)->where('message_id', $message->id)
                       ->where('chat_id', $message->chat_id)->first();
-
+        $data = [
+            'chat_id'    => $message->chat_id,
+            'message_id' => $message->id,
+            'user_id'    => $user->id,
+            'emoji'      => $request->emoji
+        ];
 
         if ($react === NULL) {
 
-            $data = [
-                'chat_id'    => $message->chat_id,
-                'message_id' => $message->id,
-                'user_id'    => $user->id,
-                'emoji'      => $request->emoji
-            ];
+
             $react = React::create([
                                        'chat_id'    => $message->chat_id,
                                        'message_id' => $message->id,
@@ -244,6 +244,8 @@ class   MessageController extends Controller {
                                  'translated_text' => $translated_text
                              ]);
         }
+
+        $message->translated_text_temp = $message->translated_text;
 
         return api(MessageResource::make($message));
 
