@@ -122,6 +122,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
 
 
         Route::post('/{message}/react', 'react');
+        Route::get('/{message}/translate', 'translate');
 
 
     })->middleware('checkIsUserOnline');

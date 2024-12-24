@@ -14,51 +14,14 @@ Route::get('/', function () {
     return redirect('https://lite.cotopia.social');
 });
 Route::get('/tester', function () {
-    $today = today()->subWeek();
-    $weekDays = [
-        Carbon::SATURDAY  => 0,
-        Carbon::SUNDAY    => 1,
-        Carbon::MONDAY    => 2,
-        Carbon::TUESDAY   => 3,
-        Carbon::WEDNESDAY => 4,
-        Carbon::THURSDAY  => 5,
-        Carbon::FRIDAY    => 6,
-    ];
-
-    $todayWeekDay = $weekDays[$today->dayOfWeek];
-    $weekDates = [];
-
-    for ($i = 0; $i <= 7; $i++) {
-        if ($i === $todayWeekDay) {
-            $weekDates[$i] = [
-                'date'      => $today,
-                'dayName'   => $today->dayName,
-                'scheduled' => FALSE
-
-            ];
-        }
-        if ($i > $todayWeekDay) {
-            $weekDates[$i] = [
-                'date'      => $today->copy()->addDays($i - $todayWeekDay),
-                'dayName'   => $today->copy()->addDays($i - $todayWeekDay)->dayName,
-                'scheduled' => FALSE
-
-            ];
-        }
-
-        if ($i < $todayWeekDay) {
-            $weekDates[$i] = [
-                'date'      => $today->copy()->subDays($todayWeekDay - $i),
-                'dayName'   => $today->copy()->subDays($todayWeekDay - $i)->dayName,
-                'scheduled' => FALSE,
 
 
-            ];
-        }
+    $prompt = 'If text below was in persian language translate it to english if it was english translate it to persian do not change anything in text and just send me text not anymore';
+    $prompt .= PHP_EOL;
+    $prompt .= 'Hi @everyone as you may noticed by know now we payments fuature added thanks to @Youssef_Sameh , @mahdirasti and @kaKaterou22 please check your contract and update your wallet address also please consider contracts where added by @Katerou22 based on an old file so it may contain errors or outdated info so pleasse let me know if anything is wrong';
 
-
-    }
-    dd($weekDates);
+    return sendToChatGpt($prompt)['choices'][0]['message']['content'];
+    dd();
     return 'okay';
 
 

@@ -15,6 +15,7 @@ class Message extends Model {
 
     protected $fillable = [
         'text',
+        'translated_text',
         'user_id',
         'is_edited',
         'reply_to',

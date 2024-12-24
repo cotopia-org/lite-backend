@@ -22,6 +22,27 @@ function sendSocket($eventName, $channel, $data) {
 
 }
 
+
+function sendToChatGpt($prompt) {
+    $api_key = config('services.openai.api_key');
+    if ($api_key === NULL) {
+        error('No Api key provided for OpenAi');
+    }
+    $res = \Illuminate\Support\Facades\Http::withHeaders([
+                                                             'Authorization' => 'Bearer ' . $api_key
+                                                         ])->post('https://api.openai.com/v1/chat/completions', [
+        'model'    => 'gpt-4o',
+        'messages' => [
+            [
+                'role'        => 'user',
+                'content'     => $prompt,
+                'temperature' => 0
+            ]
+        ],
+    ]);
+    return $res->json();
+}
+
 function updateMesssage($message, $text, $reply_to = NULL) {
 
     $message->update([

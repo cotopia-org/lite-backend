@@ -8,11 +8,11 @@ return new class () extends Migration {
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
+    public function up(): void {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
             $table->text('text');
+            $table->text('translated_text')->nullable();
             $table->boolean('is_edited')->nullable();
             $table->boolean('is_pinned')->default(FALSE);
 
@@ -31,8 +31,7 @@ return new class () extends Migration {
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('messages');
     }
 };
