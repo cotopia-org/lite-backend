@@ -354,7 +354,7 @@ class UserController extends Controller {
         $user->left('Disconnected for Afk in UserController@afk');
 
 
-        sendSocket(Constants::userUpdated, $user->room->channel, $response);
+        sendSocket(Constants::userUpdated, $user->workspace->channel, $response);
         return api($response);
 
 
