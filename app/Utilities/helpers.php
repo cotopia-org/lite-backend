@@ -28,18 +28,20 @@ function sendToChatGpt($prompt) {
     if ($api_key === NULL) {
         error('No Api key provided for OpenAi');
     }
-    $res = \Illuminate\Support\Facades\Http::withHeaders([
-                                                             'Authorization' => 'Bearer ' . $api_key
-                                                         ])->post('https://api.openai.com/v1/chat/completions', [
-        'model'    => 'gpt-4o',
-        'messages' => [
-            [
-                'role'        => 'user',
-                'content'     => $prompt,
-                'temperature' => 0
-            ]
-        ],
-    ]);
+    $res = \Illuminate\Support\Facades\Http::
+    withOptions(['proxy' => 'http://parham:parham123123@188.165.33.166:48988'])->withHeaders([
+                                                                                                 'Authorization' => 'Bearer ' . $api_key
+                                                                                             ])
+                                           ->post('https://api.openai.com/v1/chat/completions', [
+                                               'model'    => 'gpt-4o',
+                                               'messages' => [
+                                                   [
+                                                       'role'        => 'user',
+                                                       'content'     => $prompt,
+                                                       'temperature' => 0
+                                                   ]
+                                               ],
+                                           ]);
     return $res->json();
 }
 
