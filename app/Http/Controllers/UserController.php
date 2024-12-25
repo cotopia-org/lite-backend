@@ -37,7 +37,7 @@ class UserController extends Controller {
         return SettingResource::collection(auth()->user()->settings);
     }
 
-    public function mentionedJobs() {
+    public function mentionedJobs(Request $request) {
         $user = auth()->user();
 
 
@@ -47,12 +47,17 @@ class UserController extends Controller {
                                ->whereIn('mentionable_id', $tags->get()->pluck('id'))->get();
 
         $mentions = $user_mentions->merge($tag_mentions);
-
-
-        $user_jobs_ids = DB::table('job_user')->where('user_id', $user->id)->pluck('job_id');
         $mentions_ids = $mentions->pluck('job_id');
 
-        $final_jobs = $mentions_ids->diff($user_jobs_ids);
+
+        $final_jobs = $mentions_ids;
+
+        if ($request->suggests) {
+            $user_jobs_ids = DB::table('job_user')->where('user_id', $user->id)->pluck('job_id');
+            $final_jobs = $mentions_ids->diff($user_jobs_ids);
+
+        }
+
 
         return api(JobResource::collection(Job::find($final_jobs)));
 
