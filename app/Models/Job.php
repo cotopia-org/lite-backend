@@ -30,6 +30,7 @@ class Job extends Model {
         'job_id',
         'level',
         'old',
+        'joinable',
     ];
 
     protected $casts = [

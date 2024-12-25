@@ -22,6 +22,7 @@ class UserJobResource extends JsonResource {
             'status'       => $this->whenPivotLoaded('job_user', function () {
                 return $this->pivot->status;
             }),
+            'joinable'     => $this->joinable,
 
             'estimate'   => $this->estimate,
             'parent'     => self::make($this->parent),
@@ -35,7 +36,7 @@ class UserJobResource extends JsonResource {
             'total_minutes' => $this->whenPivotLoaded('job_user', function () use ($job, $period) {
                 return $job->getTime($this->pivot->user_id, $period);
             }),
-            'role' => $this->whenPivotLoaded('job_user', function ()  {
+            'role'          => $this->whenPivotLoaded('job_user', function () {
                 return $this->pivot->role;
             }),
 

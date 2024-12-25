@@ -22,7 +22,7 @@ return new class () extends Migration {
             $table->integer('estimate');
             $table->foreignId('workspace_id');
 
-
+            $table->boolean('joinable')->default(TRUE);
             $table->integer('job_id')->nullable();
             $table->integer('level')->default(0);
             $table->boolean('old')->default(FALSE);

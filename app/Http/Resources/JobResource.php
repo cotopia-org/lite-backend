@@ -28,6 +28,7 @@ class JobResource extends JsonResource {
             'level'        => $this->level,
             'created_at'   => $this->created_at,
             'old'          => $this->old,
+            'joinable'     => $this->joinable,
             'mentions'     => MentionResource::collection($this->mentions),
             'members'      => $this->users->map(function ($user) use ($job, $period) {
                 return [

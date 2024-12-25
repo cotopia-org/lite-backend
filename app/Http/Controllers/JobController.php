@@ -208,6 +208,9 @@ class JobController extends Controller {
 
     public function accept(Job $job) {
         $user = auth()->user();
+        if (!$job->joinable) {
+            return error('This job is parent only, so no one can join to it.');
+        }
 
         $job_user = DB::table('job_user')->where('user_id', $user->id)->where('job_id', $job->id)->first();
         if ($job_user === NULL) {
@@ -232,7 +235,9 @@ class JobController extends Controller {
     }
 
     public function dismiss(Job $job) {
-
+        if (!$job->joinable) {
+            return error('This job is parent only, so no one can dismiss it.');
+        }
         $user = auth()->user();
         $user->jobs()->attach($job, ['role' => 'member', 'status' => Constants::DISMISSED]);
 
