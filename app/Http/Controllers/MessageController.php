@@ -237,7 +237,9 @@ class   MessageController extends Controller {
         if ($message->translated_text === NULL) {
             $prompt = 'If text below was in persian language translate it to english if it was english translate it to persian do not change anything in text and just send me text not anymore, Dont translate words after @ and # and dont translate links';
             $prompt .= PHP_EOL;
+            $prompt .= 'The Text Is: "';
             $prompt .= $message->text;
+            $prompt .= ' "';
 
             $translated_text = sendToChatGpt($prompt)['choices'][0]['message']['content'];
             $message->update([
