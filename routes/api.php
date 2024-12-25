@@ -172,6 +172,9 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/{chat}/getLastUnSeenMessagePage', 'getLastUnSeenMessagePage');
         Route::get('/{chat}/{message}/getMessagePage', 'getMessagePage');
 
+        Route::get('/{chat}/toggleMute', 'toggleMute');
+
+
     })->middleware('checkIsUserOnline');
 
     Route::controller(ContractController::class)->prefix('contracts')->group(function () {

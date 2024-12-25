@@ -8,8 +8,7 @@ return new class extends Migration {
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
+    public function up(): void {
         Schema::create('chat_user', function (Blueprint $table) {
             $table->id();
 
@@ -19,6 +18,7 @@ return new class extends Migration {
 
             $table->string('role')->default('member');
             $table->integer('last_message_seen_id')->default(0);
+            $table->boolean('muted')->default(FALSE);
 
             $table->timestamps();
         });
@@ -27,8 +27,7 @@ return new class extends Migration {
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('chat_user');
     }
 };

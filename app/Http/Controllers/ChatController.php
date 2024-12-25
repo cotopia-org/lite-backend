@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\Workspace;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
@@ -193,6 +194,22 @@ class ChatController extends Controller {
 
         return api(MessageResource::collection($messages));
 
+    }
+
+    public function toggleMute(Chat $chat) {
+        $user = auth()->user();
+
+        $user_chat = DB::table('chat_user')->where('user_id', $user->id)->where('chat_id', $chat->id)->first();
+        if ($user_chat === NULL) {
+            return error('You are not participants of this chat');
+        }
+
+
+        DB::table('chat_user')->where('user_id', $user->id)->where('chat_id', $chat->id)->update([
+                                                                                                     'muted' => !$user_chat->muted
+                                                                                                 ]);
+
+        return api(TRUE);
     }
 
     public function delete(Chat $chat) {

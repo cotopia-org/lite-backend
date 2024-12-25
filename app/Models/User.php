@@ -274,7 +274,7 @@ class User extends Authenticatable {
     }
 
     public function chats() {
-        return $this->belongsToMany(Chat::class)->withTimestamps()->withPivot('role', 'last_message_seen_id');
+        return $this->belongsToMany(Chat::class)->withTimestamps()->withPivot('role', 'last_message_seen_id', 'muted');
     }
 
     public function updateActiveJob($job_id = NULL) {
