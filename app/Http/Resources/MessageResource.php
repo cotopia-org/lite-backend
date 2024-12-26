@@ -14,8 +14,9 @@ class MessageResource extends JsonResource {
     public function toArray(Request $request): array {
 
         return [
-            'id'              => $this->id,
-            'user'            => $this->user_id,
+            'id'   => $this->id,
+            'user' => UserSuperMinimalResource::make($this->user),
+
             'text'            => $this->deleted_at === NULL ? $this->text : 'This message has been deleted',
             'translated_text' => $this->translated_text_temp,
             'files'           => FileResource::collection($this->files),
