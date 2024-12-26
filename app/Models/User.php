@@ -49,7 +49,8 @@ class User extends Authenticatable {
         'verified',
         'livekit_connected',
         'active_job_id',
-        'active_activity_id'
+        'active_activity_id',
+//        'avatar'
     ];
 
     /**

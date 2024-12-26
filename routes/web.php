@@ -13,15 +13,32 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect('https://lite.cotopia.social');
 });
+Route::get('/avatar', function () {
+    $numericValue = (int)today()->timestamp;
+
+    // Use a hashing function to generate a more evenly distributed value.
+    $hashedValue = crc32($numericValue);
+
+    // Ensure the hashed value is positive.
+    $hashedValue = abs($hashedValue);
+
+    // Generate RGB values. We'll use modulo operations to constrain the values to 0-255.
+    $red = $hashedValue % 256;
+    $green = ($hashedValue * 3) % 256; // Multiply by a prime number for better distribution
+    $blue = ($hashedValue * 7) % 256;  // Use a different prime number
+
+    // Convert RGB to hex color code.
+    $hexColor = sprintf("#%02x%02x%02x", $red, $green, $blue);
+
+    return $hexColor;
+    return generateAvatar("Katerou22");
+
+
+});
+
 Route::get('/tester', function () {
 
 
-    $prompt = 'If text below was in persian language translate it to english if it was english translate it to persian do not change anything in text and just send me text not anymore';
-    $prompt .= PHP_EOL;
-    $prompt .= 'Hi @everyone as you may noticed by know now we payments fuature added thanks to @Youssef_Sameh , @mahdirasti and @kaKaterou22 please check your contract and update your wallet address also please consider contracts where added by @Katerou22 based on an old file so it may contain errors or outdated info so pleasse let me know if anything is wrong';
-
-    return sendToChatGpt($prompt)['choices'][0]['message']['content'];
-    dd();
     return 'okay';
 
 

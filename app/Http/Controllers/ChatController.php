@@ -184,13 +184,12 @@ class ChatController extends Controller {
         $pivot = $chat->users()->find($user)->pivot;
         $joined_at = $pivot->created_at;
         $messages = $chat
-            ->messages()->orderBy('id', 'DESC')->withTrashed()->with([
-                                                                         'links',
-                                                                         'mentions',
-                                                                         'user',
-                                                                         'files',
-                                                                     ])->where('created_at', '>=', $joined_at)
-            ->paginate(50);
+            ->messages()->orderBy('id', 'DESC')->with([
+                                                          'links',
+                                                          'mentions',
+                                                          'user',
+                                                          'files',
+                                                      ])->where('created_at', '>=', $joined_at)->paginate(50);
 
         return api(MessageResource::collection($messages));
 
