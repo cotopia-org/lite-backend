@@ -19,6 +19,12 @@ class ChatResource extends JsonResource {
 
         $user = auth()->user();
 
+
+        $colors = ["yellow", "green", "blue", "indigo", "purple", "pink"];
+        $index = ($this->id - 1) % count($colors);
+        $color = $colors[$index];
+
+
         $chat_user = $this->users->find(auth()->user());
         return [
             'id'                 => $this->id,
@@ -28,7 +34,8 @@ class ChatResource extends JsonResource {
             'last_message'       => MessageResource::make($this->lastMessage),
             'unseens'            => $this->messages_count,
             'mentioned_messages' => $this->mentions_count,
-            'muted'              => $chat_user === NULL ? FALSE : $chat_user->pivot->muted
+            'muted'              => $chat_user === NULL ? FALSE : $chat_user->pivot->muted,
+            'color'              => $color
 
 
         ];
