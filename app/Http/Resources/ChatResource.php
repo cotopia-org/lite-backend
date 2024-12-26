@@ -30,7 +30,7 @@ class ChatResource extends JsonResource {
             'unseens'            => $this->messages_count,
             'mentioned_messages' => $this->mentions_count,
             'muted'              => $chat_user === NULL ? FALSE : $chat_user->pivot->muted,
-            'created_at'         => $this->created_at
+            'created_at'         => $this->created_at->timestamp
 
 
         ];
