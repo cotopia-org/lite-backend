@@ -218,7 +218,7 @@ class ChatController extends Controller {
         $user->canDo(Permission::WS_DELETE_CHAT, $user->workspace_id);
 
         $user = auth()->user();
-        $chat->users()->detach($user->id);
+        $chat->delete();
         return api(TRUE);
     }
 
