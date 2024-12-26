@@ -20,12 +20,12 @@ enum Permission: string {
     case WS_REMOVE_MEMBER = 'remove-member-from-ws';
     case WS_UPDATE = 'update-ws';
     case WS_DELETE = 'delete-ws';
+    case WS_CREATE_CHAT = 'create-ws-chat';
+    case WS_DELETE_CHAT = 'delete-ws-chat';
     case WS_ADD_ROOMS = 'add-rooms-to-ws';
     case WS_ADD_JOB = 'add-job-to-ws';
     case WS_REMOVE_TAG = 'remove-tag-from-ws';
     case WS_ADD_TAG = 'add-tag-to-ws';
-
-
 
 
     case ROOMS_CHANGE_POSITION = 'change-rooms-position';

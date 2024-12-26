@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Permission;
 use App\Events\ChatCreated;
 use App\Http\Resources\ChatResource;
 use App\Http\Resources\MessageResource;
@@ -70,7 +71,8 @@ class ChatController extends Controller {
         if ($request->workspace_id !== NULL) {
             $workspace = Workspace::findOrFail($request->workspace_id);
 
-            //TODO: has to check user has permission to add group to workspace or not.
+
+            $user->canDo(Permission::WS_CREATE_CHAT, $request->workspace_id);
 
 
             $request->participants = $workspace->users->pluck('id');
@@ -212,6 +214,8 @@ class ChatController extends Controller {
     }
 
     public function delete(Chat $chat) {
+        $user = auth()->user();
+        $user->canDo(Permission::WS_DELETE_CHAT, $user->workspace_id);
 
         $user = auth()->user();
         $chat->users()->detach($user->id);
