@@ -186,6 +186,9 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/{contract}/toggleContractorSign', 'toggleContractorSign');
         Route::get('/{contract}/toggleUserSign', 'toggleUserSign');
 
+        Route::get('/getAllContents', 'getAllContents');
+
+
     });
 
     Route::controller(PaymentController::class)->prefix('payments')->group(function () {

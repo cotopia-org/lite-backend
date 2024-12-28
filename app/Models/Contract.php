@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class Contract extends Model {
@@ -30,9 +31,13 @@ class Contract extends Model {
         'user_id',
         'workspace_id',
         'in_schedule',
-        'text',
+        'content',
     ];
 
+    protected function content(): Attribute {
+        return Attribute::make(get: fn($value) => json_decode($value),//            set: fn($value) => json_encode($value),
+        );
+    }
 
     protected $casts = [
         'start_at' => 'datetime',
@@ -49,15 +54,30 @@ class Contract extends Model {
 
     public function text() {
 
-        return __('contracts.per_hour', [
-            'workspace_name' => $this->workspace->title,
-            'username'       => $this->user->username,
-            'start_at'       => $this->start_at->toDateTimeString(),
-            'end_at'         => $this->end_at->toDateTimeString(),
-            'per_hour'       => $this->amount,
-            'min_hours'      => $this->min_hours,
-            'max_hours'      => $this->max_hours
-        ],        'en');
+        $text = [];
+
+        foreach ($this->content as $content) {
+
+            $text[] = __('contracts.content.' . $content, [
+                'workspace_name'         => 'Tester',
+                'username'               => 'Katerou22',
+                'start_at'               => 'today',
+                'end_at'                 => 'tomorrow',
+                'per_hour'               => '10',
+                'min_hours'              => '50',
+                'max_hours'              => '200',
+                'renewal_count'          => 2,
+                'renew_time_period_type' => 'monthly',
+                'renew_notice'           => '10',
+                'payment_method'         => 'trc20',
+                'payment_period'         => 'month',
+                'payment_address'        => 'TESTPAYMENTADDRESS',
+            ],           'en');
+
+        }
+
+        return $text;
+
     }
 
     public function workspace() {

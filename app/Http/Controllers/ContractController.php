@@ -105,6 +105,9 @@ class ContractController extends Controller {
 
     }
 
+    public function getAllContents() {
+        return api(__('contracts.content'));
+    }
 
     public function payments(Contract $contract) {
         $payments = $contract->payments;

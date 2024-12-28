@@ -46,6 +46,8 @@ return new class extends Migration {
 
             $table->boolean('in_schedule')->default(FALSE);
 
+            $table->longText('content')->nullable();
+
             $table->timestamps();
         });
     }

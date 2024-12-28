@@ -38,6 +38,10 @@ Route::get('/avatar', function () {
 
 Route::get('/tester', function () {
 
+    foreach (Contract::all() as $contract) {
+
+        $contract->update(['content' => '[1,2,3,4,5,7]']);
+    }
 
     return 'okay';
 
