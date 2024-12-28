@@ -58,7 +58,7 @@ class Contract extends Model {
 
         foreach ($this->content as $content) {
 
-            $text[] = __('contracts.content.' . $content, [
+            $text[$content] = __('contracts.content.' . $content, [
                 'workspace_name'         => 'Tester',
                 'username'               => 'Katerou22',
                 'start_at'               => 'today',
@@ -72,7 +72,7 @@ class Contract extends Model {
                 'payment_method'         => 'trc20',
                 'payment_period'         => 'month',
                 'payment_address'        => 'TESTPAYMENTADDRESS',
-            ],           'en');
+            ],                   'en');
 
         }
 
