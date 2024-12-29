@@ -70,7 +70,7 @@ class ContractController extends Controller {
         if ($contract->payment_address === NULL) {
             return error('You should add payment address before');
         }
-        if ($contract->in_schedule && $contract->schedules()->count() < 1) {
+        if ($contract->in_schedule && $contract->schedule !== NULL) {
             return error('You should select a schedule first');
         }
 
