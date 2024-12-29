@@ -58,7 +58,7 @@ class ContractController extends Controller {
 
 
     public function all() {
-        $contracts = Contract::all();
+        $contracts = Contract::orderBy('id', 'DESC')->get();
 
         return api(ContractResource::collection($contracts));
     }
