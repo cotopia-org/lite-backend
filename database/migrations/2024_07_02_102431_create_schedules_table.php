@@ -29,6 +29,7 @@ return new class () extends Migration {
 
             $table->foreignId('workspace_id')->constrained('workspaces');
 
+            $table->foreignId('contract_id')->nullable()->constrained('users');
 
             $table->timestamps();
         });
