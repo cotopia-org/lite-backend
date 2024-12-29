@@ -37,14 +37,14 @@ class AuthController extends Controller {
         $request->validate([
                                'username' => [
                                    'required',
-                                   'regex:/^[a-z0-9_]{5,20}$/',
+                                   'regex:/^[a-zA-Z0-9_]{5,20}$/',
                                ],
                                'email'    => 'required',
                                'password' => 'required',
                            ]);
 
 
-        $user = User::where('username', $request->username)->where('email', $request->email)->first();
+        $user = User::where('username', $request->username)->orWhere('email', $request->email)->first();
 
         if ($user !== NULL) {
             return error('User already exists');
