@@ -99,26 +99,22 @@ function userJoinedToRoomEmit($user_id, $room_id) {
 
 }
 
-function isNowInUserSchedule($user, $workspace_id) {
+function isNowInUserSchedule($schedule) {
     $now = now();
 
-    $schedules = $user->schedules()->where('workspace_id', $workspace_id)->get();
+    foreach ($schedule->days as $day) {
+        if ((int)$day->day === $now->weekday()) {
 
-    foreach ($schedules as $schedule) {
-        foreach ($schedule->days as $day) {
-            if ((int)$day->day === $now->weekday()) {
+            foreach ($day->times as $time) {
 
-                foreach ($day->times as $time) {
-
-                    $end = now()->timezone($schedule->timezone)->setTimeFromTimeString($time->end);
-                    $start = now()->timezone($schedule->timezone)->setTimeFromTimeString($time->start);
-                    if ($now->copy()->timezone($schedule->timezone)->between($start, $end)) {
-                        return TRUE;
-                    }
-
+                $end = now()->timezone($schedule->timezone)->setTimeFromTimeString($time->end);
+                $start = now()->timezone($schedule->timezone)->setTimeFromTimeString($time->start);
+                if ($now->copy()->timezone($schedule->timezone)->between($start, $end)) {
+                    return TRUE;
                 }
 
             }
+
         }
     }
 
