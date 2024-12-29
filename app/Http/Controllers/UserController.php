@@ -332,7 +332,7 @@ class UserController extends Controller {
         }
 
 
-        return api(ContractResource::collection($user->contracts));
+        return api(ContractResource::collection($user->contracts()->orderBy('id', 'DESC')->get()));
 
 
     }
