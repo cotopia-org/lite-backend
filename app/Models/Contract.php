@@ -35,7 +35,7 @@ class Contract extends Model {
         'schedule_id',
     ];
 
-//    protected function content(): Attribute {
+    //    protected function content(): Attribute {
     //        return Attribute::make(get: fn($value) => dd($value),//            set: fn($value) => json_encode($value),
     //        );
     //    }
@@ -60,22 +60,22 @@ class Contract extends Model {
 
         $text = [];
 
-        foreach ($this->content as $content) {
+        foreach (json_decode($this->content) as $content) {
 
             $text[$content] = __('contracts.content.' . $content, [
-                'workspace_name'         => 'Tester',
-                'username'               => 'Katerou22',
-                'start_at'               => 'today',
-                'end_at'                 => 'tomorrow',
-                'per_hour'               => '10',
-                'min_hours'              => '50',
-                'max_hours'              => '200',
-                'renewal_count'          => 2,
-                'renew_time_period_type' => 'monthly',
-                'renew_notice'           => '10',
-                'payment_method'         => 'trc20',
-                'payment_period'         => 'month',
-                'payment_address'        => 'TESTPAYMENTADDRESS',
+                'workspace_name'         => $this->workspace->title,
+                'username'               => $this->user->username,
+                'start_at'               => $this->start_at->toDateTimeString(),
+                'end_at'                 => $this->end_at->toDateTimeString(),
+                'per_hour'               => $this->per_hour,
+                'min_hours'              => $this->min_hours,
+                'max_hours'              => $this->max_hours,
+                'renewal_count'          => $this->renewal_count,
+                'renew_time_period_type' => $this->renew_time_period_type,
+                'renew_notice'           => $this->renew_notice,
+                'payment_method'         => $this->payment_method,
+                'payment_period'         => $this->payment_period,
+                'payment_address'        => $this->payment_address ?? 'No payment address entered',
             ],                   'en');
 
         }
