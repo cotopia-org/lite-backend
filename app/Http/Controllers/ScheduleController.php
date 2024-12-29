@@ -86,6 +86,12 @@ class   ScheduleController extends Controller {
                           ]);
 
 
+        if ($schedule->contract_id !== NULL) {
+            $schedule->contract->update([
+                                            'user_sign_status'       => FALSE,
+                                            'contractor_sign_status' => FALSE,
+                                        ]);
+        }
         return api(ScheduleResource::make($schedule));
     }
 
