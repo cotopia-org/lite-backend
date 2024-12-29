@@ -70,7 +70,9 @@ class   ScheduleController extends Controller {
     public function update(Request $request, Schedule $schedule) {
 
         if (auth()->user()->isOwner($schedule->user_id)) {
-
+            if ($schedule->contract_id !== NULL && $schedule->contract->status() === 'signed') {
+                return error('Sorry, you cant update schedule on signed contract');
+            }
             $timezone = $request->timezone ?? 'Asia/Tehran';
 
             $schedule->update([

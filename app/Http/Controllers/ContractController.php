@@ -6,6 +6,7 @@ use App\Http\Resources\ContractResource;
 use App\Http\Resources\PaymentResource;
 use App\Models\Contract;
 use App\Models\Payment;
+use App\Models\Schedule;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -46,6 +47,16 @@ class ContractController extends Controller {
                                        'user_id'     => $request->user_id,
                                        'contract_id' => $contract->id
                                    ]);
+
+
+        if ($request->schedule_id) {
+            $schedule = Schedule::find($request->schedule_id);
+
+
+            $schedule->update([
+                                  'contract_id' => $contract->id
+                              ]);
+        }
 
 
         return api(ContractResource::make($contract));
@@ -158,6 +169,17 @@ class ContractController extends Controller {
                               'user_sign_status'       => FALSE,
                               'contractor_sign_status' => FALSE,
                           ]);
+
+
+        if ($request->schedule_id) {
+            $schedule = Schedule::find($request->schedule_id);
+
+
+            $schedule->update([
+                                  'contract_id' => $contract->id
+                              ]);
+        }
+
         return api(ContractResource::make($contract));
 
     }

@@ -32,7 +32,7 @@ class Schedule extends Model {
     }
 
     public function contract() {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Contract::class);
     }
 
 
