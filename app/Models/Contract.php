@@ -67,8 +67,8 @@ class Contract extends Model {
         return $this->belongsTo(User::class);
     }
 
-    public function schedule() {
-        return $this->belongsTo(Schedule::class);
+    public function schedules() {
+        return $this->hasMany(Schedule::class);
     }
 
     public function text() {
