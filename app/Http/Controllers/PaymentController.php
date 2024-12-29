@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class PaymentController extends Controller {
     public function all() {
-        $payments = Payment::all();
+        $payments = Payment::orderBy('id', 'DESC')->get();
 
         return api(PaymentResource::collection($payments));
     }
