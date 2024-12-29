@@ -180,13 +180,13 @@ Route::middleware('auth:sanctum')->group(callback: function () {
     Route::controller(ContractController::class)->prefix('contracts')->group(function () {
         Route::get('/', 'all');
         Route::post('/', 'create');
+        Route::get('/getAllContents', 'getAllContents');
+
         Route::get('/{contract}', 'get');
         Route::put('/{contract}', 'update');
         Route::get('/{contract}/payments', 'payments');
         Route::get('/{contract}/toggleContractorSign', 'toggleContractorSign');
         Route::get('/{contract}/toggleUserSign', 'toggleUserSign');
-
-        Route::get('/getAllContents', 'getAllContents');
 
 
     });
