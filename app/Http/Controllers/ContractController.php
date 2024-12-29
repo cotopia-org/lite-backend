@@ -64,8 +64,7 @@ class ContractController extends Controller {
     }
 
 
-    public function toggleUserSign(Contract $contract) {
-
+    public function userSign(Contract $contract) {
         $user = auth()->user();
 
         if ($contract->payment_address === NULL) {
@@ -78,34 +77,61 @@ class ContractController extends Controller {
         if ($contract->user_id === $user->id) {
 
             $contract->update([
-                                  'user_sign_status' => !$contract->user_sign_status
+                                  'user_sign_status' => TRUE
 
                               ]);
         }
         return api(ContractResource::make($contract));
-
-
     }
 
+    public function userRevoke(Contract $contract) {
+        $user = auth()->user();
 
-    public function toggleContractorSign(Contract $contract) {
+
+        if ($contract->contractor_sign_status) {
+            return error('Cant revoke sign because contractor has signed the contract');
+        }
+
+        if ($contract->user_id === $user->id) {
+
+            $contract->update([
+                                  'user_sign_status' => FALSE
+
+                              ]);
+        }
+        return api(ContractResource::make($contract));
+    }
+
+    public function adminSign(Contract $contract) {
+        $user = auth()->user();
+
+
+        $contract->update([
+                              'contractor_sign_status' => TRUE
+
+                          ]);
+        return api(ContractResource::make($contract));
+    }
+
+    public function adminRevoke(Contract $contract) {
 
         $user = auth()->user();
 
 
-        if ($contract->user_sign_status && $contract->contractor_sign_status) {
-            return error('Cant revoke sign because contractor has signed the contract');
+        if ($contract->user_sign_status) {
+            return error('Cant revoke sign because user has signed the contract');
         }
 
 
         $contract->update([
-                              'contractor_sign_status' => !$contract->contractor_sign_status
+                              'contractor_sign_status' => FALSE
 
                           ]);
         return api(ContractResource::make($contract));
 
 
     }
+
 
     public function getAllContents() {
         return api(__('contracts.content'));

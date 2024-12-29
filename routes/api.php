@@ -185,8 +185,12 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/{contract}', 'get');
         Route::put('/{contract}', 'update');
         Route::get('/{contract}/payments', 'payments');
-        Route::get('/{contract}/toggleAdminSign', 'toggleContractorSign');
-        Route::get('/{contract}/toggleUserSign', 'toggleUserSign');
+        Route::get('/{contract}/adminSign', 'adminSign');
+        Route::get('/{contract}/userSign', 'userSign');
+
+
+        Route::get('/{contract}/adminRevoke', 'adminRevoke');
+        Route::get('/{contract}/userRevoke', 'userRevoke');
 
 
     });
