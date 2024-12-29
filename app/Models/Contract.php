@@ -35,10 +35,10 @@ class Contract extends Model {
         'schedule_id',
     ];
 
-    protected function content(): Attribute {
-        return Attribute::make(get: fn($value) => dd($value),//            set: fn($value) => json_encode($value),
-        );
-    }
+//    protected function content(): Attribute {
+    //        return Attribute::make(get: fn($value) => dd($value),//            set: fn($value) => json_encode($value),
+    //        );
+    //    }
 
     protected $casts = [
         'start_at' => 'datetime',
