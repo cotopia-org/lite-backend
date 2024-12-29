@@ -68,7 +68,9 @@ class ContractController extends Controller {
 
         $user = auth()->user();
 
-
+        if ($contract->payment_address === NULL) {
+            return error('You should add payment address before');
+        }
         if ($contract->user_sign_status && $contract->contractor_sign_status) {
             return error('Cant revoke sign because contractor has signed the contract');
         }
