@@ -67,7 +67,7 @@ class Contract extends Model {
                 'username'               => $this->user->username,
                 'start_at'               => $this->start_at->toDateTimeString(),
                 'end_at'                 => $this->end_at->toDateTimeString(),
-                'per_hour'               => $this->per_hour,
+                'per_hour'               => $this->amount,
                 'min_hours'              => $this->min_hours,
                 'max_hours'              => $this->max_hours,
                 'renewal_count'          => $this->renewal_count,
@@ -75,6 +75,7 @@ class Contract extends Model {
                 'renew_notice'           => $this->renew_notice,
                 'payment_method'         => $this->payment_method,
                 'payment_period'         => $this->payment_period,
+                'role'                   => $this->role ?? '(No role specified)',
                 'payment_address'        => $this->payment_address ?? 'No payment address entered',
             ],                   'en');
 
