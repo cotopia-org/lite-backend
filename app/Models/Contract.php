@@ -32,6 +32,7 @@ class Contract extends Model {
         'workspace_id',
         'in_schedule',
         'content',
+        'schedule_id',
     ];
 
     protected function content(): Attribute {

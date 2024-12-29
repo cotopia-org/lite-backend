@@ -39,6 +39,8 @@ class ContractResource extends JsonResource {
             'created_at'             => $this->created_at,
             'updated_at'             => $this->updated_at,
             'in_schedule'            => $this->in_schedule,
+            'content'                => $this->content,
+            'schedule'               => ScheduleResource::make($this->schedule),
             'text'                   => $this->text(),
         ];
     }
