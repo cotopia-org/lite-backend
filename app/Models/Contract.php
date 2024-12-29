@@ -47,6 +47,21 @@ class Contract extends Model {
 
     protected $dates = ['start_at', 'end_at'];
 
+    public function status() {
+
+        if ($this->contractor_sign_status === 1 && $this->user_sign_status === 0) {
+            return 'waiting_admin_sign';
+        }
+
+        if ($this->contractor_sign_status === 0 && $this->user_sign_status === 1) {
+            return 'waiting_user_sign';
+        }
+        if ($this->contractor_sign_status && $this->user_sign_status) {
+            return 'signed';
+        }
+
+        return 'draft';
+    }
 
     public function user() {
         return $this->belongsTo(User::class);

@@ -13,6 +13,7 @@ class Schedule extends Model {
     protected $fillable = [
         'availability_type',
         'user_id',
+        'contract_id',
         'days',
         'is_recurrence',
         'recurrence_start_at',
@@ -30,6 +31,11 @@ class Schedule extends Model {
         return $this->belongsTo(User::class);
     }
 
+    public function contract() {
+        return $this->belongsTo(User::class);
+    }
+
+
     public function workspace() {
         return $this->belongsTo(Workspace::class);
     }
@@ -38,7 +44,6 @@ class Schedule extends Model {
         return Attribute::make(get: fn($value) => json_decode($value),//            set: fn($value) => json_encode($value),
         );
     }
-
 
 
     protected function days(): Attribute {

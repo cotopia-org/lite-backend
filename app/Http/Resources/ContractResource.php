@@ -42,6 +42,7 @@ class ContractResource extends JsonResource {
             'content'                => is_string($this->content) ? json_decode($this->content) : $this->content,
             'schedule'               => ScheduleResource::make($this->schedule),
             'text'                   => $this->text(),
+            'status'                 => $this->status(),
         ];
     }
 }
