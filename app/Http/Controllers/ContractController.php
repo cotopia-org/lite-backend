@@ -70,6 +70,10 @@ class ContractController extends Controller {
         if ($contract->payment_address === NULL) {
             return error('You should add payment address before');
         }
+        if ($contract->in_schedule && $contract->schedules()->count() < 1) {
+            return error('You should select a schedule first');
+        }
+
         if ($contract->user_sign_status && $contract->contractor_sign_status) {
             return error('Cant revoke sign because contractor has signed the contract');
         }
