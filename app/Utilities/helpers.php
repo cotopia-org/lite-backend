@@ -102,6 +102,9 @@ function userJoinedToRoomEmit($user_id, $room_id) {
 function isNowInUserSchedule($schedule) {
     $now = now();
 
+    if ($schedule === NULL) {
+        return FALSE;
+    }
     foreach ($schedule->days as $day) {
         if ((int)$day->day === $now->weekday()) {
 

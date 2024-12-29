@@ -50,7 +50,7 @@ class User extends Authenticatable {
         'livekit_connected',
         'active_job_id',
         'active_activity_id',
-//        'avatar'
+        //        'avatar'
     ];
 
     /**
@@ -80,7 +80,8 @@ class User extends Authenticatable {
 
         $startOfMonth = today()->startOfMonth();
         $endOfMonth = today()->endOfMonth();
-        return $this->contracts()->where('start_at', '>=', $startOfMonth)->where('end_at', '<=', $endOfMonth)->first();
+        return $this->contracts()->where('start_at', '>=', $startOfMonth)->where('end_at', '<=', $endOfMonth)
+                    ->where('user_sign_status', TRUE)->where('contractor_sign_status', TRUE)->first();
     }
 
     public function activeJob() {
