@@ -36,7 +36,7 @@ class Contract extends Model {
     ];
 
     protected function content(): Attribute {
-        return Attribute::make(get: fn($value) => json_decode($value),//            set: fn($value) => json_encode($value),
+        return Attribute::make(get: fn($value) => dd($value),//            set: fn($value) => json_encode($value),
         );
     }
 
