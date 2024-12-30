@@ -165,7 +165,7 @@ class ContractController extends Controller {
 
         $user = auth()->user();
 
-        $user->canDo(Permission::DELETE_CONTRACT, $contract->worksapce_id);
+        $user->canDo(Permission::DELETE_CONTRACT, $contract->workspace_id);
 
         if ($contract->user_sign_status && $contract->contractor_sign_status) {
             return error('Cant delete a signed contract');
