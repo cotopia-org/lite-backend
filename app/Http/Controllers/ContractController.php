@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Permission;
 use App\Http\Resources\ContractResource;
 use App\Http\Resources\PaymentResource;
 use App\Models\Contract;
@@ -157,6 +158,21 @@ class ContractController extends Controller {
 
 
         return api(PaymentResource::collection($payments));
+    }
+
+
+    public function delete(Contract $contract) {
+
+        $user = auth()->user();
+
+        $user->canDo(Permission::DELETE_CONTRACT, $contract->worksapce_id);
+
+        if ($contract->user_sign_status && $contract->contractor_sign_status) {
+            return error('Cant delete a signed contract');
+        }
+
+        $contract->delete();
+        return TRUE;
     }
 
     public function update(Request $request, Contract $contract) {

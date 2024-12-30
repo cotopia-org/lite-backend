@@ -49,6 +49,7 @@ return new class extends Migration {
 
             $table->longText('content')->nullable();
 
+            $table->softDeletes();
             $table->timestamps();
         });
     }

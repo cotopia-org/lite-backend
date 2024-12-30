@@ -182,6 +182,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::post('/', 'create');
         Route::get('/getAllContents', 'getAllContents');
 
+        Route::delete('/{contract}', 'delete');
         Route::get('/{contract}', 'get');
         Route::put('/{contract}', 'update');
         Route::get('/{contract}/payments', 'payments');

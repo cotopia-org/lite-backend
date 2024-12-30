@@ -28,6 +28,9 @@ enum Permission: string {
     case WS_ADD_TAG = 'add-tag-to-ws';
 
 
+    case DELETE_CONTRACT = 'delete-contract';
+
+
     case ROOMS_CHANGE_POSITION = 'change-rooms-position';
     case ROOM_GET = 'get-room';
     case ROOM_KICK_USER = 'kick-user-from-room';
