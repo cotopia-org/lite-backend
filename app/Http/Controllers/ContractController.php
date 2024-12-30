@@ -172,6 +172,10 @@ class ContractController extends Controller {
         }
 
         $contract->delete();
+
+        foreach ($contract->payments as $payment) {
+            $payment->delete();
+        }
         return TRUE;
     }
 
