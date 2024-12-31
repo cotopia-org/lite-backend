@@ -47,17 +47,7 @@ class   ScheduleController extends Controller {
             $contract = Contract::find($request->contract_id);
 
 
-            $hours = 0;
-
-            foreach ($request->days as $day) {
-                foreach ($day['times'] as $time) {
-                    $end = now()->setTimeFromTimeString($time['end']);
-                    $start = now()->setTimeFromTimeString($time['start']);
-
-
-                    $hours += $start->diffInHours($end);
-                }
-            }
+            $hours = calculateScheduleHours($request->days);
             if ($contract->max_hours > $hours) {
                 return error('Schedule hours are more than contract max hours');
             }
@@ -99,6 +89,24 @@ class   ScheduleController extends Controller {
         if ($schedule->contract_id !== NULL && $schedule->contract->status() === 'signed') {
             return error('Sorry, you cant update schedule on signed contract');
         }
+
+
+        if ($request->contract_id) {
+
+            $contract = Contract::find($request->contract_id);
+
+
+            $hours = calculateScheduleHours($request->days);
+            if ($contract->max_hours > $hours) {
+                return error('Schedule hours are more than contract max hours');
+            }
+
+            if ($contract->min_hours > $hours) {
+                return error('Schedule hours are less than contract min hours');
+            }
+        }
+
+
         $timezone = $request->timezone ?? 'Asia/Tehran';
 
         $schedule->update([
@@ -109,6 +117,8 @@ class   ScheduleController extends Controller {
                               'recurrence_end_at'   => $request->recurrence_end_at,
                               'timezone'            => $timezone,
                               'workspace_id'        => $request->workspace_id,
+                              'contract_id'         => $request->contract_id
+
 
                           ]);
 

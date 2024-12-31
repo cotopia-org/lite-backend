@@ -191,6 +191,20 @@ function get_socket_url($path = ""): string {
     return rtrim(config('socket.base_url'), '/') . '/' . $path;
 }
 
+function calculateScheduleHours($days) {
+    $hours = 0;
+    foreach ($days as $day) {
+        foreach ($day['times'] as $time) {
+            $end = now()->setTimeFromTimeString($time['end']);
+            $start = now()->setTimeFromTimeString($time['start']);
+
+
+            $hours += $start->diffInHours($end);
+        }
+    }
+    return $hours;
+}
+
 function unConvert($value): array|string {
     $western = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
     $eastern = ['۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹', '۰'];
