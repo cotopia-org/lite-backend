@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Contract extends Model {
 
     use SoftDeletes;
+
     protected $fillable = [
         'type',
         'amount',
@@ -51,6 +52,10 @@ class Contract extends Model {
 
     public function status() {
 
+
+        if ($this->end_at->isPast()) {
+            return 'expired';
+        }
         if ($this->contractor_sign_status === 1 && $this->user_sign_status === 0) {
             return 'waiting_admin_sign';
         }
