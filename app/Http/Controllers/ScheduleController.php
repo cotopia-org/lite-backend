@@ -34,8 +34,8 @@ class   ScheduleController extends Controller {
 
         $request->validate([
 
-                               "availability_type" => ["required", Rule::in($types)],
-                               'workspace_id'      => 'required'
+                               //                               "availability_type" => ["required", Rule::in($types)],
+                               'workspace_id' => 'required'
                                //                               "days"              => 'required|array',
                                //                               "days.*"            => Rule::in($days),
 
@@ -53,7 +53,7 @@ class   ScheduleController extends Controller {
             }
         }
         $schedule = auth()->user()->schedules()->create([
-                                                            'availability_type'   => $request->availability_type,
+                                                            'availability_type'   => $request->availability_type ?? 1,
                                                             'days'                => json_encode($request->days, JSON_THROW_ON_ERROR),
                                                             'is_recurrence'       => $request->is_recurrence ?? FALSE,
                                                             'recurrence_start_at' => $request->recurrence_start_at ?? now()->timezone($timezone),
