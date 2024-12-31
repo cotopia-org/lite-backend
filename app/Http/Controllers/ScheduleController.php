@@ -42,21 +42,7 @@ class   ScheduleController extends Controller {
 
                            ]);
 
-        if ($request->contract_id) {
-
-            $contract = Contract::find($request->contract_id);
-
-
-            $hours = calculateScheduleHours($request->days);
-            if ($hours > $contract->max_hours) {
-                return error('Schedule hours are more than contract max hours');
-            }
-
-            if ($hours * $contract->start_at->weeksInMonth < $contract->min_hours) {
-                return error('Schedule hours are less than contract min hours');
-            }
-        }
-
+        scheduleIsFitInContract($request->days, $request->contract_id);
         $timezone = $request->timezone ?? 'Asia/Tehran';
 
         foreach ($request->days as $day) {
@@ -91,20 +77,7 @@ class   ScheduleController extends Controller {
         }
 
 
-        if ($request->contract_id) {
-
-            $contract = Contract::find($request->contract_id);
-
-
-            $hours = calculateScheduleHours($request->days);
-            if ($hours > $contract->max_hours) {
-                return error('Schedule hours are more than contract max hours');
-            }
-
-            if ($hours * $contract->start_at->weeksInMonth < $contract->min_hours) {
-                return error('Schedule hours are less than contract min hours');
-            }
-        }
+        scheduleIsFitInContract($request->days, $request->contract_id);
 
 
         $timezone = $request->timezone ?? 'Asia/Tehran';

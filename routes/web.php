@@ -47,7 +47,16 @@ Route::get('/tester', function () {
 
 
 });
+Route::get('/scheduleHours', function () {
 
+    $data = [];
+    foreach (\App\Models\Schedule::all() as $schedule) {
+        $data[$schedule->id] = calculateScheduleHours($schedule);
+    }
+    return $data;
+
+
+});
 
 Route::get('/isNowInUserSchedule', function () {
 
@@ -56,14 +65,14 @@ Route::get('/isNowInUserSchedule', function () {
 
         $data = [];
         foreach (\App\Models\User::all() as $user) {
-            $data[$user->id] = isNowInUserSchedule($user, 1);
+            $data[$user->id] = isNowInUserSchedule($user->activeContract()?->schedule);
         }
         return ['data' => $data, 'now' => now()];
 
     }
 
     $user = \App\Models\User::find($user_id);
-    return isNowInUserSchedule($user, 1);
+    return isNowInUserSchedule($user->activeContract()?->schedule);
 
 
 });

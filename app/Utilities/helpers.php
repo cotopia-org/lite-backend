@@ -3,6 +3,7 @@
 use App\Http\Resources\MessageResource;
 use App\Jobs\sendSocketJob;
 use App\Models\Chat;
+use App\Models\Contract;
 use App\Models\Message;
 use App\Models\User;
 use App\Utilities\Constants;
@@ -203,6 +204,24 @@ function calculateScheduleHours($days) {
         }
     }
     return $hours;
+}
+
+function scheduleIsFitInContract($days, $contract) {
+    if ($contract) {
+
+        $contract = Contract::find($contract);
+
+
+        $hours = calculateScheduleHours($days) * $contract->start_at->weeksInMonth;
+        if ($hours > $contract->max_hours) {
+            return error('Schedule hours are more than contract max hours');
+        }
+
+        if ($hours < $contract->min_hours) {
+            return error('Schedule hours are less than contract min hours');
+        }
+    }
+
 }
 
 function unConvert($value): array|string {
