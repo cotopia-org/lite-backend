@@ -47,16 +47,7 @@ Route::get('/tester', function () {
 
 
 });
-Route::get('/scheduleHours', function () {
 
-    $data = [];
-    foreach (\App\Models\Schedule::all() as $schedule) {
-        $data[$schedule->id] = calculateScheduleHours($schedule);
-    }
-    return $data;
-
-
-});
 
 Route::get('/isNowInUserSchedule', function () {
 
