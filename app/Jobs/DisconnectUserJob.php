@@ -13,24 +13,20 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class DisconnectUserJob implements ShouldQueue
-{
+class DisconnectUserJob implements ShouldQueue {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(public User    $user, public bool $offline = FALSE, public bool $checkIsInRoom = FALSE,
-                                public ?string $data)
-    {
+    public function __construct(public User $user, public bool $offline = FALSE, public bool $checkIsInRoom = FALSE, public ?string $data) {
         //
     }
 
     /**
      * Execute the job.
      */
-    public function handle(): void
-    {
+    public function handle(): void {
 
         $user = $this->user;
 
@@ -71,7 +67,7 @@ class DisconnectUserJob implements ShouldQueue
                 sendSocket(Constants::workspaceRoomUpdated, $room->workspace->channel, RoomResource::make($room));
 
 
-//                disconnectLivekitJob::dispatch($room, $user);
+                //                disconnectLivekitJob::dispatch($room, $user);
                 //commented due problem was in refresh
 
             }

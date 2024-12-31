@@ -148,7 +148,7 @@ class SocketController extends Controller {
                 acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'SocketController@disconnected');
 
             }
-            DisconnectUserJob::dispatch($user, $request->offline !== NULL, TRUE, 'Disconnected From SocketController Disconnected Method');
+            DisconnectUserJob::dispatch($user, $request->offline !== NULL, FALSE, 'Disconnected From SocketController Disconnected Method');
 
         }
 
