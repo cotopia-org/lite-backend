@@ -25,6 +25,7 @@ class ScheduleResource extends JsonResource {
             'recurrence_end_at'   => $this->recurrence_end_at,
             'timezone'            => $this->timezone,
             'workspace_id'        => $this->workspace_id,
+            'hours'               => $this->hours()
         ];
     }
 }
