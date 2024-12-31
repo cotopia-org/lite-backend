@@ -302,9 +302,12 @@ class UserController extends Controller {
         } else {
             $user = User::findOrFail($user);
         }
-        //For commit test.
 
-        return api(ScheduleResource::collection($user->schedules));
+
+        $contract = $user->activeContract();
+
+
+        return api(ScheduleResource::collection($user->schedules->where('contract_id', $contract->id)));
     }
 
 
