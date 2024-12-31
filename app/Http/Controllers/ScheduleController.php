@@ -9,6 +9,7 @@ use App\Http\Requests\ScheduleRequest;
 use App\Http\Resources\ScheduleResource;
 use App\Jobs\RecurSchedule;
 use App\Models\Calendar;
+use App\Models\Contract;
 use App\Models\Schedule;
 use App\Models\User;
 use App\Params\RecurParam;
@@ -41,6 +42,31 @@ class   ScheduleController extends Controller {
 
                            ]);
 
+        if ($request->contract_id) {
+
+            $contract = Contract::find($request->contract_id);
+
+
+            $hours = 0;
+
+            foreach ($request->days as $day) {
+                foreach ($day['times'] as $time) {
+                    $end = now()->setTimeFromTimeString($time['end']);
+                    $start = now()->setTimeFromTimeString($time['start']);
+
+
+                    $hours += $start->diffInHours($end);
+                }
+            }
+            if ($contract->max_hours > $hours) {
+                return error('Schedule hours are more than contract max hours');
+            }
+
+            if ($contract->min_hours > $hours) {
+                return error('Schedule hours are less than contract min hours');
+            }
+        }
+
         $timezone = $request->timezone ?? 'Asia/Tehran';
 
         foreach ($request->days as $day) {
@@ -60,6 +86,7 @@ class   ScheduleController extends Controller {
                                                             'recurrence_end_at'   => $request->recurrence_end_at,
                                                             'timezone'            => $timezone,
                                                             'workspace_id'        => $request->workspace_id,
+                                                            'contract_id'         => $request->contract_id
                                                         ]);
 
 

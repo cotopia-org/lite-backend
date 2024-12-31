@@ -46,6 +46,25 @@ class Schedule extends Model {
     }
 
 
+    public function hours($days = NULL) {
+        $hours = 0;
+        if ($days === NULL) {
+            $days = $this->days;
+        }
+        foreach ($days as $day) {
+            foreach ($day->times as $time) {
+                $end = now()->setTimeFromTimeString($time->end);
+                $start = now()->setTimeFromTimeString($time->start);
+
+
+                $hours += $start->diffInHours($end);
+            }
+        }
+
+        return $hours;
+    }
+
+
     protected function days(): Attribute {
         return Attribute::make(get: fn($value) => json_decode($value),//            set: fn($value) => json_encode($value),
         );
