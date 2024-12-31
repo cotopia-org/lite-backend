@@ -36,7 +36,7 @@ class UserResource extends JsonResource {
             'last_login'              => $this->updated_at,
             'is_bot'                  => $this->is_bot,
             'active_job'              => JobResource::make($this->activeJob->first()),
-            'active_contract'         => ContractResource::make($this->contracts->last()),
+            'active_contract'         => ContractResource::make($this->activeContract()),
             'workspaces'              => $this->workspaces->map(function ($workspace) {
                 return [
                     'title' => $workspace->title,
