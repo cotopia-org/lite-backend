@@ -48,6 +48,8 @@ class   ScheduleController extends Controller {
 
 
             $hours = calculateScheduleHours($request->days);
+            logger($hours);
+
             if ($contract->max_hours > $hours) {
                 return error('Schedule hours are more than contract max hours');
             }
