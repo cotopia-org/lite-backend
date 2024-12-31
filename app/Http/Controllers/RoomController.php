@@ -134,6 +134,9 @@ class RoomController extends Controller {
                 $time_start = FALSE;
 
             }
+        } else {
+            $time_start = FALSE;
+
         }
 
 
