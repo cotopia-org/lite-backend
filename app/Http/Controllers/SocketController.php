@@ -138,6 +138,8 @@ class SocketController extends Controller {
 
         $lastAct = Act::where('user_id', $user->id)->where('type', 'connected')->orderBy('id', 'desc')->first();
 
+        logger('NOW ' . now()->toDateTimeString());
+        logger('CREATED AT ' . $lastAct->created_at->toDateTimeString());
         if ($lastAct->created_at->isAfter(now())) {
             logger('MUST IGNORE');
             return TRUE;
