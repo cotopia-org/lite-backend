@@ -18,11 +18,15 @@ use App\Models\Workspace;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class   MessageController extends Controller {
 
     public function send(Request $request) {
-        $request->validate(['text' => 'required', 'chat_id' => 'required', 'nonce_id']);
+        $request->validate(['text'    => Rule::requiredIf($request->voice_id === NULL),
+                            'chat_id' => 'required',
+                            'nonce_id'
+                           ]);
 
         $user = auth()->user();
 
