@@ -9,6 +9,7 @@ use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\UserResource;
 use App\Jobs\disconnectLivekitJob;
 use App\Jobs\DisconnectUserJob;
+use App\Models\Act;
 use App\Models\Activity;
 use App\Models\Message;
 use App\Models\Room;
@@ -135,6 +136,12 @@ class SocketController extends Controller {
         $user = auth()->user();
         $request = \request();
 
+        $lastAct = Act::where('user_id', $user->id)->where('type', 'connected')->orderBy('id', 'desc')->first();
+
+        if ($lastAct->created_at->isAfter(now())) {
+            logger('MUST IGNORE');
+            return TRUE;
+        }
         //        logger($request->socket_status);
         if ($request->socket_status === 'enable') {
 
