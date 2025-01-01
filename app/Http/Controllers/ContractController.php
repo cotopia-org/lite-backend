@@ -9,6 +9,7 @@ use App\Models\Contract;
 use App\Models\Payment;
 use App\Models\Schedule;
 use App\Models\User;
+use App\Utilities\Constants;
 use Illuminate\Http\Request;
 
 class ContractController extends Controller {
@@ -59,8 +60,11 @@ class ContractController extends Controller {
                               ]);
         }
 
+        $res = ContractResource::make($contract);
 
-        return api(ContractResource::make($contract));
+        sendSocket(Constants::contractCreated, $contract->workspace->channel, $res);
+
+        return api($res);
     }
 
 
@@ -97,7 +101,12 @@ class ContractController extends Controller {
 
                               ]);
         }
-        return api(ContractResource::make($contract));
+
+        $res = ContractResource::make($contract);
+
+        sendSocket(Constants::contractUpdated, $contract->workspace->channel, $res);
+
+        return api($res);
     }
 
     public function userRevoke(Contract $contract) {
@@ -115,7 +124,11 @@ class ContractController extends Controller {
 
                               ]);
         }
-        return api(ContractResource::make($contract));
+        $res = ContractResource::make($contract);
+
+        sendSocket(Constants::contractUpdated, $contract->workspace->channel, $res);
+
+        return api($res);
     }
 
     public function adminSign(Contract $contract) {
@@ -126,7 +139,11 @@ class ContractController extends Controller {
                               'contractor_sign_status' => TRUE
 
                           ]);
-        return api(ContractResource::make($contract));
+        $res = ContractResource::make($contract);
+
+        sendSocket(Constants::contractUpdated, $contract->workspace->channel, $res);
+
+        return api($res);
     }
 
     public function adminRevoke(Contract $contract) {
@@ -143,7 +160,11 @@ class ContractController extends Controller {
                               'contractor_sign_status' => FALSE
 
                           ]);
-        return api(ContractResource::make($contract));
+        $res = ContractResource::make($contract);
+
+        sendSocket(Constants::contractUpdated, $contract->workspace->channel, $res);
+
+        return api($res);
 
 
     }
@@ -176,6 +197,16 @@ class ContractController extends Controller {
         foreach ($contract->payments as $payment) {
             $payment->delete();
         }
+
+
+
+
+        $res = ContractResource::make($contract);
+
+        sendSocket(Constants::contractDeleted, $contract->workspace->channel, $res);
+
+        return api($res);
+
         return TRUE;
     }
 
@@ -200,7 +231,11 @@ class ContractController extends Controller {
                               ]);
         }
 
-        return api(ContractResource::make($contract));
+        $res = ContractResource::make($contract);
+
+        sendSocket(Constants::contractUpdated, $contract->workspace->channel, $res);
+
+        return api($res);
 
     }
 }

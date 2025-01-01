@@ -6,6 +6,7 @@ use App\Enums\AvailabilityType;
 use App\Enums\Days;
 use App\Enums\Permission;
 use App\Http\Requests\ScheduleRequest;
+use App\Http\Resources\ContractResource;
 use App\Http\Resources\ScheduleResource;
 use App\Jobs\RecurSchedule;
 use App\Models\Calendar;
@@ -13,6 +14,7 @@ use App\Models\Contract;
 use App\Models\Schedule;
 use App\Models\User;
 use App\Params\RecurParam;
+use App\Utilities\Constants;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -101,6 +103,8 @@ class   ScheduleController extends Controller {
                                             'user_sign_status'       => FALSE,
                                             'contractor_sign_status' => FALSE,
                                         ]);
+            sendSocket(Constants::contractUpdated, $schedule->contract->workspace->channel, ContractResource::make($schedule->contract));
+
         }
         return api(ScheduleResource::make($schedule));
     }

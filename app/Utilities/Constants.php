@@ -79,6 +79,11 @@ class Constants {
     const roomBackgroundChanged = 'roomBackgroundChanged';
 
 
+    const contractCreated = 'contractCreated';
+    const contractUpdated = 'contractUpdated';
+    const contractDeleted = 'contractDeleted';
+
+
     const livekitDisconnected = 'livekitDisconnected';
 
 
