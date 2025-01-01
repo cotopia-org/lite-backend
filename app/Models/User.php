@@ -78,10 +78,15 @@ class User extends Authenticatable {
 
     public function activeContract() {
 
-        $startOfMonth = today()->startOfMonth();
-        $endOfMonth = today()->endOfMonth();
-        return $this->contracts()->where('start_at', '>=', $startOfMonth)->where('end_at', '<=', $endOfMonth)
-                    ->where('user_sign_status', TRUE)->where('contractor_sign_status', TRUE)->first();
+        //        $startOfMonth = today()->startOfMonth();
+        //        $endOfMonth = today()->endOfMonth();
+
+
+        $now = now();
+
+        return $this
+            ->contracts()->whereDate('start_at', '<=', $now)->whereDate('end_at', '>=', $now)
+            ->where('user_sign_status', TRUE)->where('contractor_sign_status', TRUE)->first();
     }
 
     public function activeJob() {

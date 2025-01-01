@@ -141,8 +141,12 @@ class UserController extends Controller {
 
         }
 
+        if ($totalScheduleDuration === 0) {
+            $fulfilledPercentage = 0;
+        } else {
+            $fulfilledPercentage = ($totalOverlapDuration / $totalScheduleDuration) * 100;
 
-        $fulfilledPercentage = ($totalOverlapDuration / $totalScheduleDuration) * 100;
+        }
 
         return api([
                        "total_week_schedules"               => $totalScheduleDuration,
