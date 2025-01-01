@@ -49,12 +49,14 @@ class Message extends Model {
     public function files() {
         return $this->morphMany(File::class, 'fileable');
     }
+
     public function attachments() {
-        return $this->files->where('type', 'attachment')->last();
+        return $this->files->where('type', 'attachment');
 
     }
+
     public function voice() {
-        return $this->files->where('type', 'voiceMessage')->last();
+        return $this->files->where('type', 'voiceMessage')->first();
 
     }
 
