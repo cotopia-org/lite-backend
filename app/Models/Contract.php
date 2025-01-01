@@ -53,6 +53,10 @@ class Contract extends Model {
     public function status() {
 
 
+        $userActiveContract = $this->user->activeContract();
+        if ($userActiveContract !== NULL && $userActiveContract->id === $this->id) {
+            return 'active';
+        }
         if ($this->end_at->isPast()) {
             return 'expired';
         }
