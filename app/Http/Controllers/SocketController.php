@@ -133,6 +133,7 @@ class SocketController extends Controller {
 
     public function disconnected() {
 
+        sleep(20);
         $user = auth()->user();
         $request = \request();
 
