@@ -15,7 +15,7 @@ class FileController extends Controller {
                            ]);
 
         if ($request->hasFile('file')) {
-            $path = Storage::disk('public')->put('images', $request->file);
+            $path = Storage::disk('public')->put('files', $request->file);
             $mime = $request->file('file')->getClientMimeType();
 
         } else {
