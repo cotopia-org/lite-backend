@@ -13,7 +13,7 @@ class FileController extends Controller
     {
         $request->validate([
             //                               'file' => 'required|mimes:png,jpg,jpeg,webp' // TODO: changed for test
-            'file' => 'mimes:png,jpg,jpeg,webp,mp3,Blob', // TODO: changed for test
+            'file' => 'mimes:png,jpg,jpeg,webp,mp3,wav', // TODO: changed for test
         ]);
 
         if ($request->hasFile('file')) {
