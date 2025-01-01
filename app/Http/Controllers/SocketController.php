@@ -133,7 +133,6 @@ class SocketController extends Controller {
 
     public function disconnected() {
 
-        sleep(1);
         $user = auth()->user();
         $request = \request();
 
@@ -141,7 +140,7 @@ class SocketController extends Controller {
 
         logger('NOW ' . now()->toDateTimeString());
         logger('CREATED AT ' . $lastAct->created_at->toDateTimeString());
-        if ($lastAct->created_at->isAfter(now())) {
+        if ($lastAct->created_at->gte(now())) {
             logger('MUST IGNORE');
             return TRUE;
         }
