@@ -19,9 +19,8 @@ class MessageResource extends JsonResource {
 
             'text'            => $this->deleted_at === NULL ? $this->text : 'This message has been deleted',
             'translated_text' => $this->translated_text_temp,
-            'files'           => FileResource::collection($this->files->where('type', 'attachment')),
+            'files'           => FileResource::collection($this->attachments()),
             'chat_id'         => $this->chat_id,
-            //            'seen'       => $this->saw(auth()->user()),
             'voice'           => FileResource::make($this->voice()),
             'nonce_id'        => (int)$this->nonce_id,
             'is_edited'       => $this->is_edited,
