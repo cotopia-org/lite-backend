@@ -23,6 +23,7 @@ return new class () extends Migration {
 
 
             $table->string('nonce_id')->nullable();
+
             $table->softDeletes();
             $table->timestamps();
         });

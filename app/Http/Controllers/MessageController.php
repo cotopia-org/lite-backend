@@ -64,10 +64,16 @@ class   MessageController extends Controller {
 
         if ($request->get('files')) {
             foreach ($request->get('files') as $file) {
-                File::syncFile($file, $message);
+                File::syncFile($file, $message, 'attachment');
 
             }
         }
+
+        if ($request->voice_id) {
+            File::syncFile($request->voice_id, $message, 'voiceMessage');
+
+        }
+
         DB::table('chat_user')->where('user_id', $user->id)->where('chat_id', $message->chat_id)->update([
                                                                                                              'last_message_seen_id' => $message->id
                                                                                                          ]);
@@ -75,7 +81,7 @@ class   MessageController extends Controller {
 
         $res = MessageResource::make($message);
         sendSocket('newMessage', 'chat-' . $request->chat_id, $res);
-        return api(MessageResource::make($res));
+        return api($res);
 
     }
 

@@ -27,7 +27,7 @@ class RoomController extends Controller {
 
         $room->update($request->all());
 
-        //        File::syncFile($request->background_id, $room, 'background');
+//                File::syncFile($request->background_id, $room, 'background');
         //        File::syncFile($request->logo_id, $room, 'logo');
 
 

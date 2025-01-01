@@ -50,6 +50,11 @@ class Message extends Model {
         return $this->morphMany(File::class, 'fileable');
     }
 
+    public function voice() {
+        return $this->files->where('type', 'voiceMessage')->last();
+
+    }
+
     public function mentions() {
         return $this->hasMany(Mention::class);
     }
