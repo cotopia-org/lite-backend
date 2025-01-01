@@ -120,6 +120,11 @@ class RoomController extends Controller {
         $user = auth()->user();
 
 
+        if ($user->workspace()->find($room->workspace_id) === NULL) {
+            return error('Sorry youre not in this workspace');
+        }
+
+
         $before_room = $user->room_id;
         if ($user->status !== Constants::ONLINE) {
             return error('Not Online');
