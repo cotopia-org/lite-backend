@@ -61,11 +61,11 @@ class Contract extends Model {
             return 'expired';
         }
         if ($this->contractor_sign_status === 1 && $this->user_sign_status === 0) {
-            return 'waiting_admin_sign';
+            return 'waiting_user_sign';
         }
 
         if ($this->contractor_sign_status === 0 && $this->user_sign_status === 1) {
-            return 'waiting_user_sign';
+            return 'waiting_admin_sign';
         }
         if ($this->contractor_sign_status && $this->user_sign_status) {
             return 'signed';
