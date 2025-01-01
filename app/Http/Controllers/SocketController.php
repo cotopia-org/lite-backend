@@ -17,6 +17,7 @@ use App\Models\Seen;
 use App\Models\User;
 use App\Utilities\Constants;
 use App\Utilities\EventType;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class SocketController extends Controller {
@@ -138,10 +139,9 @@ class SocketController extends Controller {
 
         $lastAct = Act::where('user_id', $user->id)->where('type', 'connected')->orderBy('id', 'desc')->first();
 
-        if ($lastAct->created_at->gte(now())) {
+        if ($lastAct->created_at->gte(Carbon::make($request->now))) {
 
             logger('NOW ' . now()->toDateTimeString());
-            logger('CREATED AT ' . $lastAct->created_at->toDateTimeString());
             logger('MUST IGNORE');
             return TRUE;
         }
