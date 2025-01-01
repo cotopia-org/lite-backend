@@ -307,7 +307,7 @@ class UserController extends Controller {
         $contract = $user->activeContract();
 
 
-        return api(ScheduleResource::collection($user->schedules->where('contract_id', $contract->id)));
+        return api(ScheduleResource::collection($user->schedules->where('contract_id', $contract?->id)));
     }
 
 
