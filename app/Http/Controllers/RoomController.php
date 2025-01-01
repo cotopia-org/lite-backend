@@ -120,7 +120,7 @@ class RoomController extends Controller {
         $user = auth()->user();
 
 
-        if ($user->workspace()->find($room->workspace_id) === NULL) {
+        if ($user->workspaces()->find($room->workspace_id) === NULL) {
             return error('Sorry youre not in this workspace');
         }
 
