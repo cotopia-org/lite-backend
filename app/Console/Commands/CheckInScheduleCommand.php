@@ -56,10 +56,9 @@ class CheckInScheduleCommand extends Command {
     public function stop($user) {
 
 
-        logger("User $user->id STOP");
         $left = $user->left('Disconnected From checkInScheduleCommand stop Method');
         if ($left) {
-            logger("User $user->id STOP YES");
+            logger("User $user->id STOP");
 
             acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'time_ended', 'CheckInScheduleCommand@stop');
 
@@ -78,11 +77,9 @@ class CheckInScheduleCommand extends Command {
     public function start($user) {
 
 
-        logger("User $user->id START");
-
         $start = $user->joined($user->room, 'Connected From checkInScheduleCommand start Method');
         if ($start) {
-            logger("User $user->id START YES");
+            logger("User $user->id START");
 
             acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'time_started', 'CheckInScheduleCommand@start');
             if ($user->active_job_id !== NULL) {
