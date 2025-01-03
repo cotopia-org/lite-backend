@@ -317,7 +317,9 @@ class User extends Authenticatable {
                               'active_activity_id' => $act->id,
                           ]);
 
+            return TRUE;
         }
+        return FALSE;
 
     }
 
@@ -340,7 +342,9 @@ class User extends Authenticatable {
             $this->update([
                               'active_activity_id' => NULL
                           ]);
+            return TRUE;
         }
+        return FALSE;
 
     }
 

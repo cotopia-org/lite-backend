@@ -9,4 +9,5 @@ Schedule::command('app:check-users-in-socket-command')
 
 Schedule::command('telescope:prune')->hourly();
 Schedule::command('app:check-talks-command')->everyMinute();
+Schedule::command('app:check-in-schedule-command')->everyMinute(); // Check are users in their schedule or not
 
