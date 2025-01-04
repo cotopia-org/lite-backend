@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Permission;
+use App\Http\Resources\JobResource;
 use App\Http\Resources\TagResource;
+use App\Models\Job;
+use App\Models\Mention;
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TagController extends Controller {
     //TODO: has to check sanctum.
@@ -72,5 +76,16 @@ class TagController extends Controller {
         $tag->update($request->all());
 
         return api(TagResource::make($tag));
+    }
+
+
+    public function jobs(Tag $tag) {
+
+
+        $mentions = $tag->mentions;
+
+
+        return api(JobResource::collection(Job::find($mentions->pluck('job_id'))));
+
     }
 }

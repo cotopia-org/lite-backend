@@ -219,6 +219,9 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::delete('/{tag}', 'delete');
 
 
+        Route::get('/{tag}/jobs', 'jobs');
+
+
     });
 
 

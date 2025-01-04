@@ -149,17 +149,17 @@ class SocketController extends Controller {
         }
         //        logger($request->socket_status);
         if ($request->socket_status === 'enable') {
+            if ($user->active_job_id !== NULL) {
+                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'SocketController@disconnected');
 
+            }
             if ($user->room_id !== NULL) {
                 acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'time_ended', 'SocketController@disconnected');
             }
 
             acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'disconnected', 'SocketController@disconnected');
 
-            if ($user->active_job_id !== NULL) {
-                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'SocketController@disconnected');
 
-            }
             DisconnectUserJob::dispatch($user, $request->offline !== NULL, FALSE, 'Disconnected From SocketController Disconnected Method');
 
         }
