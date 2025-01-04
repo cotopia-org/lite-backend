@@ -37,7 +37,14 @@ class TagController extends Controller {
                            ]);
 
 
+        $tagUser = $tag->users()->find($request->user_id);
+
+        if ($tagUser !== NULL) {
+            return error('This user exists in this tag');
+        }
+
         $tag->users()->attach($request->user_id);
+
         return api(TagResource::make($tag));
 
 
