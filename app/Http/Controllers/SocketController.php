@@ -138,7 +138,8 @@ class SocketController extends Controller {
         $request = \request();
 
         $lastAct = Act::where('user_id', $user->id)->where('type', 'connected')->orderBy('id', 'desc')->first();
-
+        logger('created_at ' . $lastAct->created_at->toDateTimeString());
+        logger('now ' . Carbon::make($request->now)->toDateTimeString());
         if ($lastAct->created_at->gte(Carbon::make($request->now))) {
 
             logger('NOW ' . now()->toDateTimeString());
