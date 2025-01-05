@@ -38,7 +38,7 @@ Route::get('/avatar', function () {
 
 Route::get('/tester', function () {
 
-    $days = collect(json_decode('[{"day":0,"times":[{"start":"05:00","end":"10:30"},{"start":"15:00","end":"19:30"}]},{"day":1,"times":[{"start":"05:00","end":"10:30"},{"start":"15:00","end":"19:30"}]},{"day":2,"times":[{"start":"05:00","end":"10:30"},{"start":"15:00","end":"19:30"}]},{"day":3,"times":[{"start":"05:00","end":"10:30"},{"start":"15:00","end":"19:30"}]},{"day":6,"times":[{"start":"05:00","end":"10:30"},{"start":"15:00","end":"19:30"}]}]'));
+    $days = collect(json_decode('[{"day":0,"times":[{"start":"09:00","end":"19:00"}]},{"day":1,"times":[{"start":"09:00","end":"19:00"}]},{"day":2,"times":[{"start":"09:00","end":"19:00"}]},{"day":3,"times":[{"start":"09:00","end":"19:00"}]},{"day":6,"times":[{"start":"09:00","end":"19:00"}]}]'));
 
     $weekDays = [
         Carbon::SATURDAY  => 0,
@@ -56,7 +56,6 @@ Route::get('/tester', function () {
     for ($i = 0; $i < $maxDays; $i++) {
         $day = $firstOfThisMonth->copy()->addDays($i);
 
-
         $dayInSchedule = $days->where('day', $weekDays[$day->dayOfWeek])->first();
         if ($dayInSchedule !== NULL) {
             $dates[$day->toDateString()] = [
@@ -64,8 +63,10 @@ Route::get('/tester', function () {
             ];
             foreach ($dayInSchedule->times as $time) {
                 $dates[$day->toDateString()]['times'][] = [
-                    'start' => $day->copy()->setTimeFromTimeString($time->start),
-                    'end'   => $day->copy()->setTimeFromTimeString($time->end),
+                    'start' => $day
+                        ->copy()->timezone('Asia/Tehran')->setTimeFromTimeString($time->start)->timezone('UTC'),
+                    'end'   => $day
+                        ->copy()->timezone('Asia/Tehran')->setTimeFromTimeString($time->end)->timezone('UTC'),
                 ];
 
             }

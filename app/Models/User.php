@@ -419,8 +419,10 @@ class User extends Authenticatable {
                 ];
                 foreach ($dayInSchedule->times as $time) {
                     $dates[$day->toDateString()]['times'][] = [
-                        'start' => $day->copy()->setTimeFromTimeString($time->start),
-                        'end'   => $day->copy()->setTimeFromTimeString($time->end),
+                        'start' => $day
+                            ->copy()->timezone('Asia/Tehran')->setTimeFromTimeString($time->start)->timezone('UTC'),
+                        'end'   => $day
+                            ->copy()->timezone('Asia/Tehran')->setTimeFromTimeString($time->end)->timezone('UTC'),
                     ];
 
                 }
