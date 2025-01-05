@@ -105,12 +105,14 @@ class UserController extends Controller {
 
         $totalScheduleDuration = 0;
         $totalOverlapDuration = 0;
+        $data = [];
         foreach ($schedules as $schedule) {
 
             foreach ($schedule['times'] as $time) {
                 $scheduleStart = $time['start'];
                 $scheduleEnd = $time['end'];
                 $scheduleDuration = $scheduleStart->diffInMinutes($scheduleEnd);
+                $data[] = $scheduleDuration;
                 $totalScheduleDuration += $scheduleDuration;
 
                 $overlappingActivities = Activity::where('user_id', $user->id)
@@ -153,6 +155,7 @@ class UserController extends Controller {
                        "total_month_schedule"                => $totalScheduleDuration,
                        "total_month_activities_in_schedules" => $totalOverlapDuration,
                        "percentage"                          => round($fulfilledPercentage, 2),
+                       "data"                                => $data,
                    ]);
     }
 
