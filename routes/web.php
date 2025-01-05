@@ -54,7 +54,7 @@ Route::get('/tester', function () {
     $maxDays = $firstOfThisMonth->daysInMonth;
     $dates = [];
     for ($i = 0; $i < $maxDays; $i++) {
-        $day = $firstOfThisMonth->timezone('Asia/Tehran')->copy()->addDays($i);
+        $day = $firstOfThisMonth->copy()->addDays($i);
 
 
         $dayInSchedule = $days->where('day', $weekDays[$day->dayOfWeek])->first();
