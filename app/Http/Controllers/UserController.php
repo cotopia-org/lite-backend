@@ -105,7 +105,6 @@ class UserController extends Controller {
 
         $totalScheduleDuration = 0;
         $totalOverlapDuration = 0;
-        dd($schedules);
         foreach ($schedules as $schedule) {
 
             foreach ($schedule['times'] as $time) {
