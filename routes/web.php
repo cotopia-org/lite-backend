@@ -50,7 +50,7 @@ Route::get('/tester', function () {
         Carbon::FRIDAY    => 6,
     ];
     $firstOfThisMonth = today()->firstOfMonth();
-
+    dd($firstOfThisMonth->weeksInMonth);
     $maxDays = $firstOfThisMonth->daysInMonth;
     $dates = [];
     for ($i = 0; $i < $maxDays; $i++) {
@@ -59,7 +59,8 @@ Route::get('/tester', function () {
         $dayInSchedule = $days->where('day', $day->dayOfWeek)->first();
         if ($dayInSchedule !== NULL) {
             $dates[$day->toDateString()] = [
-                'date' => $day->toDateString(),
+                'date'    => $day->toDateString(),
+                'dayName' => $day->dayName,
             ];
             foreach ($dayInSchedule->times as $time) {
                 $dates[$day->toDateString()]['times'][] = [
@@ -76,17 +77,19 @@ Route::get('/tester', function () {
 
 
     }
+    $count = 0;
+    dd($dates);
     foreach ($dates as $date) {
         foreach ($date['times'] as $time) {
             $scheduleStart = $time['start'];
             $scheduleEnd = $time['end'];
             $scheduleDuration = $scheduleStart->diffInMinutes($scheduleEnd);
-            dd($scheduleDuration);
+            $count++;
         }
     }
 
 
-    dd($dates);
+    dd($count);
 
 
 });

@@ -405,7 +405,7 @@ class User extends Authenticatable {
         ];
         $firstOfThisMonth = today()->firstOfMonth();
 
-        $maxDays = $firstOfThisMonth->daysInMonth;
+        $maxDays = now()->day;
         $dates = [];
         for ($i = 0; $i < $maxDays; $i++) {
 
