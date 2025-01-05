@@ -101,40 +101,41 @@ class UserController extends Controller {
 
         //        $firstOfMonth = today()->firstOfMonth();
 
-        $schedules = $user->thisWeekSchedules();
+        $schedules = $user->thisMonthSchedules();
 
         $totalScheduleDuration = 0;
         $totalOverlapDuration = 0;
         foreach ($schedules as $schedule) {
 
+            foreach ($schedule['times'] as $time) {
+                $scheduleStart = $time['start'];
+                $scheduleEnd = $time['end'];
+                $scheduleDuration = $scheduleStart->diffInMinutes($scheduleEnd);
+                $totalScheduleDuration += $scheduleDuration;
 
-            $scheduleStart = $schedule['start'];
-            $scheduleEnd = $schedule['end'];
-            $scheduleDuration = $scheduleStart->diffInMinutes($scheduleEnd);
-            $totalScheduleDuration += $scheduleDuration;
-
-            $overlappingActivities = Activity::where('user_id', $user->id)
-                                             ->where(function ($query) use ($scheduleStart, $scheduleEnd) {
-                                                 $query
-                                                     ->whereBetween('join_at', [$scheduleStart, $scheduleEnd])
-                                                     ->orWhereBetween('left_at', [$scheduleStart, $scheduleEnd])
-                                                     ->orWhere(function ($subQuery) use ($scheduleStart, $scheduleEnd) {
-                                                         $subQuery
-                                                             ->where('join_at', '<=', $scheduleStart)
-                                                             ->where('left_at', '>=', $scheduleEnd);
-                                                     });
-                                             })->get();
+                $overlappingActivities = Activity::where('user_id', $user->id)
+                                                 ->where(function ($query) use ($scheduleStart, $scheduleEnd) {
+                                                     $query
+                                                         ->whereBetween('join_at', [$scheduleStart, $scheduleEnd])
+                                                         ->orWhereBetween('left_at', [$scheduleStart, $scheduleEnd])
+                                                         ->orWhere(function ($subQuery) use ($scheduleStart, $scheduleEnd) {
+                                                             $subQuery
+                                                                 ->where('join_at', '<=', $scheduleStart)
+                                                                 ->where('left_at', '>=', $scheduleEnd);
+                                                         });
+                                                 })->get();
 
 
-            foreach ($overlappingActivities as $activity) {
-                $activityStart = $activity->join_at;
-                $activityEnd = $activity->left_at;
+                foreach ($overlappingActivities as $activity) {
+                    $activityStart = $activity->join_at;
+                    $activityEnd = $activity->left_at;
 
-                $overlapStart = max($scheduleStart, $activityStart);
-                $overlapEnd = min($scheduleEnd, $activityEnd);
+                    $overlapStart = max($scheduleStart, $activityStart);
+                    $overlapEnd = min($scheduleEnd, $activityEnd);
 
-                if ($overlapStart < $overlapEnd) {
-                    $totalOverlapDuration += $overlapStart->diffInMinutes($overlapEnd);
+                    if ($overlapStart < $overlapEnd) {
+                        $totalOverlapDuration += $overlapStart->diffInMinutes($overlapEnd);
+                    }
                 }
             }
 
@@ -149,9 +150,9 @@ class UserController extends Controller {
         }
 
         return api([
-                       "total_week_schedules"               => $totalScheduleDuration,
-                       "total_week_activities_in_schedules" => $totalOverlapDuration,
-                       "percentage"                         => round($fulfilledPercentage, 2),
+                       "total_month_schedule"                => $totalScheduleDuration,
+                       "total_month_activities_in_schedules" => $totalOverlapDuration,
+                       "percentage"                          => round($fulfilledPercentage, 2),
                    ]);
     }
 

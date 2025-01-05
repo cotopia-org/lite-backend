@@ -384,10 +384,16 @@ class User extends Authenticatable {
         ];
     }
 
-    public function thisWeekSchedules() {
+    public function thisMonthSchedules() {
 
-        $schedules = $this->schedules;
-        $today = today()->subWeek();
+
+        $activeContract = $this->activeContract();
+
+        if ($activeContract === NULL) {
+            return [];
+        }
+        $days = collect($activeContract->schedule->days);
+
         $weekDays = [
             Carbon::SATURDAY  => 0,
             Carbon::SUNDAY    => 1,
@@ -397,55 +403,33 @@ class User extends Authenticatable {
             Carbon::THURSDAY  => 5,
             Carbon::FRIDAY    => 6,
         ];
+        $firstOfThisMonth = today()->firstOfMonth();
 
-        $todayWeekDay = $weekDays[$today->dayOfWeek];
-        $weekDates = [];
+        $maxDays = $firstOfThisMonth->daysInMonth;
+        $dates = [];
+        for ($i = 0; $i < $maxDays; $i++) {
+            $day = $firstOfThisMonth->timezone('Asia/Tehran')->copy()->addDays($i);
 
-        for ($i = 0; $i <= 7; $i++) {
-            if ($i === $todayWeekDay) {
-                $weekDates[$i] = [
-                    'date'      => $today,
-                    'scheduled' => FALSE
 
+            $dayInSchedule = $days->where('day', $weekDays[$day->dayOfWeek])->first();
+            if ($dayInSchedule !== NULL) {
+                $dates[$day->toDateString()] = [
+                    'date' => $day->toDateString(),
                 ];
-            }
-            if ($i > $todayWeekDay) {
-                $weekDates[$i] = [
-                    'date'      => $today->copy()->addDays($i - $todayWeekDay),
-                    'scheduled' => FALSE
-
-                ];
-            }
-
-            if ($i < $todayWeekDay) {
-                $weekDates[$i] = [
-                    'date'      => $today->copy()->subDays($todayWeekDay - $i),
-                    'scheduled' => FALSE,
-
-
-                ];
-            }
-
-
-        }
-
-        $data = [];
-        foreach ($schedules as $schedule) {
-            foreach ($schedule->days as $day) {
-                foreach ($day->times as $time) {
-
-                    $date = $weekDates[$day->day]['date']->timezone($schedule->timezone);
-                    $data[] = [
-                        'start' => $date->copy()->setTimeFromTimeString($time->start)->timezone('UTC'),
-                        'end'   => $date->copy()->setTimeFromTimeString($time->end)->timezone('UTC'),
+                foreach ($dayInSchedule->times as $time) {
+                    $dates[$day->toDateString()]['times'][] = [
+                        'start' => $day->copy()->setTimeFromTimeString($time->start),
+                        'end'   => $day->copy()->setTimeFromTimeString($time->end),
                     ];
 
                 }
 
 
             }
+
+
         }
-        return $data;
+        return $dates;
     }
 
     public function getScheduledHoursInWeek() {

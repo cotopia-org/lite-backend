@@ -38,12 +38,51 @@ Route::get('/avatar', function () {
 
 Route::get('/tester', function () {
 
-    foreach (Contract::all() as $contract) {
+    $days = collect(json_decode('[{"day":0,"times":[{"start":"05:00","end":"10:30"},{"start":"15:00","end":"19:30"}]},{"day":1,"times":[{"start":"05:00","end":"10:30"},{"start":"15:00","end":"19:30"}]},{"day":2,"times":[{"start":"05:00","end":"10:30"},{"start":"15:00","end":"19:30"}]},{"day":3,"times":[{"start":"05:00","end":"10:30"},{"start":"15:00","end":"19:30"}]},{"day":6,"times":[{"start":"05:00","end":"10:30"},{"start":"15:00","end":"19:30"}]}]'));
 
-        $contract->update(['content' => '[1,2,3,4,5,7]']);
+    $weekDays = [
+        Carbon::SATURDAY  => 0,
+        Carbon::SUNDAY    => 1,
+        Carbon::MONDAY    => 2,
+        Carbon::TUESDAY   => 3,
+        Carbon::WEDNESDAY => 4,
+        Carbon::THURSDAY  => 5,
+        Carbon::FRIDAY    => 6,
+    ];
+    $firstOfThisMonth = today()->firstOfMonth();
+
+    $maxDays = $firstOfThisMonth->daysInMonth;
+    $dates = [];
+    for ($i = 0; $i < $maxDays; $i++) {
+        $day = $firstOfThisMonth->timezone('Asia/Tehran')->copy()->addDays($i);
+
+
+        $dayInSchedule = $days->where('day', $weekDays[$day->dayOfWeek])->first();
+        if ($dayInSchedule !== NULL) {
+            $dates[$day->toDateString()] = [
+                'date' => $day->toDateString(),
+            ];
+            foreach ($dayInSchedule->times as $time) {
+                $dates[$day->toDateString()]['times'][] = [
+                    'start' => $day->copy()->setTimeFromTimeString($time->start),
+                    'end'   => $day->copy()->setTimeFromTimeString($time->end),
+                ];
+
+            }
+
+
+        }
+
+
+    }
+    foreach ($dates as $date) {
+        foreach ($date['times'] as $time) {
+            dd($time);
+        }
     }
 
-    return 'okay';
+
+    dd($dates);
 
 
 });
