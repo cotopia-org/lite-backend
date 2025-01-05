@@ -412,7 +412,7 @@ class User extends Authenticatable {
             $day = $firstOfThisMonth->copy()->addDays($i);
 
 
-            $dayInSchedule = $days->where('day', $weekDays[$day->dayOfWeek])->first();
+            $dayInSchedule = $days->where('day', $day->dayOfWeek)->first();
             if ($dayInSchedule !== NULL) {
                 $dates[$day->toDateString()] = [
                     'date' => $day->toDateString(),
