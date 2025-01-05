@@ -78,7 +78,10 @@ Route::get('/tester', function () {
     }
     foreach ($dates as $date) {
         foreach ($date['times'] as $time) {
-            dd($time);
+            $scheduleStart = $time['start'];
+            $scheduleEnd = $time['end'];
+            $scheduleDuration = $scheduleStart->diffInMinutes($scheduleEnd);
+            dd($scheduleDuration);
         }
     }
 
