@@ -27,7 +27,7 @@ class RoomController extends Controller {
 
         $room->update($request->all());
 
-//                File::syncFile($request->background_id, $room, 'background');
+        //                File::syncFile($request->background_id, $room, 'background');
         //        File::syncFile($request->logo_id, $room, 'logo');
 
 
@@ -126,8 +126,14 @@ class RoomController extends Controller {
 
 
         $before_room = $user->room_id;
+
         if ($user->status !== Constants::ONLINE) {
-            return error('Not Online');
+
+
+            if (!$user->isInSocket()) {
+                return error('Not Online');
+
+            }
         }
 
 
