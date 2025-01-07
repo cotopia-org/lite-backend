@@ -189,7 +189,7 @@ class ChatController extends Controller {
         $last_seen_message = $pivot->last_message_seen_id;
 
 
-        if ($date->gt($joined_at)) {
+        if ($date->lt($joined_at)) {
             $date = $joined_at;
         }
         $groupedMessages = $chat
