@@ -189,7 +189,7 @@ class ChatController extends Controller {
         $pivot = $chat->users()->find($user)->pivot;
         $joined_at = $pivot->created_at;
         $last_seen_message = $pivot->last_message_seen_id;
-        $messages = $chat
+        $groupedMessages = $chat
             ->messages()->orderBy('id', 'DESC')->with([
                                                           'links',
                                                           'mentions',
@@ -200,8 +200,13 @@ class ChatController extends Controller {
                 return $message->created_at->format('Y-m-d'); // Group by date
             });
 
-        dd($messages);
-        return api(MessageResource::collection($messages));
+
+        $data = [];
+
+        foreach ($groupedMessages as $date => $messages) {
+            $data[$date] = MessageResource::collection($messages);
+        }
+        return api($data);
     }
 
     public function messages(Chat $chat) {
