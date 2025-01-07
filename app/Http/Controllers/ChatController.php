@@ -177,6 +177,33 @@ class ChatController extends Controller {
                    ]);
     }
 
+
+    public function readMessages(Chat $chat) {
+
+    }
+
+    public function unreadMessages(Chat $chat) {
+        $user = auth()->user();
+
+
+        $pivot = $chat->users()->find($user)->pivot;
+        $joined_at = $pivot->created_at;
+        $last_seen_message = $pivot->last_message_seen_id;
+        $messages = $chat
+            ->messages()->orderBy('id', 'DESC')->with([
+                                                          'links',
+                                                          'mentions',
+                                                          'user',
+                                                          'files',
+                                                      ])->where('id', '>', $last_seen_message)
+            ->where('created_at', '>=', $joined_at)->get()->groupBy(function ($message) {
+                return $message->created_at->format('Y-m-d'); // Group by date
+            });
+
+        dd($messages);
+        return api(MessageResource::collection($messages));
+    }
+
     public function messages(Chat $chat) {
 
 

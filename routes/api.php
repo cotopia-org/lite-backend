@@ -166,7 +166,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::delete('/{chat}/', 'delete');
         Route::get('/{chat}/messages', 'messages');
         Route::get('/{chat}/sawMessages', 'sawMessages');
-        Route::get('/{chat}/unseenMessages', 'unseenMessages');
+        Route::get('/{chat}/unreadMessages', 'unreadMessages');
         Route::get('/{chat}/participants', 'participants');
         Route::get('/{chat}/pinnedMessages', 'pinnedMessages');
         Route::get('/{chat}/getLastUnSeenMessagePage', 'getLastUnSeenMessagePage');
