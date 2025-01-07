@@ -12,6 +12,7 @@ use App\Models\Message;
 use App\Models\User;
 use App\Models\Workspace;
 use App\Utilities\Constants;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -178,8 +179,35 @@ class ChatController extends Controller {
     }
 
 
-    public function readMessages(Chat $chat) {
+    public function readMessages(Chat $chat, Request $request) {
+        $user = auth()->user();
 
+
+        $date = $request->date ? Carbon::parse($request->date) : today()->subDays(7);
+        $pivot = $chat->users()->find($user)->pivot;
+        $joined_at = $pivot->created_at;
+
+
+        if ($date->gt($joined_at)) {
+            $date = $joined_at;
+        }
+        $groupedMessages = $chat
+            ->messages()->with([
+                                   'links',
+                                   'mentions',
+                                   'user',
+                                   'files',
+                               ])->where('created_at', '>=', $date)->get()->groupBy(function ($message) {
+                return $message->created_at->format('Y-m-d'); // Group by date
+            });
+
+
+        $data = [];
+
+        foreach ($groupedMessages as $date => $messages) {
+            $data[$date] = MessageResource::collection($messages);
+        }
+        return api($data);
     }
 
     public function unreadMessages(Chat $chat) {
@@ -190,13 +218,13 @@ class ChatController extends Controller {
         $joined_at = $pivot->created_at;
         $last_seen_message = $pivot->last_message_seen_id;
         $groupedMessages = $chat
-            ->messages()->orderBy('id', 'DESC')->with([
-                                                          'links',
-                                                          'mentions',
-                                                          'user',
-                                                          'files',
-                                                      ])->where('id', '>', $last_seen_message)
-            ->where('created_at', '>=', $joined_at)->get()->groupBy(function ($message) {
+            ->messages()->with([
+                                   'links',
+                                   'mentions',
+                                   'user',
+                                   'files',
+                               ])->where('id', '>', $last_seen_message)->where('created_at', '>=', $joined_at)->get()
+            ->groupBy(function ($message) {
                 return $message->created_at->format('Y-m-d'); // Group by date
             });
 
