@@ -136,8 +136,11 @@ class UserController extends Controller {
                     $overlapStart = max($scheduleStart, $activityStart);
                     $overlapEnd = min($scheduleEnd, $activityEnd);
 
-                    logger('Start: ' . $overlapStart);
-                    logger('End: ' . $overlapEnd);
+                    if ($user->id === 3) {
+                        logger('Start: ' . $overlapStart);
+                        logger('End: ' . $overlapEnd);
+                    }
+
 
                     if ($overlapStart <= $overlapEnd) {
                         $totalOverlapDuration += $overlapStart->diffInMinutes($overlapEnd);
