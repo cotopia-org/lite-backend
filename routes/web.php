@@ -38,6 +38,7 @@ Route::get('/avatar', function () {
 
 Route::get('/tester', function () {
 
+    dd(max(today(), today()->addDay()));
     $days = collect(json_decode('[{"day":0,"times":[{"start":"09:00","end":"19:00"}]},{"day":1,"times":[{"start":"09:00","end":"19:00"}]},{"day":2,"times":[{"start":"09:00","end":"19:00"}]},{"day":3,"times":[{"start":"09:00","end":"19:00"}]},{"day":6,"times":[{"start":"09:00","end":"19:00"}]}]'));
 
     $weekDays = [
