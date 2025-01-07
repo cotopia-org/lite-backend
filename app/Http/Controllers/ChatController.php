@@ -183,7 +183,7 @@ class ChatController extends Controller {
         $user = auth()->user();
 
 
-        $date = $request->date ? Carbon::parse($request->date) : today()->subDays(7);
+        $date = $request->date !== NULL ? Carbon::parse($request->date) : today()->subDays(7);
         $pivot = $chat->users()->find($user)->pivot;
         $joined_at = $pivot->created_at;
         $last_seen_message = $pivot->last_message_seen_id;
