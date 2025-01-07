@@ -393,6 +393,7 @@ class User extends Authenticatable {
             return [];
         }
         $days = collect($activeContract->schedule->days);
+        $schedule = $activeContract->schedule;
 
         $weekDays = [
             Carbon::SATURDAY  => 0,
@@ -421,9 +422,10 @@ class User extends Authenticatable {
                 foreach ($dayInSchedule->times as $time) {
                     $dates[$day->toDateString()]['times'][] = [
                         'start' => $day
-                            ->copy()->timezone('Asia/Tehran')->setTimeFromTimeString($time->start)->timezone('UTC'),
+                            ->copy()->timezone($schedule->timezone)->setTimeFromTimeString($time->start)
+                            ->timezone('UTC'),
                         'end'   => $day
-                            ->copy()->timezone('Asia/Tehran')->setTimeFromTimeString($time->end)->timezone('UTC'),
+                            ->copy()->timezone($schedule->timezone)->setTimeFromTimeString($time->end)->timezone('UTC'),
                     ];
 
                 }
