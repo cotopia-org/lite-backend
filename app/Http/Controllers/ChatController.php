@@ -186,6 +186,7 @@ class ChatController extends Controller {
         $date = $request->date ? Carbon::parse($request->date) : today()->subDays(7);
         $pivot = $chat->users()->find($user)->pivot;
         $joined_at = $pivot->created_at;
+        $last_seen_message = $pivot->last_message_seen_id;
 
 
         if ($date->gt($joined_at)) {
@@ -197,7 +198,8 @@ class ChatController extends Controller {
                                    'mentions',
                                    'user',
                                    'files',
-                               ])->where('created_at', '>=', $date)->get()->groupBy(function ($message) {
+                               ])->where('created_at', '>=', $date)->where('id', '<=', $last_seen_message)->get()
+            ->groupBy(function ($message) {
                 return $message->created_at->format('Y-m-d'); // Group by date
             });
 
