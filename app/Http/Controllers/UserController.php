@@ -139,7 +139,7 @@ class UserController extends Controller {
                     logger('Start: ' . $overlapStart);
                     logger('End: ' . $overlapEnd);
 
-                    if ($overlapStart < $overlapEnd) {
+                    if ($overlapStart <= $overlapEnd) {
                         $totalOverlapDuration += $overlapStart->diffInMinutes($overlapEnd);
                     }
                 }
