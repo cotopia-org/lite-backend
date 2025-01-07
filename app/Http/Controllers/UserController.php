@@ -112,7 +112,7 @@ class UserController extends Controller {
                 $scheduleStart = $time['start'];
                 $scheduleEnd = $time['end'];
                 $scheduleDuration = $scheduleStart->diffInMinutes($scheduleEnd);
-                $data[] = $scheduleDuration;
+                $data[] = $time;
                 $totalScheduleDuration += $scheduleDuration;
 
                 $overlappingActivities = Activity::where('user_id', $user->id)
