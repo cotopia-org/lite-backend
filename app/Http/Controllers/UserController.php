@@ -156,7 +156,6 @@ class UserController extends Controller
                             $totalOverlapDuration += $overlapStart->diffInMinutes($overlapEnd);
                         }
                     }
-                    $totalDayWorked++;
 
                 }
 
@@ -177,7 +176,7 @@ class UserController extends Controller
         $done = $totalOverlapDuration;
         $missing = $totalUntilNowDuration - $done;
         $remaining = $totalScheduleDuration - $totalUntilNowDuration;
-        $mustWorkPerDay = $remaining / (count($schedules) - $totalDayWorked);
+        $mustWorkPerDay = $remaining / (count($schedules) - 8);
 
 
         return api([
@@ -190,7 +189,7 @@ class UserController extends Controller
                        "data"                     => $data,
                        "total_days"               => count($schedules),
                        "mustWorkPerDay"           => $mustWorkPerDay,
-                       "totalDayWorked"           => $totalDayWorked,
+                       "totalDayWorked"           => 8,
                    ]);
     }
 
