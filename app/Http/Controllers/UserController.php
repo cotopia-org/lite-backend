@@ -108,13 +108,12 @@ class UserController extends Controller
         //        $firstOfMonth = today()->firstOfMonth();
 
         $schedules = $user->scheduleDates();
-        dd($schedules);
 
         $totalScheduleDuration = 0;
         $totalOverlapDuration = 0;
         $data = [];
-        foreach ($schedules as $schedule) {
-
+        foreach ($schedules as $date => $schedule) {
+            dd($date);
             foreach ($schedule['times'] as $time) {
                 $scheduleStart = $time['start'];
                 $scheduleEnd = $time['end'];
@@ -168,10 +167,12 @@ class UserController extends Controller
         }
 
         return api([
+                       "total_now_schedule"                  => $totalScheduleDuration,
                        "total_month_schedule"                => $totalScheduleDuration,
                        "total_month_activities_in_schedules" => $totalOverlapDuration,
                        "percentage"                          => round($fulfilledPercentage, 2),
                        "data"                                => $data,
+                       "total_days"                          => count($schedules),
                    ]);
     }
 
