@@ -25,6 +25,7 @@ use App\Models\Tag;
 use App\Models\User;
 use App\Models\Workspace;
 use App\Utilities\Constants;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -110,10 +111,13 @@ class UserController extends Controller
         $schedules = $user->scheduleDates();
 
         $totalScheduleDuration = 0;
+        $totalUntilNowDuration = 0;
         $totalOverlapDuration = 0;
+        $totalDayWorked = 0;
         $data = [];
         foreach ($schedules as $date => $schedule) {
-            dd($date);
+
+
             foreach ($schedule['times'] as $time) {
                 $scheduleStart = $time['start'];
                 $scheduleEnd = $time['end'];
@@ -121,58 +125,70 @@ class UserController extends Controller
                 $data[] = $time;
                 $totalScheduleDuration += $scheduleDuration;
 
-                $overlappingActivities = Activity::where('user_id', $user->id)
-                                                 ->where(function ($query) use ($scheduleStart, $scheduleEnd) {
-                                                     $query
-                                                         ->whereBetween('join_at', [$scheduleStart, $scheduleEnd])
-                                                         ->orWhereBetween('left_at', [$scheduleStart, $scheduleEnd])
-                                                         ->orWhere(function ($subQuery) use (
-                                                             $scheduleStart, $scheduleEnd
-                                                         ) {
-                                                             $subQuery
-                                                                 ->where('join_at', '<=', $scheduleStart)
-                                                                 ->where('left_at', '>=', $scheduleEnd);
-                                                         });
-                                                 })->get();
+                if (!Carbon::parse($date)->gt(now())) {
+                    $totalUntilNowDuration += $scheduleDuration;
+
+                    $overlappingActivities = Activity::where('user_id', $user->id)
+                                                     ->where(function ($query) use ($scheduleStart, $scheduleEnd) {
+                                                         $query
+                                                             ->whereBetween('join_at', [$scheduleStart, $scheduleEnd])
+                                                             ->orWhereBetween('left_at', [$scheduleStart, $scheduleEnd])
+                                                             ->orWhere(function ($subQuery) use (
+                                                                 $scheduleStart, $scheduleEnd
+                                                             ) {
+                                                                 $subQuery
+                                                                     ->where('join_at', '<=', $scheduleStart)
+                                                                     ->where('left_at', '>=', $scheduleEnd);
+                                                             });
+                                                     })->get();
 
 
-                foreach ($overlappingActivities as $activity) {
-                    $activityStart = $activity->join_at;
-                    $activityEnd = $activity->left_at;
+                    foreach ($overlappingActivities as $activity) {
+                        $activityStart = $activity->join_at;
+                        $activityEnd = $activity->left_at;
 
 
-                    $overlapStart = max($scheduleStart, $activityStart);
-                    $overlapEnd = min($scheduleEnd, $activityEnd);
-
-                    if ($user->id === 3) {
-                        logger('Start: ' . $overlapStart);
-                        logger('End: ' . $overlapEnd);
-                    }
+                        $overlapStart = max($scheduleStart, $activityStart);
+                        $overlapEnd = min($scheduleEnd, $activityEnd);
 
 
-                    if ($overlapStart < $overlapEnd) {
-                        $totalOverlapDuration += $overlapStart->diffInMinutes($overlapEnd);
+                        if ($overlapStart < $overlapEnd) {
+                            $totalDayWorked++;
+                            $totalOverlapDuration += $overlapStart->diffInMinutes($overlapEnd);
+                        }
                     }
                 }
+
+
             }
 
 
         }
 
-        if ($totalScheduleDuration === 0) {
+        if ($totalUntilNowDuration === 0) {
             $fulfilledPercentage = 0;
         } else {
-            $fulfilledPercentage = ($totalOverlapDuration / $totalScheduleDuration) * 100;
+            $fulfilledPercentage = ($totalOverlapDuration / $totalUntilNowDuration) * 100;
 
         }
 
+
+        $done = $totalOverlapDuration;
+        $missing = $totalUntilNowDuration - $done;
+        $remaining = $totalScheduleDuration - $totalUntilNowDuration;
+        $mustWorkPerDay = $remaining / (count($schedules) - $totalDayWorked);
+
+
         return api([
-                       "total_now_schedule"                  => $totalScheduleDuration,
-                       "total_month_schedule"                => $totalScheduleDuration,
-                       "total_month_activities_in_schedules" => $totalOverlapDuration,
-                       "percentage"                          => round($fulfilledPercentage, 2),
-                       "data"                                => $data,
-                       "total_days"                          => count($schedules),
+                       "total_until_now_schedule" => $totalUntilNowDuration,
+                       "total_schedule"           => $totalScheduleDuration,
+                       "done"                     => $done,
+                       "missing"                  => $missing,
+                       "remaining"                => $remaining,
+                       "percentage"               => round($fulfilledPercentage, 2),
+                       "data"                     => $data,
+                       "total_days"               => count($schedules),
+                       "mustWorkPerDay"           => $mustWorkPerDay,
                    ]);
     }
 
