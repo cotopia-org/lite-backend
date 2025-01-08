@@ -51,6 +51,7 @@ class User extends Authenticatable
         'livekit_connected',
         'active_job_id',
         'active_activity_id',
+        'time_started',
         //        'avatar'
     ];
 

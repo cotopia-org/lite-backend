@@ -29,20 +29,16 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class UserController extends Controller
-{
-    public function me()
-    {
+class UserController extends Controller {
+    public function me() {
         return api(UserResource::make(auth()->user()));
     }
 
-    public function settings()
-    {
+    public function settings() {
         return SettingResource::collection(auth()->user()->settings);
     }
 
-    public function mentionedJobs(Request $request)
-    {
+    public function mentionedJobs(Request $request) {
         $user = auth()->user();
 
 
@@ -68,8 +64,7 @@ class UserController extends Controller
 
     }
 
-    public function jobs(Request $request, $user)
-    {
+    public function jobs(Request $request, $user) {
         $firstOfMonth = now()->firstOfMonth();
 
 
@@ -98,8 +93,7 @@ class UserController extends Controller
         return api(UserJobResource::collection($jobs->get()));
     }
 
-    public function scheduleCommitment(Request $request, $user)
-    {
+    public function scheduleCommitment(Request $request, $user) {
         if ($user === "me") {
             $user = auth()->user();
         } else {
@@ -176,8 +170,7 @@ class UserController extends Controller
         }
 
 
-
-        $scheduleThreshold = 0.8;
+        $scheduleThreshold = 0.5;
         $totalDays = count($schedules);
         $done = $totalOverlapDuration;
         $missing = $totalUntilNowDuration - $done;
@@ -190,7 +183,7 @@ class UserController extends Controller
         $mustWorkPerDay = ((($totalScheduleDuration - $done) / ($totalDays - $totalDaysUntilNow)) * $scheduleThreshold) - $averageWorked;
 
 
-//        $mustWork = ($totalScheduleDuration - $done) / ($totalDays - $totalDaysUntilNow);
+        //        $mustWork = ($totalScheduleDuration - $done) / ($totalDays - $totalDaysUntilNow);
 
         return api([
                        "total_until_now_schedule" => $totalUntilNowDuration,
@@ -202,11 +195,11 @@ class UserController extends Controller
                        "total_days"               => $totalDays,
                        "mustWorkPerDay"           => $mustWorkPerDay,
                        "totalDaysUntilNow"        => $totalDaysUntilNow,
+                       "minimumWork"              => $totalScheduleDuration * $scheduleThreshold,
                    ]);
     }
 
-    public function tags(Request $request, $user)
-    {
+    public function tags(Request $request, $user) {
         if ($user === "me") {
             $user = auth()->user();
         } else {
@@ -220,8 +213,7 @@ class UserController extends Controller
         return api(TagResource::collection($tags->get()));
     }
 
-    public function search(Request $request)
-    {
+    public function search(Request $request) {
         //TODO: have to use meiliserach instead
         $search = $request->search;
         $users = User::where(function ($query) use ($search) {
@@ -232,8 +224,7 @@ class UserController extends Controller
         return api(UserMinimalResource::collection($users));
     }
 
-    public function updateCoordinates(Request $request)
-    {
+    public function updateCoordinates(Request $request) {
         $user = auth()->user();
         $request->validate([
                                "coordinates" => "required",
@@ -251,8 +242,7 @@ class UserController extends Controller
         return api($response);
     }
 
-    public function toggleMegaphone()
-    {
+    public function toggleMegaphone() {
         $user = auth()->user();
 
         $user->update([
@@ -267,8 +257,7 @@ class UserController extends Controller
         return api($response);
     }
 
-    public function unGhost()
-    {
+    public function unGhost() {
         $user = auth()->user();
         $user->update([
                           "status" => Constants::ONLINE,
@@ -279,8 +268,7 @@ class UserController extends Controller
         return api($response);
     }
 
-    public function update(Request $request)
-    {
+    public function update(Request $request) {
         $user = auth()->user();
         $user->update([
                           "name"               => $request->name ?? $user->name,
@@ -298,8 +286,7 @@ class UserController extends Controller
         return api($response);
     }
 
-    public function activities(Request $request)
-    {
+    public function activities(Request $request) {
         $user = auth()->user();
         $time_start = TRUE;
 
@@ -314,8 +301,7 @@ class UserController extends Controller
         if ($request->new) {
 
             return api([
-                           'minutes'    => $user->getTime(today(), today()->addDay(),
-                                                          $user->workspace_id)["sum_minutes"],
+                           'minutes'    => $user->getTime(today(), today()->addDay(), $user->workspace_id)["sum_minutes"],
                            'time_count' => $time_start
                        ]);
         }
@@ -325,8 +311,7 @@ class UserController extends Controller
 
     }
 
-    public function chats(Request $request)
-    {
+    public function chats(Request $request) {
         $user = auth()->user();
 
         return api(ChatResource::collection($user
@@ -342,37 +327,26 @@ class UserController extends Controller
                                                                                  ])->withCount([
                                                                                                    "messages" => function ($query) {
                                                                                                        $query
-                                                                                                           ->where("messages.id",
-                                                                                                                   ">",
-                                                                                                                   DB::raw("chat_user.last_message_seen_id"))
-                                                                                                           ->where("messages.created_at",
-                                                                                                                   ">=",
-                                                                                                                   DB::raw("chat_user.created_at"));
+                                                                                                           ->where("messages.id", ">", DB::raw("chat_user.last_message_seen_id"))
+                                                                                                           ->where("messages.created_at", ">=", DB::raw("chat_user.created_at"));
                                                                                                    },
-                                                                                                   "mentions" => function ($query) use
-                                                                                                   (
+                                                                                                   "mentions" => function ($query) use (
                                                                                                        $user
                                                                                                    ) {
                                                                                                        $query
-                                                                                                           ->where("mentions.message_id",
-                                                                                                                   ">",
-                                                                                                                   DB::raw("chat_user.last_message_seen_id"))
-                                                                                                           ->where("mentions.mentionable_type",
-                                                                                                                   User::class)
-                                                                                                           ->where("mentions.mentionable_id",
-                                                                                                                   $user->id);
+                                                                                                           ->where("mentions.message_id", ">", DB::raw("chat_user.last_message_seen_id"))
+                                                                                                           ->where("mentions.mentionable_type", User::class)
+                                                                                                           ->where("mentions.mentionable_id", $user->id);
                                                                                                    },
                                                                                                ])->get()
                                                 ->sortByDesc('lastMessage.created_at')));
     }
 
-    public function talks()
-    {
+    public function talks() {
         return api(TalkResource::collection(auth()->user()->talks));
     }
 
-    public function schedules($user)
-    {
+    public function schedules($user) {
         if ($user === "me") {
             $user = auth()->user();
         } else {
@@ -387,8 +361,7 @@ class UserController extends Controller
     }
 
 
-    public function payments($user)
-    {
+    public function payments($user) {
 
         if ($user === "me") {
             $user = auth()->user();
@@ -403,8 +376,7 @@ class UserController extends Controller
     }
 
 
-    public function contracts($user)
-    {
+    public function contracts($user) {
 
         if ($user === "me") {
             $user = auth()->user();
@@ -419,8 +391,7 @@ class UserController extends Controller
     }
 
 
-    public function beAfk()
-    {
+    public function beAfk() {
         $user = auth()->user();
         $user->update([
                           "status" => Constants::AFK,
@@ -429,16 +400,13 @@ class UserController extends Controller
 
 
         if ($user->room_id !== NULL) {
-            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'time_ended',
-                  'UserController@afk');
+            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'time_ended', 'UserController@afk');
         }
 
-        acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'disconnected',
-              'UserController@afk');
+        acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'disconnected', 'UserController@afk');
 
         if ($user->active_job_id !== NULL) {
-            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended',
-                  'UserController@afk');
+            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'UserController@afk');
 
         }
         $user->left('Disconnected for Afk in UserController@afk');
@@ -451,8 +419,7 @@ class UserController extends Controller
     }
 
 
-    public function beOnline()
-    {
+    public function beOnline() {
         $user = auth()->user();
 
         $user->update([
@@ -462,11 +429,9 @@ class UserController extends Controller
 
         $room = $user->room;
 
-        acted($user->id, $room->workspace_id, $room->id, $user->active_job_id, 'time_started',
-              'UserController@beOnline');
+        acted($user->id, $room->workspace_id, $room->id, $user->active_job_id, 'time_started', 'UserController@beOnline');
         if ($user->active_job_id !== NULL) {
-            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_started',
-                  'UserController@beOnline');
+            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_started', 'UserController@beOnline');
 
         }
         $user->joined($room, 'Connected From UserController beOnline Method');
