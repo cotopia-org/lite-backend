@@ -178,12 +178,18 @@ class UserController extends Controller
         }
 
 
+
         $scheduleThreshold = 0.8;
         $totalDays = count($schedules);
         $done = $totalOverlapDuration;
         $missing = $totalUntilNowDuration - $done;
         $remaining = $totalScheduleDuration - $totalUntilNowDuration;
-        $mustWorkPerDay = ((($totalScheduleDuration - $done) / ($totalDays - $totalDaysUntilNow)) * $scheduleThreshold) - 300;
+
+
+        $averageWorked = $totalOverlapDuration / $totalDaysUntilNow;
+
+
+        $mustWorkPerDay = ((($totalScheduleDuration - $done) / ($totalDays - $totalDaysUntilNow)) * $scheduleThreshold) - $averageWorked;
 
 
 //        $mustWork = ($totalScheduleDuration - $done) / ($totalDays - $totalDaysUntilNow);
