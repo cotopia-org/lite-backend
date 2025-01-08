@@ -189,6 +189,7 @@ class UserController extends Controller
                        "data"                     => $data,
                        "total_days"               => count($schedules),
                        "mustWorkPerDay"           => $mustWorkPerDay,
+                       "totalDayWorked"           => $totalDayWorked,
                    ]);
     }
 
