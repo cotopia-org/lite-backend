@@ -153,10 +153,11 @@ class UserController extends Controller
 
 
                         if ($overlapStart < $overlapEnd) {
-                            $totalDayWorked++;
                             $totalOverlapDuration += $overlapStart->diffInMinutes($overlapEnd);
                         }
                     }
+                    $totalDayWorked++;
+
                 }
 
 
