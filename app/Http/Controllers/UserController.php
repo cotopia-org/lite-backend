@@ -113,13 +113,13 @@ class UserController extends Controller
         $totalScheduleDuration = 0;
         $totalUntilNowDuration = 0;
         $totalOverlapDuration = 0;
-        $totalDayWorked = 0;
+        $totalDaysUntilNow = 0;
         $data = [];
         foreach ($schedules as $date => $schedule) {
 
 
             if (!Carbon::parse($date)->gt(now())) {
-                $totalDayWorked++;
+                $totalDaysUntilNow++;
             }
 
 
@@ -178,13 +178,15 @@ class UserController extends Controller
         }
 
 
-        $scheduleThreshold = 80;
+        $scheduleThreshold = 0.8;
         $totalDays = count($schedules);
         $done = $totalOverlapDuration;
         $missing = $totalUntilNowDuration - $done;
         $remaining = $totalScheduleDuration - $totalUntilNowDuration;
-        $mustWorkPerDay = ((($totalScheduleDuration - $done) / $totalDays - $totalDayWorked) * $scheduleThreshold) - $totalScheduleDuration / $totalDays;
+        $mustWorkPerDay = ((($totalScheduleDuration - $done) / $totalDays - $totalDaysUntilNow) * $scheduleThreshold) - $totalScheduleDuration / $totalDays;
 
+
+//        $mustWork = ($totalScheduleDuration - $done) / ($totalDays - $totalDaysUntilNow);
 
         return api([
                        "total_until_now_schedule" => $totalUntilNowDuration,
@@ -196,7 +198,7 @@ class UserController extends Controller
                        "data"                     => $data,
                        "total_days"               => $totalDays,
                        "mustWorkPerDay"           => $mustWorkPerDay,
-                       "totalDayWorked"           => $totalDayWorked,
+                       "totalDaysUntilNow"        => $totalDaysUntilNow,
                    ]);
     }
 
