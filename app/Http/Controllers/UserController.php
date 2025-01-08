@@ -114,7 +114,6 @@ class UserController extends Controller
         $totalUntilNowDuration = 0;
         $totalOverlapDuration = 0;
         $totalDaysUntilNow = 0;
-        $data = [];
         foreach ($schedules as $date => $schedule) {
 
 
@@ -127,7 +126,6 @@ class UserController extends Controller
                 $scheduleStart = $time['start'];
                 $scheduleEnd = $time['end'];
                 $scheduleDuration = $scheduleStart->diffInMinutes($scheduleEnd);
-                $data[] = $time;
                 $totalScheduleDuration += $scheduleDuration;
 
                 if (!Carbon::parse($date)->gt(now())) {
@@ -201,7 +199,6 @@ class UserController extends Controller
                        "missing"                  => $missing,
                        "remaining"                => $remaining,
                        "percentage"               => round($fulfilledPercentage, 2),
-                       "data"                     => $data,
                        "total_days"               => $totalDays,
                        "mustWorkPerDay"           => $mustWorkPerDay,
                        "totalDaysUntilNow"        => $totalDaysUntilNow,
