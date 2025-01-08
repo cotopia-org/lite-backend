@@ -103,6 +103,20 @@ class UserController extends Controller {
         //        $firstOfMonth = today()->firstOfMonth();
 
         $schedules = $user->scheduleDates();
+        if (count($schedules) < 1) {
+            return api([
+                           "total_until_now_schedule" => 0,
+                           "total_schedule"           => 0,
+                           "done"                     => 0,
+                           "missing"                  => 0,
+                           "remaining"                => 0,
+                           "percentage"               => 0,
+                           "total_days"               => 0,
+                           "mustWorkPerDay"           => 0,
+                           "totalDaysUntilNow"        => 0,
+                           "minimumWork"              => 0,
+                       ]);
+        }
 
         $totalScheduleDuration = 0;
         $totalUntilNowDuration = 0;
