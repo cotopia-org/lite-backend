@@ -43,8 +43,18 @@ class   ScheduleController extends Controller {
                                //                               "days.*"            => Rule::in($days),
 
                            ]);
+        if ($request->contract_id){
+            $contract = Contract::find($request->contract_id);
+
+            if ($contract->user_sign_status && $contract->contractor_sign_status) {
+                return error('You cant edit a signed contract');
+            }
+        }
 
         scheduleIsFitInContract($request->days, $request->contract_id);
+
+
+
         $timezone = $request->timezone ?? 'Asia/Tehran';
 
         foreach ($request->days as $day) {

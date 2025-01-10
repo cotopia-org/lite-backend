@@ -199,8 +199,6 @@ class ContractController extends Controller {
         }
 
 
-
-
         $res = ContractResource::make($contract);
 
         sendSocket(Constants::contractDeleted, $contract->workspace->channel, $res);
@@ -215,6 +213,10 @@ class ContractController extends Controller {
 
         $contract->update($request->except('user_id'));
 
+
+        if ($contract->user_sign_status && $contract->contractor_sign_status) {
+            return error('You cant edit a signed contract');
+        }
 
         $contract->update([
                               'user_sign_status'       => FALSE,
