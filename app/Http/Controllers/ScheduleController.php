@@ -88,7 +88,13 @@ class   ScheduleController extends Controller {
             return error('Sorry, you cant update schedule on signed contract');
         }
 
+        if ($request->contract_id){
+            $contract = Contract::find($request->contract_id);
 
+            if ($contract->user_sign_status && $contract->contractor_sign_status) {
+                return error('You cant edit a signed contract');
+            }
+        }
         scheduleIsFitInContract($request->days, $request->contract_id);
 
 

@@ -60,11 +60,11 @@ class Contract extends Model {
         if ($this->end_at->isPast()) {
             return 'expired';
         }
-        if ($this->contractor_sign_status === 1 && $this->user_sign_status === 0) {
+        if ($this->contractor_sign_status && !$this->user_sign_status) {
             return 'waiting_user_sign';
         }
 
-        if ($this->contractor_sign_status === 0 && $this->user_sign_status === 1) {
+        if (!$this->contractor_sign_status && $this->user_sign_status) {
             return 'waiting_admin_sign';
         }
         if ($this->contractor_sign_status && $this->user_sign_status) {
