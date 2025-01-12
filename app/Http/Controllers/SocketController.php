@@ -142,9 +142,7 @@ class SocketController extends Controller {
         $now = Carbon::make($request->now);
         if ($lastAct->created_at->gte($now)) {
 
-            logger('created_at ' . $lastAct->created_at->toDateTimeString());
-            logger('now ' . $now->toDateTimeString());
-            logger('MUST IGNORE');
+
             return TRUE;
         }
         //        logger($request->socket_status);
