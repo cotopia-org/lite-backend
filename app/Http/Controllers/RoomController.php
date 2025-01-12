@@ -36,6 +36,7 @@ class RoomController extends Controller {
 
         } else {
             sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
+            sendSocket(Constants::workspaceRoomUpdated, $room->workspace->channel, RoomResource::make($room));
 
         }
 
