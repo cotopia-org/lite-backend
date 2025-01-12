@@ -140,7 +140,7 @@ class WorkspaceController extends Controller {
     public function schedules(Workspace $workspace) {
 
 
-        $workspaceUsers = $workspace->users();
+        $workspaceUsers = $workspace->users;
 
         $schedules = [];
 
