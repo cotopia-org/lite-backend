@@ -140,8 +140,22 @@ class WorkspaceController extends Controller {
     public function schedules(Workspace $workspace) {
 
 
-        $workspaceUsers = DB::table('user_workspace')->where('workspace_id', $workspace->id)->get()->pluck('user_id');
+        $workspaceUsers = $workspace->users();
 
+        $schedules = [];
+
+        foreach ($workspaceUsers as $user) {
+            $activeContract = $user->activeContract();
+            if ($activeContract !== NULL) {
+                $schedule = $activeContract->schedule;
+                if ($schedule !== NULL) {
+                    $schedules[] = $schedule;
+
+                }
+
+            }
+        }
+        dd($schedules);
         $schedules = Schedule::whereIn('user_id', $workspaceUsers)->whereNotNull('contract_id')->with([
                                                                                                           'user' => [
                                                                                                               'schedules',
