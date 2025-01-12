@@ -142,12 +142,12 @@ class WorkspaceController extends Controller {
 
         $workspaceUsers = DB::table('user_workspace')->where('workspace_id', $workspace->id)->get()->pluck('user_id');
 
-        $schedules = Schedule::whereIn('user_id', $workspaceUsers)->with([
-                                                                             'user' => [
-                                                                                 'schedules',
-                                                                                 'avatar'
-                                                                             ]
-                                                                         ])->get();
+        $schedules = Schedule::whereIn('user_id', $workspaceUsers)->whereNotNull('contract_id')->with([
+                                                                                                          'user' => [
+                                                                                                              'schedules',
+                                                                                                              'avatar'
+                                                                                                          ]
+                                                                                                      ])->get();
 
 
         return api(ScheduleResource::collection($schedules));
