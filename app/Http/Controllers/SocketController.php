@@ -153,7 +153,7 @@ class SocketController extends Controller {
                 acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'SocketController@disconnected');
 
             }
-            if ($user->room_id !== NULL) {
+            if ($user->active_activity_id !== NULL) {
                 //TODO: must change to if time started.
                 acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'time_ended', 'SocketController@disconnected');
             }
