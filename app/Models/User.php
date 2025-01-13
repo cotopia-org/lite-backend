@@ -124,7 +124,7 @@ class User extends Authenticatable {
 
     public function isInSocket() {
         $socket_users = getSocketUsers();
-        $socket_user = $socket_users->where('username', $this->username)->first();
+        $socket_user = $socket_users->where('socket_id', $this->socket_id)->first();
 
         return $socket_user !== NULL;
     }
