@@ -97,10 +97,10 @@ function getSocketUsers()
     }
 }
 
-function userJoinedToRoomEmit($user_id, $room_id)
+function userJoinedToRoomEmit($socket_id, $room_id)
 {
     Redis::publish('joined', json_encode([
-                                             'user_id' => $user_id,
+                                             'socket_id' => $socket_id,
                                              'room_id' => $room_id
                                          ]));
 

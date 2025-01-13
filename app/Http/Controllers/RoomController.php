@@ -183,7 +183,7 @@ class RoomController extends Controller {
         ]);
 
 
-        userJoinedToRoomEmit($user->id, $room->id);
+        userJoinedToRoomEmit($user->socket_id, $room->id);
 
 
         if ($time_start) {

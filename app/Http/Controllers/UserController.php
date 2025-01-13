@@ -436,12 +436,16 @@ class UserController extends Controller {
     public function beOnline() {
         $user = auth()->user();
 
+        if ($user->status !== Constants::AFK) {
+            return error('User must be afk first.');
+        }
         $user->update([
                           "status" => Constants::ONLINE,
                       ]);
         $response = UserMinimalResource::make($user);
 
         $room = $user->room;
+
 
         acted($user->id, $room->workspace_id, $room->id, $user->active_job_id, 'time_started', 'UserController@beOnline');
         if ($user->active_job_id !== NULL) {
