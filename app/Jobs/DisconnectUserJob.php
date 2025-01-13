@@ -34,7 +34,7 @@ class DisconnectUserJob implements ShouldQueue {
             sleep(15);
             $socket_users = getSocketUsers();
 
-            $socket_user = $socket_users->where('username', $user->username)->first();
+            $socket_user = $socket_users->where('socket_id', $user->socket_id)->first();
             if ($socket_user === NULL) {
 
                 self::dispatch($user, TRUE, FALSE, $this->data);
