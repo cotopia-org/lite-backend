@@ -98,7 +98,7 @@ class UserController extends Controller
         return api(UserJobResource::collection($jobs->get()));
     }
 
-    public function scheduleCommitment(Request $request, $user)
+    public function scheduleCommitment($user)
     {
         if ($user === "me") {
             $user = auth()->user();
@@ -106,121 +106,8 @@ class UserController extends Controller
             $user = User::findOrFail($user);
         }
 
-        //        $firstOfMonth = today()->firstOfMonth();
 
-        $schedules = $user->scheduleDates();
-        if (count($schedules) < 1) {
-            return api([
-                           "total_until_now_schedule" => 0,
-                           "total_schedule"           => 0,
-                           "done"                     => 0,
-                           "missing"                  => 0,
-                           "remaining"                => 0,
-                           "percentage"               => 0,
-                           "total_days"               => 0,
-                           "mustWorkPerDay"           => 0,
-                           "totalDaysUntilNow"        => 0,
-                           "minimumWork"              => 0,
-                       ]);
-        }
-
-        $totalScheduleDuration = 0;
-        $totalUntilNowDuration = 0;
-        $totalOverlapDuration = 0;
-        $totalDaysUntilNow = 0;
-        foreach ($schedules as $date => $schedule) {
-
-
-            if (!Carbon::parse($date)->gt(now())) {
-                $totalDaysUntilNow++;
-            }
-
-
-            foreach ($schedule['times'] as $time) {
-                $scheduleStart = $time['start'];
-                $scheduleEnd = $time['end'];
-                $scheduleDuration = $scheduleStart->diffInMinutes($scheduleEnd);
-                $totalScheduleDuration += $scheduleDuration;
-
-                if (!Carbon::parse($date)->gt(now())) {
-                    $totalUntilNowDuration += $scheduleDuration;
-
-                    $overlappingActivities = Activity::where('user_id', $user->id)
-                                                     ->where(function ($query) use ($scheduleStart, $scheduleEnd) {
-                                                         $query
-                                                             ->whereBetween('join_at', [$scheduleStart, $scheduleEnd])
-                                                             ->orWhereBetween('left_at', [$scheduleStart, $scheduleEnd])
-                                                             ->orWhere(function ($subQuery) use (
-                                                                 $scheduleStart, $scheduleEnd
-                                                             ) {
-                                                                 $subQuery
-                                                                     ->where('join_at', '<=', $scheduleStart)
-                                                                     ->where('left_at', '>=', $scheduleEnd);
-                                                             });
-                                                     })->get();
-
-
-                    foreach ($overlappingActivities as $activity) {
-                        $activityStart = $activity->join_at;
-                        $activityEnd = $activity->left_at;
-
-
-                        $overlapStart = max($scheduleStart, $activityStart);
-                        $overlapEnd = min($scheduleEnd, $activityEnd);
-
-
-                        if ($overlapStart < $overlapEnd) {
-                            $totalOverlapDuration += $overlapStart->diffInMinutes($overlapEnd);
-                        }
-                    }
-
-                }
-
-
-            }
-
-
-        }
-
-        if ($totalUntilNowDuration === 0) {
-            $fulfilledPercentage = 0;
-        } else {
-            $fulfilledPercentage = ($totalOverlapDuration / $totalUntilNowDuration) * 100;
-
-        }
-
-
-        $scheduleThreshold = 0.5;
-        $totalDays = count($schedules);
-        $done = $totalOverlapDuration;
-        $missing = $totalUntilNowDuration - $done;
-        $remaining = $totalScheduleDuration - $totalUntilNowDuration;
-
-
-        $averageWorked = $totalOverlapDuration / $totalDaysUntilNow;
-
-
-//        $mustWorkPerDay = ((($totalScheduleDuration - $done) / ($totalDays - $totalDaysUntilNow)) * $scheduleThreshold) - $averageWorked;
-
-
-        $mustWorkPerDay = ((($totalScheduleDuration * $scheduleThreshold) - $totalOverlapDuration) / ($totalDays - $totalDaysUntilNow)) - $averageWorked;
-
-
-        //        $mustWork = ($totalScheduleDuration - $done) / ($totalDays - $totalDaysUntilNow);
-
-        return api([
-                       "total_until_now_schedule" => $totalUntilNowDuration,
-                       "total_schedule"           => $totalScheduleDuration,
-                       "done"                     => $done,
-                       "missing"                  => $missing,
-                       "remaining"                => $remaining,
-                       "percentage"               => round($fulfilledPercentage, 2),
-                       "total_days"               => $totalDays,
-                       "mustWorkPerDay"           => $mustWorkPerDay,
-                       "totalDaysUntilNow"        => $totalDaysUntilNow,
-                       "minimumWork"              => $totalScheduleDuration * $scheduleThreshold,
-                       "average"                  => $averageWorked,
-                   ]);
+        return api($user->calculateCommitment());
     }
 
     public function tags(Request $request, $user)
@@ -484,14 +371,20 @@ class UserController extends Controller
         $room = $user->room;
 
 
-        acted($user->id, $room->workspace_id, $room->id, $user->active_job_id, 'time_started',
-              'UserController@beOnline');
-        if ($user->active_job_id !== NULL) {
-            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_started',
-                  'UserController@beOnline');
+        if ($user->activeContract() !== NULL) {
+            if ($user->activeContract()->in_schedule && isNowInUserSchedule($user->activeContract()->schedule)) {
 
+                acted($user->id, $room->workspace_id, $room->id, $user->active_job_id, 'time_started',
+                      'UserController@beOnline');
+                if ($user->active_job_id !== NULL) {
+                    acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_started',
+                          'UserController@beOnline');
+
+                }
+                $user->joined($room, 'Connected From UserController beOnline Method');
+
+            }
         }
-        $user->joined($room, 'Connected From UserController beOnline Method');
 
 
         sendSocket(Constants::userUpdated, $user->room->channel, $response);
