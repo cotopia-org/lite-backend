@@ -544,9 +544,10 @@ class User extends Authenticatable
 
         $activeContract = $this->activeContract();
 
-        if ($activeContract === NULL) {
+        if ($activeContract === NULL || $activeContract->schedule === NULL) {
             return [];
         }
+
         $days = collect($activeContract->schedule->days);
         $schedule = $activeContract->schedule;
 
