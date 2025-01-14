@@ -226,7 +226,7 @@ class WorkspaceController extends Controller
         }
 
 
-        return api(collect($commitments)->sortDesc('percentage')->values()->toArray());
+        return api(collect($commitments)->sortByDesc('percentage')->values()->toArray());
 
 
     }
