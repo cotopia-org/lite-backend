@@ -218,7 +218,7 @@ class WorkspaceController extends Controller
 
 
             $commitments[] = [
-                'user'       => UserMinimalResource::collection($user),
+                'user'       => UserMinimalResource::make($user),
                 'percentage' => $commitment['percentage']
             ];
 
