@@ -210,7 +210,13 @@ class WorkspaceController extends Controller
         $commitments = [];
 
         foreach ($users as $user) {
-            if ($user->activeContract() === NULL) {
+            $activeContract = $user->activeContract();
+            if ($activeContract === NULL) {
+
+                continue;
+            }
+            if (!$activeContract->in_schedule) {
+
                 continue;
             }
 
