@@ -219,6 +219,7 @@ class UserController extends Controller
                        "mustWorkPerDay"           => $mustWorkPerDay,
                        "totalDaysUntilNow"        => $totalDaysUntilNow,
                        "minimumWork"              => $totalScheduleDuration * $scheduleThreshold,
+                       "average"                  => $averageWorked,
                    ]);
     }
 
