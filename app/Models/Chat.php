@@ -19,6 +19,7 @@ class Chat extends Model {
         'workspace_id',
         'user_id',
         'deleted_at',
+        'folder_id',
     ];
     protected $appends = [
         'channel'
@@ -94,6 +95,10 @@ class Chat extends Model {
     }
 
 
+    public function avatar()
+    {
+        return $this->morphOne(File::class, 'fileable');
+    }
     public function sawMessages($user) {
 
         $pivot = $this->users->find($user->id)->pivot;
@@ -124,9 +129,13 @@ class Chat extends Model {
     }
 
     public function users() {
-        return $this->belongsToMany(User::class)->withPivot('role', 'last_message_seen_id', 'muted')->withTimestamps();
+        return $this->belongsToMany(User::class)->withPivot('role', 'last_message_seen_id', 'muted','folder_id')->withTimestamps();
     }
 
+
+    public function folder() {
+        return $this->belongsTo(Folder::class);
+    }
 
     public function workspace() {
         return $this->belongsTo(Workspace::class);

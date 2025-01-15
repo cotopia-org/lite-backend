@@ -9,10 +9,8 @@ use App\Utilities\Constants;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
-class TalkController extends Controller
-{
-    public function talk(Request $request)
-    {
+class TalkController extends Controller {
+    public function talk(Request $request) {
         $owner = auth()->user();
 
 
@@ -20,6 +18,7 @@ class TalkController extends Controller
 
         $talk = $owner->talks()->create([
                                             'user_id' => $user->id,
+                                            'type'    => $request->type,
                                         ]);
 
 
@@ -34,8 +33,7 @@ class TalkController extends Controller
     /**
      * @throws \Exception
      */
-    public function respond(Talk $talk, Request $request)
-    {
+    public function respond(Talk $talk, Request $request) {
 
         $request->validate([
                                'response' => Rule::in([

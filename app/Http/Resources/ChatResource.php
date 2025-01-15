@@ -33,6 +33,7 @@ class ChatResource extends JsonResource {
             'unseens'            => $this->messages_count,
             'mentioned_messages' => $this->mentions_count,
             'muted'              => $chat_user === NULL ? FALSE : $chat_user->pivot->muted,
+            'folder_id'          => $chat_user?->pivot->folder_id,
             'created_at'         => $this->created_at->timestamp
 
 

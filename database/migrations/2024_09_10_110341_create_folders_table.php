@@ -9,14 +9,12 @@ return new class extends Migration {
      * Run the migrations.
      */
     public function up(): void {
-        Schema::create('talks', function (Blueprint $table) {
+        Schema::create('folders', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('owner_id')->constrained('users');
-            $table->foreignId('user_id')->constrained('users');
-
-            $table->string('response')->nullable();
-            $table->string('type')->nullable();
+            $table->string('title');
+            $table->foreignId('user_id')->constrained()->onDelete('NO ACTION')->onUpdate('NO ACTION');
+            $table->foreignId('workspace_id')->constrained()->onDelete('NO ACTION')->onUpdate('NO ACTION');
 
 
             $table->timestamps();
@@ -27,6 +25,6 @@ return new class extends Migration {
      * Reverse the migrations.
      */
     public function down(): void {
-        Schema::dropIfExists('talks');
+        Schema::dropIfExists('folders');
     }
 };

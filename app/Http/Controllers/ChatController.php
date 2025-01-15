@@ -285,6 +285,24 @@ class ChatController extends Controller {
     }
 
 
+    public function setFolder(Chat $chat, Request $request) {
+        $user = auth()->user();
+
+        $chatUser = DB::table('chat_user')->where('user_id', $user->id)->where('chat_id', $chat->id)->first();
+
+        if ($chatUser === NULL) {
+            return error('You are not participants of this chat');
+        }
+
+
+        $chatUser->update([
+                              'folder_id' => $request->folder_id
+                          ]);
+
+        return api(TRUE);
+
+    }
+
     public function get(Chat $chat) {
 
 

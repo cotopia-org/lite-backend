@@ -15,6 +15,7 @@ return new class extends Migration {
 
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('chat_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('folder_id')->nullable()->constrained()->onDelete('cascade')->onUpdate('cascade');
 
             $table->string('role')->default('member');
             $table->integer('last_message_seen_id')->default(0);

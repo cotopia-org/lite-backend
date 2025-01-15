@@ -174,6 +174,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/{chat}/{message}/getMessagePage', 'getMessagePage');
 
         Route::get('/{chat}/toggleMute', 'toggleMute');
+        Route::get('/{chat}/setFolder', 'setFolder');
 
 
     })->middleware('checkIsUserOnline');
