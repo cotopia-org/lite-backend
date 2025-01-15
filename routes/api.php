@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\FolderController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\MessageController;
@@ -74,6 +75,8 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/settings', 'settings');
         Route::get('/beAfk', 'beAfk');
         Route::get('/beOnline', 'beOnline');
+        Route::get('/folders', 'folders');
+        Route::get('/talks', 'talks');
     });
 
     Route::controller(WorkspaceController::class)->prefix('workspaces')->group(function () {
@@ -203,6 +206,11 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::post('/', 'create');
         Route::get('/{payment}', 'get');
         Route::put('/{payment}', 'update');
+
+    });
+
+    Route::controller(FolderController::class)->prefix('payments')->group(function () {
+
 
     });
 
