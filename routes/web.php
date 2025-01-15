@@ -38,59 +38,15 @@ Route::get('/avatar', function () {
 
 Route::get('/tester', function () {
 
-    dd(max(today(), today()->addDay()));
-    $days = collect(json_decode('[{"day":0,"times":[{"start":"09:00","end":"19:00"}]},{"day":1,"times":[{"start":"09:00","end":"19:00"}]},{"day":2,"times":[{"start":"09:00","end":"19:00"}]},{"day":3,"times":[{"start":"09:00","end":"19:00"}]},{"day":6,"times":[{"start":"09:00","end":"19:00"}]}]'));
-
-    $weekDays = [
-        Carbon::SATURDAY  => 0,
-        Carbon::SUNDAY    => 1,
-        Carbon::MONDAY    => 2,
-        Carbon::TUESDAY   => 3,
-        Carbon::WEDNESDAY => 4,
-        Carbon::THURSDAY  => 5,
-        Carbon::FRIDAY    => 6,
-    ];
-    $firstOfThisMonth = today()->firstOfMonth();
-    dd($firstOfThisMonth->weeksInMonth);
-    $maxDays = $firstOfThisMonth->daysInMonth;
-    $dates = [];
-    for ($i = 0; $i < $maxDays; $i++) {
-        $day = $firstOfThisMonth->copy()->addDays($i);
-
-        $dayInSchedule = $days->where('day', $day->dayOfWeek)->first();
-        if ($dayInSchedule !== NULL) {
-            $dates[$day->toDateString()] = [
-                'date'    => $day->toDateString(),
-                'dayName' => $day->dayName,
-            ];
-            foreach ($dayInSchedule->times as $time) {
-                $dates[$day->toDateString()]['times'][] = [
-                    'start' => $day
-                        ->copy()->timezone('Asia/Tehran')->setTimeFromTimeString($time->start)->timezone('UTC'),
-                    'end'   => $day
-                        ->copy()->timezone('Asia/Tehran')->setTimeFromTimeString($time->end)->timezone('UTC'),
-                ];
-
-            }
-
-
-        }
-
-
-    }
-    $count = 0;
-    dd($dates);
-    foreach ($dates as $date) {
-        foreach ($date['times'] as $time) {
-            $scheduleStart = $time['start'];
-            $scheduleEnd = $time['end'];
-            $scheduleDuration = $scheduleStart->diffInMinutes($scheduleEnd);
-            $count++;
-        }
+    foreach (\App\Models\Workspace::find(1)->users() as $user) {
+        \App\Models\Folder::create([
+                                       'user_id'      => $user->id,
+                                       'workspace_id' => 1,
+                                       'title'        => 'Jobs'
+                                   ]);
     }
 
-
-    dd($count);
+    dd('Done');
 
 
 });
