@@ -16,10 +16,11 @@ class TalkController extends Controller {
 
         $user = User::findOrFail($request->user_id);
 
-        $talk = $owner->talks()->create([
-                                            'user_id' => $user->id,
-                                            'type'    => $request->type,
-                                        ]);
+        $talk = Talk::create([
+                                 'user_id'  => $user->id,
+                                 'owner_id' => $user->id,
+                                 'type'     => $request->type,
+                             ]);
 
 
         $response = TalkResource::make($talk);
