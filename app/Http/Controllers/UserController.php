@@ -168,7 +168,7 @@ class UserController extends Controller {
         $user = auth()->user();
 
 
-        return FolderResource::collection($user->folders);
+        return api(FolderResource::collection($user->folders));
 
 
     }
