@@ -395,9 +395,15 @@ class User extends Authenticatable {
         return $chats;
     }
 
+
+    public function folders() {
+        return $this->hasMany(Folder::class);
+    }
+
     public function chats() {
-        return $this->belongsToMany(Chat::class)->withTimestamps()
-                    ->withPivot('role', 'last_message_seen_id', 'muted', 'folder_id');
+        return $this
+            ->belongsToMany(Chat::class)->withTimestamps()
+            ->withPivot('role', 'last_message_seen_id', 'muted', 'folder_id');
     }
 
     public function updateActiveJob($job_id = NULL) {
