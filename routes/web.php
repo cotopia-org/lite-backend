@@ -38,7 +38,7 @@ Route::get('/avatar', function () {
 
 Route::get('/tester', function () {
 
-    foreach (\App\Models\Workspace::find(1)->users() as $user) {
+    foreach (\App\Models\Workspace::find(1)->users as $user) {
         \App\Models\Folder::create([
                                        'user_id'      => $user->id,
                                        'workspace_id' => 1,

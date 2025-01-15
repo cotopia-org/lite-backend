@@ -17,8 +17,8 @@ class TalkController extends Controller {
         $user = User::findOrFail($request->user_id);
 
         $talk = $owner->talks()->create([
-                                            'user_id' => $user->id,
-                                            'type'    => $request->type,
+                                            'owner_id' => $user->id,
+                                            'type'     => $request->type,
                                         ]);
 
 
