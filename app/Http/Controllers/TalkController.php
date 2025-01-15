@@ -18,7 +18,7 @@ class TalkController extends Controller {
 
         $talk = Talk::create([
                                  'user_id'  => $user->id,
-                                 'owner_id' => $user->id,
+                                 'owner_id' => $owner->id,
                                  'type'     => $request->type,
                              ]);
 
