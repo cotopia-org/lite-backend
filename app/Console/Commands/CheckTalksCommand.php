@@ -53,6 +53,7 @@ class CheckTalksCommand extends Command
             }
 
             sendSocket(Constants::talkExpired, $talk->owner->socket_id, TalkResource::make($talk));
+            sendSocket(Constants::talkExpired, $talk->user->socket_id, TalkResource::make($talk));
 
         }
     }
