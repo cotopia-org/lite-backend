@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Permission;
+use App\Events\ChatCreated;
 use App\Events\JobCreated;
 use App\Http\Resources\JobResource;
 use App\Models\Job;
@@ -242,6 +243,7 @@ class JobController extends Controller
 
             $jobFolder = $user->folders()->where('title', 'Jobs')->first();
             $job->chat->users()->attach($user->id, ['role' => 'member', ['folder_id' => $jobFolder->id]]);
+            event(new ChatCreated($job->chat));
 
 
         }
