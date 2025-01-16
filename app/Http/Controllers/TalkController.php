@@ -17,6 +17,10 @@ class TalkController extends Controller {
 
         $user = User::findOrFail($request->user_id);
 
+        if ($user->status !== Constants::ONLINE) {
+            return error('User is not online');
+        }
+
         $talk = Talk::create([
                                  'user_id'  => $user->id,
                                  'owner_id' => $owner->id,
