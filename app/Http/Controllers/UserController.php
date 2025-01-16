@@ -175,6 +175,9 @@ class UserController extends Controller {
 
     public function unGhost() {
         $user = auth()->user();
+        if ($user->status === Constants::ONLINE) {
+            return error('You are online');
+        }
         $user->update([
                           "status" => Constants::ONLINE,
                       ]);
