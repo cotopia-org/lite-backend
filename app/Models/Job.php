@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use App\Events\ChatCreated;
 use App\Utilities\Constants;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Job extends Model {
+class Job extends Model
+{
     use HasFactory;
 
     public const STATUSES = [
@@ -26,7 +28,7 @@ class Job extends Model {
         'estimate',
         'start_at',
         'duration',
-        'message_id',
+        'chat_id',
         'job_id',
         'level',
         'old',
@@ -38,42 +40,18 @@ class Job extends Model {
         'start_at' => 'datetime',
     ];
 
-    protected static function booted(): void {
 
-
-        static::updated(function (Job $job) {
-            $user = $job->users->first();
-            $status = NULL;
-            if ($job->status === Constants::IN_PROGRESS) {
-                $status = 'In Progress 🔵';
-            }
-            if ($job->status === Constants::PAUSED) {
-                $status = 'Paused 🟡';
-            }
-            if ($job->status === Constants::COMPLETED) {
-                $status = 'Completed 🟢';
-            }
-
-
-            $text = self::getMessageText($user, $job);
-
-
-            updateMesssage(Message::find($job->message_id), $text);
-
-
-        });
-    }
-
-
-    public static function getMessageText($user, $job) {
+    public static function getMessageText($user, $job)
+    {
         $nl = PHP_EOL;
 
 
-        return "Job #$job->id by @$user->username$nl**$job->title**$nl $job->description $nl In Progress 🔵$nl $job->estimate hrs ⏰";
+        return "'$job->title' by @$user->username $nl  $job->description";
 
     }
 
-    public function sendMessage($user) {
+    public function sendMessage($user)
+    {
         $text = self::getMessageText($user, $this);
 
         $msg = sendMessage($text, 39);
@@ -88,11 +66,47 @@ class Job extends Model {
         });
     }
 
-    public function jobs() {
+
+    public function chat()
+    {
+        return $this->belongsTo(Chat::class);
+    }
+
+
+    public function createChat()
+    {
+
+
+        $owner = $this->users->first();
+        $chat = Chat::create([
+                                 'title'        => $this->title,
+                                 'active'       => TRUE,
+                                 'type'         => Constants::GROUP,
+                                 'workspace_id' => $this->workspace_id,
+                                 'user_id'      => $owner->id,
+                             ]);
+
+
+        $this->update([
+                          'chat_id' => $chat->id
+                      ]);
+
+
+        $jobFolder = $owner->folders()->where('title', 'Jobs')->first();
+        $chat->users()->attach($owner->id, ['role' => 'super-admin', ['folder_id' => $jobFolder->id]]);
+        event(new ChatCreated($chat));
+        $this->sendMessage($owner);
+
+
+    }
+
+    public function jobs()
+    {
         return $this->hasMany(Job::class, 'job_id', 'id');
     }
 
-    public static function getOrderedJobs($jobs, &$result = []) {
+    public static function getOrderedJobs($jobs, &$result = [])
+    {
         foreach ($jobs as $job) {
             $result[] = $job;
             $jobsOfJob = $job->jobs;
@@ -104,20 +118,24 @@ class Job extends Model {
     }
 
 
-    public function mentions() {
+    public function mentions()
+    {
         return $this->hasMany(Mention::class);
     }
 
-    public function parent() {
+    public function parent()
+    {
         return $this->belongsTo(Job::class, 'job_id');
     }
 
-    public function tags() {
+    public function tags()
+    {
         return $this->belongsToMany(Tag::class);
 
     }
 
-    public function start($user) {
+    public function start($user)
+    {
         if ($this->status !== Constants::IN_PROGRESS) {
 
 
@@ -142,7 +160,8 @@ class Job extends Model {
     }
 
 
-    public function end($user, $status = Constants::COMPLETED) {
+    public function end($user, $status = Constants::COMPLETED)
+    {
         if ($this->status === Constants::IN_PROGRESS) {
 
             $now = now();
@@ -164,15 +183,18 @@ class Job extends Model {
 
     }
 
-    public function activities() {
+    public function activities()
+    {
         return $this->hasMany(Activity::class);
     }
 
-    public function acts() {
+    public function acts()
+    {
         return $this->hasMany(Act::class);
     }
 
-    public function getTime($user_id, $period = 'all_time') {
+    public function getTime($user_id, $period = 'all_time')
+    {
 
 
         //        \Carbon\CarbonInterval::setCascadeFactors([
@@ -211,13 +233,15 @@ class Job extends Model {
         return $minutes;
     }
 
-    public function lastActivity() {
+    public function lastActivity()
+    {
 
         return $this->activities()->whereNull('left_at')->first();
 
     }
 
-    public function joinUser($user, $role = 'developer') {
+    public function joinUser($user, $role = 'developer')
+    {
         if (!$this->users->contains($user->id)) {
             $this->users()->attach($user, ['role' => $role]);
             //TODO: Socket, user joined to job.
@@ -228,11 +252,13 @@ class Job extends Model {
 
     }
 
-    public function users() {
+    public function users()
+    {
         return $this->belongsToMany(User::class)->withPivot('role', 'status')->withTimestamps();
     }
 
-    public function workspace() {
+    public function workspace()
+    {
         return $this->belongsTo(Workspace::class);
     }
 

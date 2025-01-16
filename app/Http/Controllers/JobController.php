@@ -13,8 +13,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
-class JobController extends Controller {
-    public function create(Request $request) {
+class JobController extends Controller
+{
+    public function create(Request $request)
+    {
 
 
         $request->validate([
@@ -49,7 +51,8 @@ class JobController extends Controller {
                                                                                                                 ]);
 
             if ($user->active_job_id !== NULL) {
-                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'JobController@create');
+                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended',
+                      'JobController@create');
 
             }
             acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started', 'JobController@create');
@@ -63,7 +66,7 @@ class JobController extends Controller {
 
         //        event(new JobCreated($job));
 
-        $job->sendMessage($user);
+        $job->createChat();
 
 
         if ($request->mentions) {
@@ -82,7 +85,8 @@ class JobController extends Controller {
         return api(JobResource::make($job));
     }
 
-    public function get(Job $job) {
+    public function get(Job $job)
+    {
         $user = auth()->user();
         if (!$user->jobs->contains($job)) {
             abort(404);
@@ -93,7 +97,8 @@ class JobController extends Controller {
 
     }
 
-    public function update(Job $job, Request $request) {
+    public function update(Job $job, Request $request)
+    {
 
         if ($job->old) {
             return error('Cant update old jobs, sorry!');
@@ -132,9 +137,9 @@ class JobController extends Controller {
 
         $currentMentionIds = $job->mentions()->pluck('id')->toArray();
 
-        $newMentions = collect($request->mentions)->filter(fn($mention) => !isset($mention['id']))->toArray();
+        $newMentions = collect($request->mentions)->filter(fn ($mention) => !isset($mention['id']))->toArray();
         $existingMentions = collect($request->mentions)
-            ->filter(fn($mention) => isset($mention['id']))->pluck('id')->toArray();
+            ->filter(fn ($mention) => isset($mention['id']))->pluck('id')->toArray();
 
 
         $mentionsToDelete = array_diff($currentMentionIds, $existingMentions);
@@ -161,7 +166,8 @@ class JobController extends Controller {
     }
 
 
-    public function updateStatus(Job $job, Request $request) {
+    public function updateStatus(Job $job, Request $request)
+    {
         if ($job->old) {
             return error('Cant update old jobs, sorry!');
         }
@@ -180,15 +186,18 @@ class JobController extends Controller {
 
 
             if ($user->active_job_id !== NULL) {
-                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'JobController@updateStatus');
+                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended',
+                      'JobController@updateStatus');
 
             }
-            acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started', 'JobController@updateStatus');
+            acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started',
+                  'JobController@updateStatus');
 
             $user->updateActiveJob($job->id);
 
         } elseif ($job->id === $user->active_job_id) {
-            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'JobController@updateStatus');
+            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended',
+                  'JobController@updateStatus');
             $user->updateActiveJob(NULL);
 
         }
@@ -206,7 +215,8 @@ class JobController extends Controller {
     }
 
 
-    public function accept(Job $job) {
+    public function accept(Job $job)
+    {
         $user = auth()->user();
         if (!$job->joinable) {
             return error('This job is parent only, so no one can join to it.');
@@ -222,11 +232,17 @@ class JobController extends Controller {
 
 
             if ($user->active_job_id !== NULL) {
-                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'JobController@accept');
+                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended',
+                      'JobController@accept');
 
             }
             acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started', 'JobController@accept');
             $user->updateActiveJob($job->id);
+
+
+            $jobFolder = $user->folders()->where('title', 'Jobs')->first();
+            $job->chat()->users()->attach($user->id, ['role' => 'member', ['folder_id' => $jobFolder->id]]);
+
 
         }
         return api(TRUE);
@@ -234,7 +250,8 @@ class JobController extends Controller {
 
     }
 
-    public function dismiss(Job $job) {
+    public function dismiss(Job $job)
+    {
         if (!$job->joinable) {
             return error('This job is parent only, so no one can dismiss it.');
         }
@@ -246,17 +263,14 @@ class JobController extends Controller {
 
     }
 
-    public function jobs(Job $job) {
+    public function jobs(Job $job)
+    {
 
         return api(JobResource::collection($job->jobs));
     }
 
 
-    public function addMember(Job $job, Request $request) {
+    public function addMember(Job $job, Request $request) {}
 
-    }
-
-    public function removeMember(Job $job, Request $request) {
-
-    }
+    public function removeMember(Job $job, Request $request) {}
 }
