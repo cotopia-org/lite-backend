@@ -26,6 +26,7 @@ class TalkController extends Controller {
 
         $response = TalkResource::make($talk);
         sendSocket(Constants::talkCreated, $user->socket_id, $response);
+        sendSocket(Constants::talkCreated, $owner->socket_id, $response);
 
         return api($response);
 
@@ -67,7 +68,7 @@ class TalkController extends Controller {
         sendSocket(Constants::talkExpired, $talk->owner->socket_id, TalkResource::make($talk));
         sendSocket(Constants::talkExpired, $talk->user->socket_id, TalkResource::make($talk));
 
-        return true;
+        return TRUE;
     }
 
     /**
