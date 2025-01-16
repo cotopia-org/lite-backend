@@ -50,11 +50,11 @@ class Job extends Model
 
     }
 
-    public function sendMessage($user)
+    public function sendMessage($user, $chat_id)
     {
         $text = self::getMessageText($user, $this);
 
-        $msg = sendMessage($text, 39);
+        $msg = sendMessage($text, $chat_id);
 
 
         $job = $this;
@@ -95,7 +95,7 @@ class Job extends Model
         $jobFolder = $owner->folders()->where('title', 'Jobs')->first();
         $chat->users()->attach($owner->id, ['role' => 'super-admin', 'folder_id' => $jobFolder->id]);
         event(new ChatCreated($chat));
-        $this->sendMessage($owner);
+        $this->sendMessage($owner, $chat->id);
 
 
     }
