@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\TalkResource;
+use App\Http\Resources\UserMinimalResource;
 use App\Models\Talk;
 use App\Models\User;
 use App\Utilities\Constants;
@@ -30,6 +31,44 @@ class TalkController extends Controller {
 
     }
 
+
+    public function expire(Talk $talk) {
+        $talk->update([
+                          'response' => Constants::NO_RESPONSE
+                      ]);
+
+
+        $user = $talk->user;
+        $user->update([
+                          'status' => Constants::GHOST,
+
+                      ]);
+
+
+        if ($user->room_id !== NULL) {
+            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'time_ended', 'CheckTalkCommand@handle');
+        }
+
+        acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'disconnected', 'CheckTalkCommand@handle');
+
+        if ($user->active_job_id !== NULL) {
+            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'CheckTalkCommand@handle');
+
+        }
+        $user->left('Disconnected for Ghost in CheckTalksCommand@handle');
+
+
+        if ($user->room !== NULL) {
+            sendSocket(Constants::userUpdated, $user->room->channel, UserMinimalResource::make($user));
+
+        }
+
+
+        sendSocket(Constants::talkExpired, $talk->owner->socket_id, TalkResource::make($talk));
+        sendSocket(Constants::talkExpired, $talk->user->socket_id, TalkResource::make($talk));
+
+        return true;
+    }
 
     /**
      * @throws \Exception

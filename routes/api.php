@@ -149,6 +149,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
     Route::controller(TalkController::class)->prefix('talks')->group(function () {
         Route::post('/', 'talk');
         Route::post('/{talk}/respond', 'respond');
+        Route::post('/{talk}/expire', 'expire');
 
     })->middleware('checkIsUserOnline');
 
