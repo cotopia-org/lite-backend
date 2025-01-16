@@ -30,7 +30,8 @@ class CheckTalksCommand extends Command
      */
     public function handle()
     {
-        $talks = Talk::where('created_at', '<=', now()->subMinutes(3))->whereNull('response')->get();
+        //TODO: change 1 to 3 for production
+        $talks = Talk::where('created_at', '<=', now()->subMinutes(1))->whereNull('response')->get();
 
 
         foreach ($talks as $talk) {
