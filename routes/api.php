@@ -105,6 +105,8 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/{room}/join', 'join');
         Route::get('/{room}/switch', 'switch');
         Route::delete('/{room}', 'delete');
+        Route::get('/{room}/toggleMegaphone', 'toggleMegaphone');
+
 
     });
 

@@ -22,6 +22,7 @@ class RoomResource extends JsonResource {
             'background'   => $this->background,
             'type'         => $this->type,
             'time_start'   => $this->time_start,
+            'is_megaphone' => $this->is_megaphone,
 
         ];
     }

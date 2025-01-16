@@ -196,6 +196,23 @@ class RoomController extends Controller {
 
     }
 
+    public function toggleMegaphone(Room $room) {
+
+        $user = auth()->user();
+
+        $user->canDo(Permission::ROOM_UPDATE, $room->workspace_id);
+
+        $room->update([
+                          'is_megaphone' => !$room->is_megaphone,
+                      ]);
+
+        sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
+
+        return TRUE;
+
+
+    }
+
 
     public function delete(Room $room) {
         //TODO CHECK PERMISSION

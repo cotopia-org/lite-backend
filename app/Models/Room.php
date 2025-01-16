@@ -29,6 +29,7 @@ class Room extends Model {
         'user_id',
         'background',
         'type',
+        'is_megaphone'
     ];
 
     protected $appends = [
