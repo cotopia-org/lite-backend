@@ -9,8 +9,7 @@ use App\Models\Talk;
 use App\Utilities\Constants;
 use Illuminate\Console\Command;
 
-class CheckTalksCommand extends Command
-{
+class CheckTalksCommand extends Command {
     /**
      * The name and signature of the console command.
      *
@@ -28,8 +27,7 @@ class CheckTalksCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
-    {
+    public function handle() {
         //TODO: change 1 to 3 for production
         $talks = Talk::where('created_at', '<=', now()->subMinutes(1))->whereNull('response')->get();
 
@@ -47,10 +45,25 @@ class CheckTalksCommand extends Command
 
                           ]);
 
+
+            if ($user->room_id !== NULL) {
+                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'time_ended', 'CheckTalkCommand@handle');
+            }
+
+            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'disconnected', 'CheckTalkCommand@handle');
+
+            if ($user->active_job_id !== NULL) {
+                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'CheckTalkCommand@handle');
+
+            }
+            $user->left('Disconnected for Ghost in CheckTalksCommand@handle');
+
+
             if ($user->room !== NULL) {
                 sendSocket(Constants::userUpdated, $user->room->channel, UserMinimalResource::make($user));
 
             }
+
 
             sendSocket(Constants::talkExpired, $talk->owner->socket_id, TalkResource::make($talk));
             sendSocket(Constants::talkExpired, $talk->user->socket_id, TalkResource::make($talk));

@@ -180,6 +180,23 @@ class UserController extends Controller {
                       ]);
         $response = UserMinimalResource::make($user);
 
+        $room = $user->room;
+
+
+        if ($user->activeContract() !== NULL) {
+            if ($user->activeContract()->in_schedule && isNowInUserSchedule($user->activeContract()->schedule)) {
+
+                acted($user->id, $room->workspace_id, $room->id, $user->active_job_id, 'time_started', 'UserController@unGhost');
+                if ($user->active_job_id !== NULL) {
+                    acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_started', 'UserController@unGhost');
+
+                }
+                $user->joined($room, 'Connected From UserController unGhost Method');
+
+            }
+        }
+
+
         sendSocket(Constants::userUpdated, $user->room->channel, $response);
         return api($response);
     }
