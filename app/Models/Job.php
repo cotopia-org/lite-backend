@@ -93,7 +93,7 @@ class Job extends Model
 
 
         $jobFolder = $owner->folders()->where('title', 'Jobs')->first();
-        $chat->users()->attach($owner->id, ['role' => 'super-admin', ['folder_id' => $jobFolder->id]]);
+        $chat->users()->attach($owner->id, ['role' => 'super-admin', 'folder_id' => $jobFolder->id]);
         event(new ChatCreated($chat));
         $this->sendMessage($owner);
 
