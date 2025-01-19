@@ -6,8 +6,10 @@ use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Http\Request;
 
-class SearchController extends Controller {
-    public function search(Request $request) {
+class SearchController extends Controller
+{
+    public function search(Request $request)
+    {
 
 
         $q = $request->q;
@@ -15,6 +17,9 @@ class SearchController extends Controller {
         $user = auth()->user();
 
         $workspace = $user->workspace;
+        if ($workspace === NULL) {
+            $workspace = $user->workspaces()->first();
+        }
 
         $users = $workspace->users();
         $tags = $workspace->tags();
