@@ -242,7 +242,7 @@ class JobController extends Controller
 
 
             $jobFolder = $user->folders()->where('title', 'Jobs')->first();
-            $job->chat->users()->attach($user->id, ['role' => 'member', ['folder_id' => $jobFolder->id]]);
+            $job->chat->users()->attach($user->id, ['role' => 'member', 'folder_id' => $jobFolder->id]);
             event(new ChatCreated($job->chat));
 
 
