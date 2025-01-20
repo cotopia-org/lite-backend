@@ -9,7 +9,9 @@ use Illuminate\Http\Request;
 
 class PaymentController extends Controller {
     public function all() {
-        $payments = Payment::orderBy('id', 'DESC')->get();
+        $payments = Payment::orderBy('id', 'DESC')->whereHas('contract',function($query){
+            $query->where('user_sign_status',true)->where('contractor_sign_status',true);
+        })->get();
 
         return api(PaymentResource::collection($payments));
     }

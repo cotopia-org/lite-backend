@@ -73,7 +73,7 @@ class Constants {
     const  NO_RESPONSE = 'no_response';
 
 
-    const chatCreated = 'chatCreated';
+    const chatCreated = ' ';
     const userLeftFromRoom = 'userLeftFromRoom';
     const userJoinedToRoom = 'userJoinedToRoom';
     const roomBackgroundChanged = 'roomBackgroundChanged';
