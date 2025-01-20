@@ -329,6 +329,9 @@ class UserController extends Controller {
 
     public function beAfk() {
         $user = auth()->user();
+        if ($user->status !== Constants::ONLINE){
+            return error('You must be online first');
+        }
         $user->update([
                           "status" => Constants::AFK,
                       ]);
