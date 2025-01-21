@@ -109,6 +109,7 @@ class Room extends Model {
 
             $videoGrant = (new VideoGrant())->setRoomJoin()->setRoomName($roomName);
 
+
             $token = (new AccessToken(config('livekit.apiKey'), config('livekit.apiSecret')))
                 ->init($tokenOptions)->setGrant($videoGrant)->toJwt();
 
