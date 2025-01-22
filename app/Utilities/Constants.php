@@ -77,6 +77,7 @@ class Constants {
     const userLeftFromRoom = 'userLeftFromRoom';
     const userJoinedToRoom = 'userJoinedToRoom';
     const roomBackgroundChanged = 'roomBackgroundChanged';
+    const toggleMegaphone = 'toggleMegaphone';
 
 
     const contractCreated = 'contractCreated';

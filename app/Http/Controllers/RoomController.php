@@ -206,7 +206,7 @@ class RoomController extends Controller {
                           'is_megaphone' => !$room->is_megaphone,
                       ]);
 
-        sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
+        sendSocket(Constants::toggleMegaphone, $room->channel, RoomResource::make($room));
 
         return TRUE;
 
