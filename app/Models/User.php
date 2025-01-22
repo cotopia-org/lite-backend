@@ -51,6 +51,7 @@ class User extends Authenticatable {
         'active_job_id',
         'active_activity_id',
         'time_started',
+        'hard_muted',
         //        'avatar'
     ];
 
@@ -602,6 +603,19 @@ class User extends Authenticatable {
 
         }
 
+    }
+
+    public function isAFK() {
+        return $this->status === Constants::AFK;
+
+    }
+    public function isGhost() {
+        return $this->status === Constants::GHOST;
+
+    }
+
+    public function isOnline() {
+        return $this->status === Constants::ONLINE;
     }
 
     public function getAbilities(): array {

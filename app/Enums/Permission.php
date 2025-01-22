@@ -31,6 +31,9 @@ enum Permission: string {
     case DELETE_CONTRACT = 'delete-contract';
 
 
+    case HARDMUTE = 'hardmute';
+
+
     case ROOMS_CHANGE_POSITION = 'change-rooms-position';
     case ROOM_GET = 'get-room';
     case ROOM_KICK_USER = 'kick-user-from-room';

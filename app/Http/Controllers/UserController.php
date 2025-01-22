@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Permission;
 use App\Http\Resources\ActivityResource;
 use App\Http\Resources\ChatResource;
 use App\Http\Resources\ContractResource;
@@ -175,33 +176,32 @@ class UserController extends Controller {
 
     public function unGhost() {
         $user = auth()->user();
-        if ($user->status === Constants::ONLINE) {
-            return error('You are online');
-        }
-        $user->update([
-                          "status" => Constants::ONLINE,
-                      ]);
-        $response = UserMinimalResource::make($user);
+        if ($user->isGhost()) {
+            $user->update([
+                              "status" => Constants::ONLINE,
+                          ]);
 
-        $room = $user->room;
+            $room = $user->room;
 
 
-        if ($user->activeContract() !== NULL) {
-            if ($user->activeContract()->in_schedule && isNowInUserSchedule($user->activeContract()->schedule)) {
+            if ($user->activeContract() !== NULL) {
+                if ($user->activeContract()->in_schedule && isNowInUserSchedule($user->activeContract()->schedule)) {
 
-                acted($user->id, $room->workspace_id, $room->id, $user->active_job_id, 'time_started', 'UserController@unGhost');
-                if ($user->active_job_id !== NULL) {
-                    acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_started', 'UserController@unGhost');
+                    acted($user->id, $room->workspace_id, $room->id, $user->active_job_id, 'time_started', 'UserController@unGhost');
+                    if ($user->active_job_id !== NULL) {
+                        acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_started', 'UserController@unGhost');
+
+                    }
+                    $user->joined($room, 'Connected From UserController unGhost Method');
 
                 }
-                $user->joined($room, 'Connected From UserController unGhost Method');
-
             }
+
+
+            sendSocket(Constants::userUpdated, $user->room->channel, UserMinimalResource::make($user));
         }
 
-
-        sendSocket(Constants::userUpdated, $user->room->channel, $response);
-        return api($response);
+        return api(UserMinimalResource::make($user));
     }
 
     public function update(Request $request) {
@@ -329,30 +329,29 @@ class UserController extends Controller {
 
     public function beAfk() {
         $user = auth()->user();
-        if ($user->status !== Constants::ONLINE){
-            return error('You must be online first');
+        if ($user->isOnline()) {
+            $user->update([
+                              "status" => Constants::AFK,
+                          ]);
+
+
+            if ($user->room_id !== NULL) {
+                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'time_ended', 'UserController@afk');
+            }
+
+            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'disconnected', 'UserController@afk');
+
+            if ($user->active_job_id !== NULL) {
+                acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'UserController@afk');
+
+            }
+            $user->left('Disconnected for Afk in UserController@afk');
+
+
+            sendSocket(Constants::userUpdated, $user->workspace->channel, UserMinimalResource::make($user));
         }
-        $user->update([
-                          "status" => Constants::AFK,
-                      ]);
-        $response = UserMinimalResource::make($user);
 
-
-        if ($user->room_id !== NULL) {
-            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'time_ended', 'UserController@afk');
-        }
-
-        acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'disconnected', 'UserController@afk');
-
-        if ($user->active_job_id !== NULL) {
-            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'UserController@afk');
-
-        }
-        $user->left('Disconnected for Afk in UserController@afk');
-
-
-        sendSocket(Constants::userUpdated, $user->workspace->channel, $response);
-        return api($response);
+        return api(UserMinimalResource::make($user));
 
 
     }
@@ -361,33 +360,54 @@ class UserController extends Controller {
     public function beOnline() {
         $user = auth()->user();
 
-        if ($user->status !== Constants::AFK) {
-            return error('User must be afk first.');
-        }
-        $user->update([
-                          "status" => Constants::ONLINE,
-                      ]);
-        $response = UserMinimalResource::make($user);
+        if ($user->isAFK()) {
+            $user->update([
+                              "status" => Constants::ONLINE,
+                          ]);
 
-        $room = $user->room;
+            $room = $user->room;
 
 
-        if ($user->activeContract() !== NULL) {
-            if ($user->activeContract()->in_schedule && isNowInUserSchedule($user->activeContract()->schedule)) {
+            if ($user->activeContract() !== NULL) {
+                if ($user->activeContract()->in_schedule && isNowInUserSchedule($user->activeContract()->schedule)) {
 
-                acted($user->id, $room->workspace_id, $room->id, $user->active_job_id, 'time_started', 'UserController@beOnline');
-                if ($user->active_job_id !== NULL) {
-                    acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_started', 'UserController@beOnline');
+                    acted($user->id, $room->workspace_id, $room->id, $user->active_job_id, 'time_started', 'UserController@beOnline');
+                    if ($user->active_job_id !== NULL) {
+                        acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_started', 'UserController@beOnline');
+
+                    }
+                    $user->joined($room, 'Connected From UserController beOnline Method');
 
                 }
-                $user->joined($room, 'Connected From UserController beOnline Method');
-
             }
+            sendSocket(Constants::userUpdated, $user->room->channel, UserMinimalResource::make($user));
+
         }
 
 
-        sendSocket(Constants::userUpdated, $user->room->channel, $response);
-        return api($response);
+        return api(UserMinimalResource::make($user));
+    }
+
+
+    public function toggleHardMute(User $user) {
+
+        $auth = auth()->user();
+        $auth->canDo(Permission::HARDMUTE, $auth->workspace_id);
+
+
+        if ($user->isOnline()) {
+
+            $user->update([
+                              'hard_muted' => !$user->hard_muted,
+                          ]);
+
+
+            sendSocket(Constants::toggleHardMuted, $user->room->channel, UserMinimalResource::make($user));
+
+        }
+        return api(UserMinimalResource::make($user));
+
+
     }
 
 

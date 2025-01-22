@@ -77,6 +77,10 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/beOnline', 'beOnline');
         Route::get('/folders', 'folders');
         Route::get('/talks', 'talks');
+
+        Route::get('/{user}/toggleHardMute', 'toggleHardMute');
+
+
     });
 
     Route::controller(WorkspaceController::class)->prefix('workspaces')->group(function () {
