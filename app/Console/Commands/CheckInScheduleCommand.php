@@ -28,7 +28,6 @@ class CheckInScheduleCommand extends Command {
      */
     public function handle() {
         $online_users = User::whereStatus('online')->whereNotNull('room_id')->get();
-        logger($online_users);
         foreach ($online_users as $user) {
 
             $activeContract = $user->activeContract();
@@ -38,7 +37,9 @@ class CheckInScheduleCommand extends Command {
 
             }
 
-
+            if ($user->id === 1) {
+                logger(isNowInUserSchedule($activeContract->schedule));
+            }
             if ($activeContract->in_schedule && !isNowInUserSchedule($activeContract->schedule)) {
                 logger($user->id);
                 return $this->stop($user);
