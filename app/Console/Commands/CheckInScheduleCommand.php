@@ -33,9 +33,10 @@ class CheckInScheduleCommand extends Command {
 
             $activeContract = $user->activeContract();
 
-            if ($user->id === 1) {
-                logger($user);
-            }
+            logger($user);
+            logger($user->id === 1);
+
+
             if ($activeContract === NULL) {
                 return $this->stop($user);
 
