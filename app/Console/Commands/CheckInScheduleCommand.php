@@ -38,20 +38,20 @@ class CheckInScheduleCommand extends Command {
 
 
             if ($activeContract === NULL) {
-                return $this->stop($user);
+                $this->stop($user);
 
             }
 
 
             if ($activeContract->in_schedule && !isNowInUserSchedule($activeContract->schedule)) {
                 logger($user->id);
-                return $this->stop($user);
+                $this->stop($user);
 
             }
 
 
             if ($activeContract->in_schedule && isNowInUserSchedule($activeContract->schedule)) {
-                return $this->start($user);
+                $this->start($user);
             }
 
 
