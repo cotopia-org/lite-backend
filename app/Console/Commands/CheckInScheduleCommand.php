@@ -28,6 +28,7 @@ class CheckInScheduleCommand extends Command {
      */
     public function handle() {
         $online_users = User::whereStatus('online')->whereNotNull('room_id')->get();
+        logger($online_users);
         foreach ($online_users as $user) {
 
             $activeContract = $user->activeContract();
