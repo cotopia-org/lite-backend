@@ -23,10 +23,9 @@ use Illuminate\Validation\Rule;
 class   MessageController extends Controller {
 
     public function send(Request $request) {
-        $request->validate([
-                               'text'    => Rule::requiredIf($request->voice_id === NULL),
-                               'chat_id' => 'required',
-                               'nonce_id'
+        $request->validate(['text'    => Rule::requiredIf($request->voice_id === NULL),
+                            'chat_id' => 'required',
+                            'nonce_id'
                            ]);
 
         $user = auth()->user();
@@ -130,22 +129,23 @@ class   MessageController extends Controller {
 
         $before_messages = $chat
             ->messages()->orderBy('id', 'DESC')->with([
-                                                          'links',
-                                                          'mentions',
-                                                          'user',
-                                                          'files',
-                                                      ])->where('id', '<=', $message->id)->take(20)->get();
+                                                                         'links',
+                                                                         'mentions',
+                                                                         'user',
+                                                                         'files',
+                                                                     ])->where('id', '<=', $message->id)->take(20)
+            ->get();
 
         $after_messages = $chat
             ->messages()->orderBy('id', 'DESC')->with([
-                                                          'links',
-                                                          'mentions',
-                                                          'user',
-                                                          'files',
-                                                      ])->where('id', '>', $message)->take(20)->get();
+                                                                         'links',
+                                                                         'mentions',
+                                                                         'user',
+                                                                         'files',
+                                                                     ])->where('id', '>', $message)->take(20)->get();
 
 
-        return api(MessageResource::collection($before_messages->merge($after_messages)));
+        return api(MessageResource::collection($before_messages->merge($after_messages)->sortByDesc('id')));
 
     }
 
