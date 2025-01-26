@@ -609,6 +609,7 @@ class User extends Authenticatable {
         return $this->status === Constants::AFK;
 
     }
+
     public function isGhost() {
         return $this->status === Constants::GHOST;
 
@@ -616,6 +617,11 @@ class User extends Authenticatable {
 
     public function isOnline() {
         return $this->status === Constants::ONLINE;
+    }
+
+
+    public function availabilities() {
+        return $this->hasMany(Availability::class);
     }
 
     public function getAbilities(): array {

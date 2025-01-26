@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\Permission;
 use App\Http\Resources\ActivityResource;
+use App\Http\Resources\AvailabilityResource;
 use App\Http\Resources\ChatResource;
 use App\Http\Resources\ContractResource;
 use App\Http\Resources\FolderResource;
@@ -406,6 +407,19 @@ class UserController extends Controller {
 
         }
         return api(UserMinimalResource::make($user));
+
+
+    }
+
+    public function availabilities($user) {
+        if ($user === "me") {
+            $user = auth()->user();
+        } else {
+            $user = User::findOrFail($user);
+        }
+
+
+        return api(AvailabilityResource::collection($user->availabilities));
 
 
     }

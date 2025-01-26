@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AvailabilityController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\FileController;
@@ -64,6 +65,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/{user}/contracts', 'contracts');
         Route::get('/{user}/schedules', 'schedules');
         Route::get('/{user}/scheduleCommitment', 'scheduleCommitment');
+        Route::get('/{user}/availabilities', 'availabilities');
         Route::get('/talks', 'talks');
         Route::get('/unGhost', 'unGhost');
         Route::get('/', 'all');
@@ -167,6 +169,15 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::post('/', 'set');
 
     })->middleware('checkIsUserOnline');
+
+
+    Route::controller(AvailabilityController::class)->prefix('availabilities')->group(function () {
+        Route::post('/', 'create');
+        Route::put('/{availability}/', 'update');
+        Route::delete('/{availability}/', 'delete');
+
+    })->middleware('checkIsUserOnline');
+
 
     Route::controller(ChatController::class)->prefix('chats')->group(function () {
         Route::get('/{chat}/', 'get');

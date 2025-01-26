@@ -35,6 +35,32 @@ class AvailabilityController extends Controller {
 
 
     public function update(Availability $availability, Request $request) {
+        $user = auth()->user();
+
+        if ($user->availabilities()->find($availability) === NULL) {
+            return error('You cant update this availability');
+        }
+
+
+        $availability->update($request->all());
+
+        return api(AvailabilityResource::make($availability));
+
+
+    }
+
+    public function delete(Availability $availability) {
+        $user = auth()->user();
+
+        if ($user->availabilities()->find($availability) === NULL) {
+            return error('You cant delete this availability');
+        }
+
+
+        $availability->delete();
+
+        return api(TRUE);
+
 
     }
 }
