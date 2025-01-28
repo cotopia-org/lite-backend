@@ -530,7 +530,7 @@ class User extends Authenticatable
 
         foreach ($all as $act) {
 
-            $diffs = activityDiffWithSchedule($dates, $act)['scheduleTime'];
+            $diffs = activityDiffWithSchedule($dates, $act);
 
 
         }
