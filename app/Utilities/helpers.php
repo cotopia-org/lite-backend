@@ -286,11 +286,13 @@ function isActivityInSchedule($schedule, $activity)
                                                                                                       ->between($start,
                                                                                                                 $end)) {
                     return TRUE;
-                } else {
-                    dd(   $join_at->copy()->timezone($schedule->timezone), $left_at->copy()
-                                                                                   ->timezone($schedule->timezone)
-                        , $start, $end);
                 }
+
+//                else {
+//                    dd(   $join_at->copy()->timezone($schedule->timezone), $left_at->copy()
+//                                                                                   ->timezone($schedule->timezone)
+//                        , $start, $end);
+//                }
 
             }
 
