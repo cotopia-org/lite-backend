@@ -511,7 +511,6 @@ class User extends Authenticatable
     public function getTimeWithSchedule($contract)
     {
         $user = $this;
-        dd($contract);
         if ($contract === NULL) {
             return [
                 'sum_minutes'     => 0,
@@ -521,6 +520,7 @@ class User extends Authenticatable
 
             ];
         }
+        dd('Here');
         $acts = Activity::where('user_id', $user->id)
                         ->where('workspace_id', $contract->worksapce_id)
                         ->where('created_at', '>=', $contract->start_at)->where('created_at', '<=', $contract->end_at)
