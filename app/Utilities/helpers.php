@@ -264,46 +264,36 @@ function unConvert($value): array|string
 }
 
 
-function activityDiffWithSchedule($schedule, $activity)
+function activityDiffWithSchedule($dates, $activity, $timezone = 'Asia/Tehran')
 {
 
-    $join_at = $activity->join_at;
-    $left_at = $activity->left_at ?? now();
+    $join_at = $activity->join_at->timezone($timezone);
+    $left_at = $activity->left_at->timezone($timezone) ?? now()->timezone($timezone);
     $diff = 0;
-    foreach ($schedule->days as $day) {
-        if ((int) $day->day === $join_at->weekday()) {
-
-            foreach ($day->times as $time) {
+    foreach ($dates as $date) {
 
 
-                $j = $join_at->copy()->timezone($schedule->timezone);
-                $l = $left_at->copy()->timezone($schedule->timezone);
+        $start = $date['start'];
+        $end = $date['end'];
 
-                $end = $j->setTimeFromTimeString($time->end);
-                $start = $j->setTimeFromTimeString($time->start);
+        $timeStarted = $join_at;
+        $timeEnded = $left_at;
+        if ($join_at->between($start, $end) || $left_at->between($start, $end)) {
 
-                $timeStarted = $j;
-                $timeEnded = $l;
-                if ($j->between($start, $end) || $l->between($start, $end)) {
+            if ($join_at->lt($start)) {
+                $timeStarted = $start;
 
-                    if ($j->lt($start)) {
-                        $timeStarted = $start;
-
-                    }
-                    if ($l->gt($end)) {
-                        $timeEnded = $end;
-
-                    }
-
-                    $diff += $timeStarted->diffInMinutes($timeEnded);
-
-                }
-
-
+            }
+            if ($left_at->gt($end)) {
+                $timeEnded = $end;
 
             }
 
+            $diff += $timeEnded->diffInMinutes($timeStarted);
+
         }
+
+
     }
     return $diff;
 
