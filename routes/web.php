@@ -45,10 +45,15 @@ Route::get('/tester', function () {
                    ->where('created_at', '>=', now()->firstOfMonth())->get();
     $schedule = 0;
     $dates = $user->scheduleDates();
+    $acts = [];
     foreach ($all as $act) {
 
         $diffs = activityDiffWithSchedule($dates, $act);
         $schedule += $diffs;
+        $acts[] = [
+            'scheduleDiff'=>$diffs,
+            'allDiff'=>$act->join_at->diffInMinutes($act->left_at ?? now())
+        ];
 
 
 
@@ -57,6 +62,7 @@ Route::get('/tester', function () {
 
     return [
         'scheduled'    => $schedule / 60,
+        '$acts'    => $acts,
     ];
 
 });
