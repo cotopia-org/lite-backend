@@ -51,7 +51,12 @@ Route::get('/tester', function () {
 
         $diffs = activityDiffWithSchedule($dates, $act);
         $schedule += $diffs['scheduleTime'];
-        $noneSchedule += getNonScheduleTimes($dates,$act)['noneScheduleTime'];
+
+        $non = getNonScheduleTimes($dates, $act)['noneScheduleTime'];
+        $noneSchedule += $non;
+        if ($non >= 0) {
+            $act[] = $act->id;
+        }
 
 
     }
