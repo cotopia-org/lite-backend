@@ -30,7 +30,7 @@ class Payment extends Model {
                 $contract = $this->contract;
 
                 $total_hours = $this->total_hours;
-                return $contract->amount * ($total_hours['sum_minutes'] / 60);
+                return $contract->amount * ($total_hours['done'] / 60);
             }
             return $value;
         });
@@ -55,13 +55,13 @@ class Payment extends Model {
             if ($value === NULL) {
                 $user = $this->user;
 
-                $contract = $this->contract;
+//                $contract = $this->contract;
 
 //                return $user->getTime($contract->start_at, $contract->end_at, $contract->workspace_id);
                 return $user->calculateCommitment()['done'];
             }
             return [
-                'sum_minutes' => $value * 60,
+                'done' => $value * 60,
             ];
         });
     }
