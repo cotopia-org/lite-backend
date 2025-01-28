@@ -119,8 +119,8 @@ function isNowInUserSchedule($schedule)
 
             foreach ($day->times as $time) {
 
-                $end = now()->timezone($schedule->timezone)->setTimeFromTimeString($time->end);
-                $start = now()->timezone($schedule->timezone)->setTimeFromTimeString($time->start);
+                $end = now()->copy()->timezone($schedule->timezone)->setTimeFromTimeString($time->end);
+                $start = now()->copy()->timezone($schedule->timezone)->setTimeFromTimeString($time->start);
                 if ($now->copy()->timezone($schedule->timezone)->between($start, $end)) {
                     return TRUE;
                 }
