@@ -46,6 +46,9 @@ Route::get('/tester', function () {
     $acts = [];
     $diff = 0;
     foreach ($all as $act) {
+        if ($act->left_at === null){
+            continue;
+        }
         if (!isActivityInSchedule($user->activeContract()->schedule, $act)) {
             $acts[] = $act->id;
             $diff += $act->left_at === NULL ? $act->join_at->diffInMinutes(now()) : $act->join_at->diffInMinutes($act->left_at);
