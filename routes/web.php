@@ -49,7 +49,6 @@ Route::get('/tester', function () {
     foreach ($schedules as $date => $schedule) {
 
 
-
         foreach ($schedule['times'] as $time) {
             $scheduleStart = $time['start'];
             $scheduleEnd = $time['end'];
@@ -84,8 +83,14 @@ Route::get('/tester', function () {
 
     }
 
+    $all = Activity::where('user_id', $user->id)->whereNotIn('id', $acts)
+                   ->where('created_at', '>=', now()->firstOfMonth())->get();
 
-    return $acts;
+
+    return [
+        'all'  => $all->pluck('id'),
+        'acts' => $acts,
+    ];
 
 });
 
