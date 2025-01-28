@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-class Payment extends Model {
+class Payment extends Model
+{
 
     use SoftDeletes;
 
@@ -23,21 +24,23 @@ class Payment extends Model {
     ];
 
 
-    protected function amount(): Attribute {
+    protected function amount(): Attribute
+    {
         return Attribute::make(get: function ($value) {
             if ($value === NULL) {
 
                 $contract = $this->contract;
 
                 $total_hours = $this->total_hours;
-                return $contract->amount * ($total_hours['done'] / 60);
+                return $contract->amount * ($total_hours / 60);
             }
             return $value;
         });
     }
 
 
-    protected function status(): Attribute {
+    protected function status(): Attribute
+    {
         return Attribute::make(get: function ($value) {
 
 
@@ -50,7 +53,8 @@ class Payment extends Model {
         });
     }
 
-    protected function totalHours(): Attribute {
+    protected function totalHours(): Attribute
+    {
         return Attribute::make(get: function ($value) {
             if ($value === NULL) {
                 $user = $this->user;
@@ -60,17 +64,17 @@ class Payment extends Model {
 //                return $user->getTime($contract->start_at, $contract->end_at, $contract->workspace_id);
                 return $user->calculateCommitment()['done'];
             }
-            return [
-                'done' => $value * 60,
-            ];
+            return $value * 60;
         });
     }
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function contract() {
+    public function contract()
+    {
         return $this->belongsTo(Contract::class);
     }
 }
