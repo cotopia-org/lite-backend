@@ -58,7 +58,7 @@ Route::get('/tester', function () {
                 'join_at'      => $act->join_at,
                 'left_at'      => $act->left_at,
                 'scheduleDiff' => $diffs,
-                'allDiff'      => $act->join_at->diffInMinutes($act->left_at ?? now())
+                'allDiff'      => $act->join_at->diffInMinutes($act->left_at ?? now()),
             ];
             $delta += $realDiff - $diffs;
 
@@ -70,8 +70,8 @@ Route::get('/tester', function () {
 
     return [
         'scheduled' => $schedule / 60,
+        '$delta'    => $delta / 60,
         '$acts'     => $acts,
-        '$delta'    => $delta,
     ];
 
 });
