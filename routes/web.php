@@ -53,7 +53,10 @@ Route::get('/tester', function () {
         $schedule += $diffs['scheduleTime'];
         $noneSchedule += $diffs['noneScheduleTime'];
         if (isActivityNotInSchedule($dates, $act)) {
-            $acts[] = $act->id;
+            $acts[] = [
+                'id'   => $act->id,
+                'diff' => $act->join_at->diffInMinutes($act->left_at) / 60
+            ];
         }
 
     }
