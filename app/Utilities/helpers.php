@@ -283,11 +283,11 @@ function activityDiffWithSchedule($dates, $activity)
             $timeEnded = $left_at;
             if ($join_at->between($start, $end) || $left_at->between($start, $end)) {
 
-                if ($join_at->lt($start)) {
+                if ($join_at->lte($start)) {
                     $timeStarted = $start;
 
                 }
-                if ($left_at->gt($end)) {
+                if ($left_at->gte($end)) {
                     $timeEnded = $end;
 
                 }

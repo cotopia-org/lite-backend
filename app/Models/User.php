@@ -520,25 +520,26 @@ class User extends Authenticatable
 
             ];
         }
-        $acts = Activity::where('user_id', $user->id)
-                        ->where('workspace_id', $contract->workspace_id)
-                        ->where('created_at', '>=', $contract->start_at)->where('created_at', '<=', $contract->end_at)
-                        ->get();
-        $diffs = 0;
-        $dates = $user->scheduleDates();
-        foreach ($acts as $act) {
-
-            $diffs += activityDiffWithSchedule($dates, $act);
-
-
-        }
+//        $acts = Activity::where('user_id', $user->id)
+//                        ->where('workspace_id', $contract->workspace_id)
+//                        ->where('created_at', '>=', $contract->start_at)->where('created_at', '<=', $contract->end_at)
+//                        ->get();
+//        $diffs = 0;
+//        $dates = $user->scheduleDates();
+//        foreach ($acts as $act) {
+//
+//            $diffs += activityDiffWithSchedule($dates, $act);
+//
+//
+//        }
+        $time = $this->calculateCommitment();
 
 
         return [
-            'sum_minutes'     => $diffs,
+            'sum_minutes'     => $time['done'],
             'idle_minutes'    => 0,
             'working_minutes' => 0,
-            'sum_hours'       => \Carbon\CarbonInterval::minutes($diffs)->cascade()->forHumans(),
+            'sum_hours'       => \Carbon\CarbonInterval::minutes($time['done'])->cascade()->forHumans(),
 
         ];
     }
