@@ -50,19 +50,25 @@ Route::get('/tester', function () {
 
         $diffs = activityDiffWithSchedule($dates, $act);
         $schedule += $diffs;
-        $acts[] = [
-            'scheduleDiff'=>$diffs,
-            'allDiff'=>$act->join_at->diffInMinutes($act->left_at ?? now())
-        ];
+        $realDiff = $act->join_at->diffInMinutes($act->left_at ?? now());
+        if ($realDiff !== $diffs) {
+            $acts[] = [
+                'id'           => $act->id,
+                'join_at'      => $act->join_at,
+                'left_at'      => $act->left_at,
+                'scheduleDiff' => $diffs,
+                'allDiff'      => $act->join_at->diffInMinutes($act->left_at ?? now())
+            ];
 
+        }
 
 
     }
 
 
     return [
-        'scheduled'    => $schedule / 60,
-        '$acts'    => $acts,
+        'scheduled' => $schedule / 60,
+        '$acts'     => $acts,
     ];
 
 });
