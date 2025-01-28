@@ -14,7 +14,7 @@ Route::get('/', function () {
     return redirect('https://lite.cotopia.social');
 });
 Route::get('/avatar', function () {
-    $numericValue = (int)today()->timestamp;
+    $numericValue = (int) today()->timestamp;
 
     // Use a hashing function to generate a more evenly distributed value.
     $hashedValue = crc32($numericValue);
@@ -41,67 +41,17 @@ Route::get('/tester', function () {
     $user = \App\Models\User::find(18);
 
 
-
-    dd(isActivityInSchedule(\App\Models\Schedule::find(121),Activity::find(30494)));
-
-    $schedules = $user->scheduleDates();
-
-
-    $acts = [];
-
-    foreach ($schedules as $date => $schedule) {
-
-
-        foreach ($schedule['times'] as $time) {
-            $scheduleStart = $time['start'];
-            $scheduleEnd = $time['end'];
-
-            if (!Carbon::parse($date)->gt(now())) {
-
-                $overlappingActivities = Activity::where('user_id', $user->id)
-                                                 ->where(function ($query) use ($scheduleStart, $scheduleEnd) {
-                                                     $query
-                                                         ->whereBetween('join_at', [$scheduleStart, $scheduleEnd])
-                                                         ->orWhereBetween('left_at', [$scheduleStart, $scheduleEnd])
-                                                         ->orWhere(function ($subQuery) use (
-                                                             $scheduleStart, $scheduleEnd
-                                                         ) {
-                                                             $subQuery
-                                                                 ->where('join_at', '<=', $scheduleStart)
-                                                                 ->where('left_at', '>=', $scheduleEnd);
-                                                         });
-                                                 })->get();
-
-
-                foreach ($overlappingActivities as $activity) {
-                    $activityStart = $activity->join_at;
-                    $activityEnd = $activity->left_at;
-
-
-                    $overlapStart = max($scheduleStart, $activityStart);
-                    $overlapEnd = min($scheduleEnd, $activityEnd);
-
-
-                    if ($overlapStart < $overlapEnd) {
-                        $acts[] = $activity->id;
-                    }
-
-                }
-
-            }
-
-
-        }
-
-
-    }
-
-    $all = Activity::where('user_id', $user->id)->whereNotIn('id', $acts)
+    $all = Activity::where('user_id', $user->id)
                    ->where('created_at', '>=', now()->firstOfMonth())->get();
+    $acts = [];
+    foreach ($all as $act) {
+        if (!isActivityInSchedule($user->activeContract()->schedule, $act)) {
+            $acts[] = $act->id;
+        }
+    }
 
 
     return [
-        'all'  => $all->pluck('id'),
         'acts' => $acts,
     ];
 
@@ -172,7 +122,8 @@ Route::get('/lastMonth', function () {
     $workspace = \App\Models\Workspace::first();
     $users = $workspace->users;
     $acts = DB::table('activities')
-              ->select('user_id', DB::raw('SUM(TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60) as sum_minutes'))
+              ->select('user_id',
+                       DB::raw('SUM(TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60) as sum_minutes'))
               ->where('created_at', '>=', $firstOfMonth)->where('created_at', '<=', $lastOfMonth)->groupBy('user_id')
               ->where('workspace_id', 1)->get();
     $d = [];
@@ -191,7 +142,7 @@ Route::get('/lastMonth', function () {
             'username'    => $user->username,
             'email'       => $user->email,
             'name'        => $user->email,
-            'sum_minutes' => (float)$act->sum_minutes,
+            'sum_minutes' => (float) $act->sum_minutes,
             'act'         => $act,
             'sum_hours'   => \Carbon\CarbonInterval::minutes($act->sum_minutes)->cascade()->forHumans(),
 
