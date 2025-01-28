@@ -264,33 +264,34 @@ function unConvert($value): array|string
 }
 
 
-function activityDiffWithSchedule($dates, $activity, $timezone = 'Asia/Tehran')
+function activityDiffWithSchedule($dates, $activity)
 {
 
-    $join_at = $activity->join_at->timezone($timezone);
-    $left_at = $activity->left_at->timezone($timezone) ?? now()->timezone($timezone);
+    $join_at = $activity->join_at;
+    $left_at = $activity->left_at ?? now();
     $diff = 0;
     foreach ($dates as $date) {
+        foreach ($date['times'] as $dateTime) {
 
+            $start = $dateTime['start'];
+            $end = $dateTime['end'];
 
-        $start = $date['start'];
-        $end = $date['end'];
+            $timeStarted = $join_at;
+            $timeEnded = $left_at;
+            if ($join_at->between($start, $end) || $left_at->between($start, $end)) {
 
-        $timeStarted = $join_at;
-        $timeEnded = $left_at;
-        if ($join_at->between($start, $end) || $left_at->between($start, $end)) {
+                if ($join_at->lt($start)) {
+                    $timeStarted = $start;
 
-            if ($join_at->lt($start)) {
-                $timeStarted = $start;
+                }
+                if ($left_at->gt($end)) {
+                    $timeEnded = $end;
+
+                }
+
+                $diff += $timeEnded->diffInMinutes($timeStarted);
 
             }
-            if ($left_at->gt($end)) {
-                $timeEnded = $end;
-
-            }
-
-            $diff += $timeEnded->diffInMinutes($timeStarted);
-
         }
 
 

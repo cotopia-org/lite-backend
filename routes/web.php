@@ -49,7 +49,6 @@ Route::get('/tester', function () {
         if ($act->left_at === null){
             continue;
         }
-        dd($user->scheduleDates());
         $diff += activityDiffWithSchedule($user->scheduleDates(),$act);
 
     }
