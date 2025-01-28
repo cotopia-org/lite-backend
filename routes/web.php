@@ -41,6 +41,9 @@ Route::get('/tester', function () {
     $user = \App\Models\User::find(18);
 
 
+
+    dd(isActivityInSchedule(\App\Models\Schedule::find(121),Activity::find(30494)));
+
     $schedules = $user->scheduleDates();
 
 

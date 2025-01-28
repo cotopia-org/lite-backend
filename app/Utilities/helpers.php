@@ -101,7 +101,7 @@ function userJoinedToRoomEmit($socket_id, $room_id)
 {
     Redis::publish('joined', json_encode([
                                              'socket_id' => $socket_id,
-                                             'room_id' => $room_id
+                                             'room_id'   => $room_id
                                          ]));
 
 
@@ -261,6 +261,32 @@ function unConvert($value): array|string
     $eastern = ['۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹', '۰'];
 
     return str_replace($western, $eastern, $value);
+}
+
+
+function isActivityInSchedule($schedule, $activity)
+{
+
+    $created_at = $activity->created_at;
+    foreach ($schedule->days as $day) {
+        if ((int) $day->day === $created_at->weekday()) {
+
+            foreach ($day->times as $time) {
+
+                $end = $created_at->timezone($schedule->timezone)->setTimeFromTimeString($time->end);
+                $start = $created_at->timezone($schedule->timezone)->setTimeFromTimeString($time->start);
+                if ($created_at->copy()->timezone($schedule->timezone)->between($start, $end)
+                ) {
+                    return TRUE;
+                }
+
+            }
+
+        }
+    }
+    return FALSE;
+
+
 }
 
 
