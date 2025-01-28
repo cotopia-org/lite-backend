@@ -38,16 +38,54 @@ Route::get('/avatar', function () {
 
 Route::get('/tester', function () {
 
-    foreach (\App\Models\Workspace::find(1)->users as $user) {
-        \App\Models\Folder::create([
-                                       'user_id'      => $user->id,
-                                       'workspace_id' => 1,
-                                       'title'        => 'Jobs'
-                                   ]);
+    $user = \App\Models\User::find(18);
+
+
+    $schedules = $user->scheduleDates();
+
+
+    $acts = [];
+
+    foreach ($schedules as $date => $schedule) {
+
+
+
+        foreach ($schedule['times'] as $time) {
+            $scheduleStart = $time['start'];
+            $scheduleEnd = $time['end'];
+
+            if (!Carbon::parse($date)->gt(now())) {
+
+                $overlappingActivities = Activity::where('user_id', $user->id)
+                                                 ->where(function ($query) use ($scheduleStart, $scheduleEnd) {
+                                                     $query
+                                                         ->whereBetween('join_at', [$scheduleStart, $scheduleEnd])
+                                                         ->orWhereBetween('left_at', [$scheduleStart, $scheduleEnd])
+                                                         ->orWhere(function ($subQuery) use (
+                                                             $scheduleStart, $scheduleEnd
+                                                         ) {
+                                                             $subQuery
+                                                                 ->where('join_at', '<=', $scheduleStart)
+                                                                 ->where('left_at', '>=', $scheduleEnd);
+                                                         });
+                                                 })->get();
+
+
+                foreach ($overlappingActivities as $activity) {
+                    $acts[] = $activity->id;
+
+                }
+
+            }
+
+
+        }
+
+
     }
 
-    dd('Done');
 
+    return $acts;
 
 });
 
