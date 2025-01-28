@@ -293,6 +293,7 @@ function activityDiffWithSchedule($dates, $activity)
                 $scheduleTime += $timeStarted->diffInMinutes($timeEnded);
 
             } else {
+                dd($timeStarted, $timeEnded, $activity);
                 $noneScheduleTime += $timeStarted->diffInMinutes($timeEnded);
             }
         }
@@ -300,7 +301,7 @@ function activityDiffWithSchedule($dates, $activity)
 
     }
     return [
-        'scheduleTime' => $scheduleTime,
+        'scheduleTime'     => $scheduleTime,
         'noneScheduleTime' => $noneScheduleTime
     ];
 
