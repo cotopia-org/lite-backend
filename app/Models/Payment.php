@@ -59,21 +59,9 @@ class Payment extends Model
             if ($value === NULL) {
                 $user = $this->user;
 
-                $contract = $this->contract;
 
-                return $user->getTimeWithSchedule($contract);
-//                $time = $user->calculateCommitment()['done'];
-//
-//
-//                \Carbon\CarbonInterval::setCascadeFactors([
-//                                                              'minute' => [60, 'seconds'],
-//                                                              'hour'   => [60, 'minutes'],
-//                                                          ]);
-//                return [
-//                    'sum_minutes' => $time,
-//                    'sum_hours'   => \Carbon\CarbonInterval::minutes($time)->cascade()->forHumans(),
-//
-//                ];
+                return $user->getTimeWithSchedule($this->contract);
+
             }
             return [
                 'sum_minutes' => $value * 60
