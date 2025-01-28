@@ -56,7 +56,7 @@ Route::get('/tester', function () {
 
     return [
         'scheduled'    => $schedule / 60,
-        'nonScheduled' => $noneSchedule / 60,
+        'nonScheduled' => $noneSchedule,
     ];
 
 });
