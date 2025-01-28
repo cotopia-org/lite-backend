@@ -269,7 +269,8 @@ function activityDiffWithSchedule($dates, $activity)
 
     $join_at = $activity->join_at;
     $left_at = $activity->left_at ?? now();
-    $diff = 0;
+    $scheduleTime = 0;
+    $noneScheduleTime = 0;
     foreach ($dates as $date) {
         foreach ($date['times'] as $dateTime) {
 
@@ -289,14 +290,19 @@ function activityDiffWithSchedule($dates, $activity)
 
                 }
 
-                $diff += $timeStarted->diffInMinutes($timeEnded);
+                $scheduleTime += $timeStarted->diffInMinutes($timeEnded);
 
+            } else {
+                $noneScheduleTime += $timeStarted->diffInMinutes($timeEnded);
             }
         }
 
 
     }
-    return $diff;
+    return [
+        'scheduleTime' => $scheduleTime,
+        'noneScheduleTime' => $noneScheduleTime
+    ];
 
 
 }
