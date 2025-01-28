@@ -191,7 +191,7 @@ class User extends Authenticatable
 
                     foreach ($overlappingActivities as $activity) {
                         $activityStart = $activity->join_at;
-                        $activityEnd = $activity->left_at;
+                        $activityEnd = $activity->left_at ?? now();
 
                         $overlapStart = $activityStart;
                         $overlapEnd = $activityEnd;
