@@ -270,7 +270,6 @@ function activityDiffWithSchedule($dates, $activity)
     $join_at = $activity->join_at;
     $left_at = $activity->left_at ?? now();
     $scheduleTime = 0;
-    $noneScheduleTime = 0;
 
 
     $totalActivityDuration = $join_at->diffInMinutes($left_at);
@@ -312,4 +311,29 @@ function activityDiffWithSchedule($dates, $activity)
 
 }
 
+function isActivityNotInSchedule($dates, $activity) {
+    $join_at = Carbon::parse($activity->join_at);
+    $left_at = Carbon::parse($activity->left_at ?? now());
+
+    // Iterate through the schedule
+    foreach ($dates as $date) {
+        foreach ($date['times'] as $dateTime) {
+            $start = Carbon::parse($dateTime['start']);
+            $end = Carbon::parse($dateTime['end']);
+
+            // Adjust schedule times to the activity's date
+            $scheduleStart = $join_at->copy()->setTime($start->hour, $start->minute);
+            $scheduleEnd = $join_at->copy()->setTime($end->hour, $end->minute);
+
+            // Check if the activity overlaps with this time slot
+            if ($join_at->lt($scheduleEnd) && $left_at->gt($scheduleStart)) {
+                // Activity overlaps with this time slot
+                return false;
+            }
+        }
+    }
+
+    // Activity does not overlap with any time slot
+    return true;
+}
 

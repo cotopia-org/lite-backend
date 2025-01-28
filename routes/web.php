@@ -46,16 +46,21 @@ Route::get('/tester', function () {
     $schedule = 0;
     $noneSchedule = 0;
     $dates = $user->scheduleDates();
+    $acts = [];
     foreach ($all as $act) {
 
         $diffs = activityDiffWithSchedule($dates, $act);
         $schedule += $diffs['scheduleTime'];
         $noneSchedule += $diffs['noneScheduleTime'];
+        if (!isActivityNotInSchedule($dates, $act)) {
+            $acts[] = $act->id;
+        }
 
     }
 
 
     return [
+        'acts'         => $acts,
         'scheduled'    => $schedule / 60,
         'nonScheduled' => $noneSchedule / 60,
     ];
