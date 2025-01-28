@@ -268,7 +268,7 @@ function isActivityInSchedule($schedule, $activity)
 {
 
     $join_at = $activity->join_at;
-    $left_at = $activity->left_at;
+    $left_at = $activity->left_at === null ?? now();
     foreach ($schedule->days as $day) {
         if ((int) $day->day === $join_at->weekday()) {
 
