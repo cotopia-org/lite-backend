@@ -511,7 +511,7 @@ class User extends Authenticatable
     public function getTimeWithSchedule($contract)
     {
         $user = $this;
-
+        dd($contract);
         if ($contract === NULL) {
             return [
                 'sum_minutes'     => 0,
