@@ -277,6 +277,7 @@ function isActivityInSchedule($schedule, $activity)
                 $start = $created_at->timezone($schedule->timezone)->setTimeFromTimeString($time->start);
                 if ($created_at->copy()->timezone($schedule->timezone)->between($start, $end)
                 ) {
+                    dd($created_at->copy()->timezone($schedule->timezone),$start,$end);
                     return TRUE;
                 }
 
