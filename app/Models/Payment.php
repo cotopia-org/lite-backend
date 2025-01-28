@@ -57,7 +57,8 @@ class Payment extends Model {
 
                 $contract = $this->contract;
 
-                return $user->getTime($contract->start_at, $contract->end_at, $contract->workspace_id);
+//                return $user->getTime($contract->start_at, $contract->end_at, $contract->workspace_id);
+                return $user->calculateCommitment()['done'];
             }
             return [
                 'sum_minutes' => $value * 60,
