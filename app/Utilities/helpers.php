@@ -276,7 +276,10 @@ function isActivityInSchedule($schedule, $activity)
 
                 $end = $join_at->copy()->timezone($schedule->timezone)->setTimeFromTimeString($time->end);
                 $start = $join_at->copy()->timezone($schedule->timezone)->setTimeFromTimeString($time->start);
-                if ($join_at->between($start, $end) && $left_at->between($start, $end)) {
+                if ($join_at->copy()->timezone($schedule->timezone)->between($start, $end) && $left_at->copy()
+                                                                                                      ->timezone($schedule->timezone)
+                                                                                                      ->between($start,
+                                                                                                                $end)) {
                     return TRUE;
                 }
 
