@@ -311,11 +311,13 @@ function activityDiffWithSchedule($dates, $activity)
 
 }
 
-function isActivityNotInSchedule($dates, $activity) {
+function getNonScheduleTimes($dates, $activity) {
     $join_at = Carbon::parse($activity->join_at);
     $left_at = Carbon::parse($activity->left_at ?? now());
 
-    // Iterate through the schedule
+    $overlappingIntervals = [];
+
+    // Iterate through the schedule to find overlapping intervals
     foreach ($dates as $date) {
         foreach ($date['times'] as $dateTime) {
             $start = Carbon::parse($dateTime['start']);
@@ -327,13 +329,62 @@ function isActivityNotInSchedule($dates, $activity) {
 
             // Check if the activity overlaps with this time slot
             if ($join_at->lt($scheduleEnd) && $left_at->gt($scheduleStart)) {
-                // Activity overlaps with this time slot
-                return false;
+                // Calculate the overlap
+                $overlapStart = max($join_at, $scheduleStart);
+                $overlapEnd = min($left_at, $scheduleEnd);
+
+                // Store the overlapping interval
+                $overlappingIntervals[] = [$overlapStart, $overlapEnd];
             }
         }
     }
 
-    // Activity does not overlap with any time slot
-    return true;
+    // Sort overlapping intervals by start time
+    usort($overlappingIntervals, function ($a, $b) {
+        return $a[0]->gt($b[0]);
+    });
+
+    // Merge overlapping intervals to avoid duplicates
+    $mergedIntervals = [];
+    $prevInterval = null;
+
+    foreach ($overlappingIntervals as $interval) {
+        if ($prevInterval && $interval[0]->lte($prevInterval[1])) {
+            // Merge overlapping intervals
+            $prevInterval[1] = max($prevInterval[1], $interval[1]);
+        } else {
+            // Add new interval
+            $mergedIntervals[] = $interval;
+            $prevInterval = $interval;
+        }
+    }
+
+    // Calculate non-overlapping intervals
+    $nonOverlappingIntervals = [];
+    $prevEnd = $join_at;
+
+    foreach ($mergedIntervals as $interval) {
+        if ($prevEnd->lt($interval[0])) {
+            // Add the non-overlapping interval before this overlapping interval
+            $nonOverlappingIntervals[] = [$prevEnd, $interval[0]];
+        }
+        $prevEnd = max($prevEnd, $interval[1]);
+    }
+
+    // Add the non-overlapping interval after the last overlapping interval
+    if ($prevEnd->lt($left_at)) {
+        $nonOverlappingIntervals[] = [$prevEnd, $left_at];
+    }
+
+    // Calculate the total non-schedule time
+    $noneScheduleTime = 0;
+    foreach ($nonOverlappingIntervals as $interval) {
+        $noneScheduleTime += $interval[0]->diffInMinutes($interval[1]);
+    }
+
+    return [
+        'nonOverlappingIntervals' => $nonOverlappingIntervals,
+        'noneScheduleTime'        => $noneScheduleTime,
+    ];
 }
 
