@@ -264,41 +264,48 @@ function unConvert($value): array|string
 }
 
 
-function isActivityInSchedule($schedule, $activity)
+function activityDiffWithSchedule($schedule, $activity)
 {
 
     $join_at = $activity->join_at;
     $left_at = $activity->left_at ?? now();
+    $diff = 0;
     foreach ($schedule->days as $day) {
         if ((int) $day->day === $join_at->weekday()) {
 
             foreach ($day->times as $time) {
 
-                $end = $join_at->copy()->timezone($schedule->timezone)->setTimeFromTimeString($time->end);
-                $start = $join_at->copy()->timezone($schedule->timezone)->setTimeFromTimeString($time->start);
 
+                $j = $join_at->copy()->timezone($schedule->timezone);
+                $l = $left_at->copy()->timezone($schedule->timezone);
 
+                $end = $j->setTimeFromTimeString($time->end);
+                $start = $j->setTimeFromTimeString($time->start);
 
+                $timeStarted = $j;
+                $timeEnded = $l;
+                if ($j->between($start, $end) || $l->between($start, $end)) {
 
+                    if ($j->lt($start)) {
+                        $timeStarted = $start;
 
-                if ($join_at->copy()->timezone($schedule->timezone)->between($start, $end) || $left_at->copy()
-                                                                                                      ->timezone($schedule->timezone)
-                                                                                                      ->between($start,
-                                                                                                                $end)) {
-                    return TRUE;
+                    }
+                    if ($l->gt($end)) {
+                        $timeEnded = $end;
+
+                    }
+
+                    $diff += $timeStarted->diffInMinutes($timeEnded);
+
                 }
 
-//                else {
-//                    dd(   $join_at->copy()->timezone($schedule->timezone), $left_at->copy()
-//                                                                                   ->timezone($schedule->timezone)
-//                        , $start, $end);
-//                }
+
 
             }
 
         }
     }
-    return FALSE;
+    return $diff;
 
 
 }
