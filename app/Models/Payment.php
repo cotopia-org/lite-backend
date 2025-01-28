@@ -70,7 +70,7 @@ class Payment extends Model
                                                               'hour'   => [60, 'minutes'],
                                                           ]);
                 return [
-                    'sum_minutes' => $time['done'],
+                    'sum_minutes' => $time,
                     'sum_hours'   => \Carbon\CarbonInterval::minutes($time)->cascade()->forHumans(),
 
                 ];
