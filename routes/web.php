@@ -44,15 +44,18 @@ Route::get('/tester', function () {
     $all = Activity::where('user_id', $user->id)
                    ->where('created_at', '>=', now()->firstOfMonth())->get();
     $acts = [];
+    $diff = 0;
     foreach ($all as $act) {
         if (!isActivityInSchedule($user->activeContract()->schedule, $act)) {
             $acts[] = $act->id;
+            $diff += $act->left_at === NULL ? now()->diffInMinutes($act->join_at) : $act->left_at->diffInMinutes($act->join_at);
         }
     }
 
 
     return [
         'acts' => $acts,
+        'diff' => $diff,
     ];
 
 });

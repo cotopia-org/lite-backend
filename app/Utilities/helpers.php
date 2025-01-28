@@ -267,16 +267,16 @@ function unConvert($value): array|string
 function isActivityInSchedule($schedule, $activity)
 {
 
-    $created_at = $activity->created_at;
+    $join_at = $activity->join_at;
+    $left_at = $activity->left_at;
     foreach ($schedule->days as $day) {
-        if ((int) $day->day === $created_at->weekday()) {
+        if ((int) $day->day === $join_at->weekday()) {
 
             foreach ($day->times as $time) {
 
-                $end = $created_at->copy()->timezone($schedule->timezone)->setTimeFromTimeString($time->end);
-                $start = $created_at->copy()->timezone($schedule->timezone)->setTimeFromTimeString($time->start);
-                if ($created_at->copy()->timezone($schedule->timezone)->between($start, $end)
-                ) {
+                $end = $join_at->copy()->timezone($schedule->timezone)->setTimeFromTimeString($time->end);
+                $start = $join_at->copy()->timezone($schedule->timezone)->setTimeFromTimeString($time->start);
+                if ($join_at->between($start, $end) && $left_at->between($start, $end)) {
                     return TRUE;
                 }
 
