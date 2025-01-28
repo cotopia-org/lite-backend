@@ -193,24 +193,23 @@ class User extends Authenticatable
                         $activityStart = $activity->join_at;
                         $activityEnd = $activity->left_at ?? now();
 
-                        $overlapStart = $activityStart;
-                        $overlapEnd = $activityEnd;
-                        if ($activityStart->lt($scheduleStart)) {
-                            $overlapStart = $scheduleStart;
-                        }
-
-                        if ($activityEnd->gt($scheduleEnd)) {
-                            $overlapStart = $scheduleEnd;
-                        }
-
-//                        $overlapStart = max($scheduleStart, $activityStart);
-//                        $overlapEnd = min($scheduleEnd, $activityEnd);
-
-                        $totalOverlapDuration += $overlapStart->diffInMinutes($overlapEnd);
-
-//                        if ($overlapStart < $overlapEnd) {
-//                            $totalOverlapDuration += $overlapStart->diffInMinutes($overlapEnd);
+//                        $overlapStart = $activityStart;
+//                        $overlapEnd = $activityEnd;
+//                        if ($activityStart->lt($scheduleStart)) {
+//                            $overlapStart = $scheduleStart;
 //                        }
+//
+//                        if ($activityEnd->gt($scheduleEnd)) {
+//                            $overlapStart = $scheduleEnd;
+//                        }
+
+                        $overlapStart = max($scheduleStart, $activityStart);
+                        $overlapEnd = min($scheduleEnd, $activityEnd);
+
+
+                        if ($overlapStart < $overlapEnd) {
+                            $totalOverlapDuration += $overlapStart->diffInMinutes($overlapEnd);
+                        }
                     }
 
                 }
