@@ -273,11 +273,11 @@ function isActivityInSchedule($schedule, $activity)
 
             foreach ($day->times as $time) {
 
-                $end = $created_at->timezone($schedule->timezone)->setTimeFromTimeString($time->end);
-                $start = $created_at->timezone($schedule->timezone)->setTimeFromTimeString($time->start);
+                $end = $created_at->copy()->timezone($schedule->timezone)->setTimeFromTimeString($time->end);
+                $start = $created_at->copy()->timezone($schedule->timezone)->setTimeFromTimeString($time->start);
                 if ($created_at->copy()->timezone($schedule->timezone)->between($start, $end)
                 ) {
-                    dd($created_at->copy()->timezone($schedule->timezone),$start,$end);
+                    dd($created_at->copy()->timezone($schedule->timezone), $start, $end);
                     return TRUE;
                 }
 
