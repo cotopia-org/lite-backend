@@ -71,7 +71,17 @@ Route::get('/tester', function () {
 
 
                 foreach ($overlappingActivities as $activity) {
-                    $acts[] = $activity->id;
+                    $activityStart = $activity->join_at;
+                    $activityEnd = $activity->left_at;
+
+
+                    $overlapStart = max($scheduleStart, $activityStart);
+                    $overlapEnd = min($scheduleEnd, $activityEnd);
+
+
+                    if ($overlapStart < $overlapEnd) {
+                        $acts[] = $activity->id;
+                    }
 
                 }
 
