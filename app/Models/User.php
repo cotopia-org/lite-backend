@@ -525,7 +525,7 @@ class User extends Authenticatable
                         ->where('created_at', '>=', $contract->start_at)->where('created_at', '<=', $contract->end_at)
                         ->get();
         $diffs = 0;
-        $dates = $user->scheduleDates();
+        $dates = $user->scheduleDates($contract);
 
         foreach ($acts as $act) {
 

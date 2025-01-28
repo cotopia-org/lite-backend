@@ -59,8 +59,14 @@ class Payment extends Model
             if ($value === NULL) {
                 $user = $this->user;
 
+                if ($this->contract_id === $user->activeCotranct()->id){
+                    return $user->getTimeWithSchedule($this->contract);
 
-                return $user->getTimeWithSchedule($this->contract);
+                }
+
+                $contract = $this->contract;
+                return $user->getTime($contract->start_at,$contract->end_at,$contract->workspace_id);
+
 
             }
             return [
