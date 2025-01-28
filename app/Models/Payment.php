@@ -32,7 +32,7 @@ class Payment extends Model
                 $contract = $this->contract;
 
                 $total_hours = $this->total_hours;
-                return $contract->amount * ($total_hours / 60);
+                return $contract->amount * ($total_hours['sum_minutes'] / 60);
             }
             return $value;
         });
@@ -62,9 +62,22 @@ class Payment extends Model
 //                $contract = $this->contract;
 
 //                return $user->getTime($contract->start_at, $contract->end_at, $contract->workspace_id);
-                return $user->calculateCommitment()['done'];
+                $time = $user->calculateCommitment()['done'];
+
+
+                \Carbon\CarbonInterval::setCascadeFactors([
+                                                              'minute' => [60, 'seconds'],
+                                                              'hour'   => [60, 'minutes'],
+                                                          ]);
+                return [
+                    'sum_minutes' => $time['done'],
+                    'sum_hours'   => \Carbon\CarbonInterval::minutes($time)->cascade()->forHumans(),
+
+                ];
             }
-            return $value * 60;
+            return [
+                'sum_minutes' => $value * 60
+            ];
         });
     }
 
