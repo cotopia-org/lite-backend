@@ -38,7 +38,7 @@ Route::get('/avatar', function () {
 
 Route::get('/tester', function () {
 
-    $user = \App\Models\User::find(18);
+    $user = \App\Models\User::find(request('user_id'));
 
 
     $all = Activity::where('user_id', $user->id)
