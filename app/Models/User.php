@@ -521,16 +521,16 @@ class User extends Authenticatable
 
             ];
         }
-        $all = Activity::where('user_id', $user->id)
-                       ->where('workspace_id', $contract->worksapce_id)
-                       ->where('created_at', '>=', $contract->start_at)->where('created_at', '<=', $contract->end_at)
-                       ->get();
+        $acts = Activity::where('user_id', $user->id)
+                        ->where('workspace_id', $contract->worksapce_id)
+                        ->where('created_at', '>=', $contract->start_at)->where('created_at', '<=', $contract->end_at)
+                        ->get();
         $diffs = 0;
         $dates = $user->scheduleDates();
 
-        foreach ($all as $act) {
+        foreach ($acts as $act) {
 
-            $diffs = activityDiffWithSchedule($dates, $act);
+            $diffs += activityDiffWithSchedule($dates, $act);
 
 
         }
