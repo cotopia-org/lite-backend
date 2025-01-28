@@ -45,9 +45,10 @@ Route::get('/tester', function () {
                    ->where('created_at', '>=', now()->firstOfMonth())->get();
     $schedule = 0;
     $noneSchedule = 0;
+    $dates = $user->scheduleDates();
     foreach ($all as $act) {
 
-        $diffs = activityDiffWithSchedule($user->scheduleDates(), $act);
+        $diffs = activityDiffWithSchedule($dates, $act);
         $schedule += $diffs['scheduleTime'];
         $noneSchedule += $diffs['noneScheduleTime'];
 
