@@ -46,6 +46,7 @@ Route::get('/tester', function () {
     $schedule = 0;
     $dates = $user->scheduleDates();
     $acts = [];
+    $delta = 0;
     foreach ($all as $act) {
 
         $diffs = activityDiffWithSchedule($dates, $act);
@@ -59,6 +60,7 @@ Route::get('/tester', function () {
                 'scheduleDiff' => $diffs,
                 'allDiff'      => $act->join_at->diffInMinutes($act->left_at ?? now())
             ];
+            $delta += $realDiff - $diffs;
 
         }
 
@@ -69,6 +71,7 @@ Route::get('/tester', function () {
     return [
         'scheduled' => $schedule / 60,
         '$acts'     => $acts,
+        '$delta'    => $delta,
     ];
 
 });
