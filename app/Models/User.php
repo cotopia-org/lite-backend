@@ -228,7 +228,12 @@ class User extends Authenticatable {
         $averageWorked = $totalOverlapDuration / $totalDaysUntilNow;
 
 
-        $mustWorkPerDay = ((($totalScheduleDuration * $scheduleThreshold) - $totalOverlapDuration) / ($totalDays - $totalDaysUntilNow)) - $averageWorked;
+        if ($totalDays - $totalDaysUntilNow === 0){
+            $mustWorkPerDay = 0;
+        }else{
+            $mustWorkPerDay = ((($totalScheduleDuration * $scheduleThreshold) - $totalOverlapDuration) / ($totalDays - $totalDaysUntilNow)) - $averageWorked;
+
+        }
 
 
         return [
