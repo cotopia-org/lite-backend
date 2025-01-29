@@ -45,7 +45,8 @@ class UserResource extends JsonResource {
                 ];
             }),
             'schedule_hours_in_week'  => $this->getScheduledHoursInWeek(),
-            'created_at'              => $this->created_at->timestamp
+            'created_at'              => $this->created_at->timestamp,
+            'hasTimeCounted'          => $this->hasTimeCounted()
 
 
         ];

@@ -27,7 +27,8 @@ class UserMinimalResource extends JsonResource {
             'voice_status'       => $this->voice_status,
             'screenshare_status' => $this->screenshare_status,
             'hard_muted'         => $this->hard_muted,
-            'created_at'         => $this->created_at->timestamp
+            'created_at'         => $this->created_at->timestamp,
+            'hasTimeCounted'     => $this->hasTimeCounted()
 
 
         ];

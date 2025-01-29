@@ -181,17 +181,17 @@ class User extends Authenticatable {
 
                     foreach ($overlappingActivities as $activity) {
                         $activityStart = $activity->join_at;
-                        $activityEnd = $activity->left_at ;
+                        $activityEnd = $activity->left_at;
 
-//                        $overlapStart = $activityStart;
-//                        $overlapEnd = $activityEnd;
-//                        if ($activityStart->lt($scheduleStart)) {
-//                            $overlapStart = $scheduleStart;
-//                        }
-//
-//                        if ($activityEnd->gt($scheduleEnd)) {
-//                            $overlapStart = $scheduleEnd;
-//                        }
+                        //                        $overlapStart = $activityStart;
+                        //                        $overlapEnd = $activityEnd;
+                        //                        if ($activityStart->lt($scheduleStart)) {
+                        //                            $overlapStart = $scheduleStart;
+                        //                        }
+                        //
+                        //                        if ($activityEnd->gt($scheduleEnd)) {
+                        //                            $overlapStart = $scheduleEnd;
+                        //                        }
 
                         $overlapStart = max($scheduleStart, $activityStart);
                         $overlapEnd = min($scheduleEnd, $activityEnd);
@@ -228,9 +228,9 @@ class User extends Authenticatable {
         $averageWorked = $totalOverlapDuration / $totalDaysUntilNow;
 
 
-        if ($totalDays - $totalDaysUntilNow === 0){
+        if ($totalDays - $totalDaysUntilNow === 0) {
             $mustWorkPerDay = 0;
-        }else{
+        } else {
             $mustWorkPerDay = ((($totalScheduleDuration * $scheduleThreshold) - $totalOverlapDuration) / ($totalDays - $totalDaysUntilNow)) - $averageWorked;
 
         }
@@ -686,6 +686,22 @@ class User extends Authenticatable {
             }
         }
         return $abilities;
+
+    }
+
+    public function hasTimeCounted() {
+        $user = $this;
+        $time_start = TRUE;
+
+
+        if ($user->activeContract() !== NULL) {
+            if ($user->activeContract()->in_schedule && !isNowInUserSchedule($user->activeContract()->schedule)) {
+                $time_start = FALSE;
+
+            }
+        }
+
+        return $time_start;
 
     }
 }

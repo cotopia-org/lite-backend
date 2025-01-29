@@ -81,6 +81,8 @@ Route::middleware('auth:sanctum')->group(callback: function () {
         Route::get('/talks', 'talks');
 
         Route::get('/{user}/toggleHardMute', 'toggleHardMute');
+        Route::get('/isTimeCounting', 'isTimeCounting');
+
 
 
     });

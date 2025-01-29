@@ -223,6 +223,21 @@ class UserController extends Controller {
         return api($response);
     }
 
+    public function isTimeCounting() {
+        $user = auth()->user();
+        $time_start = TRUE;
+
+
+        if ($user->activeContract() !== NULL) {
+            if ($user->activeContract()->in_schedule && !isNowInUserSchedule($user->activeContract()->schedule)) {
+                $time_start = FALSE;
+
+            }
+        }
+
+        return api($time_start);
+    }
+
     public function activities(Request $request) {
         $user = auth()->user();
         $time_start = TRUE;
