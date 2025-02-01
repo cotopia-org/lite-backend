@@ -31,6 +31,7 @@ return new class extends Migration {
             $table->string('contractor_status')->default('will_renew');
 
             $table->integer('min_hours')->default(40);
+            $table->integer('min_commitment_percent')->default(50);
             $table->integer('max_hours')->default(250);
 
             $table->string('payment_method')->default('trc20');
@@ -46,6 +47,7 @@ return new class extends Migration {
             $table->foreignId('workspace_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
 
             $table->boolean('in_schedule')->default(FALSE);
+            $table->boolean('in_job')->default(FALSE);
 
             $table->longText('content')->nullable();
 

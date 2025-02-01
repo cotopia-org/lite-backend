@@ -138,18 +138,7 @@ class RoomController extends Controller {
         }
 
 
-        $time_start = TRUE;
-
-
-        if ($user->activeContract() !== NULL) {
-            if ($user->activeContract()->in_schedule && !isNowInUserSchedule($user->activeContract()->schedule)) {
-                $time_start = FALSE;
-
-            }
-        } else {
-            $time_start = FALSE;
-
-        }
+        $time_start = $user->timeStarted();
 
 
         if ($before_room === NULL && $time_start) {

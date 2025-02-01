@@ -30,21 +30,13 @@ class CheckInScheduleCommand extends Command {
         $online_users = User::whereStatus('online')->whereNotNull('room_id')->get();
         foreach ($online_users as $user) {
 
-            $activeContract = $user->activeContract();
 
+            if ($user->timeStarted()) {
+                $this->start($user);
 
-            if ($activeContract === NULL) {
+            } else {
                 $this->stop($user);
 
-            } elseif ($activeContract->in_schedule) {
-
-                if (isNowInUserSchedule($activeContract->schedule)) {
-                    $this->start($user);
-
-                } else {
-                    $this->stop($user);
-
-                }
             }
 
 

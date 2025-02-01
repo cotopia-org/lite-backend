@@ -43,6 +43,8 @@ class ContractResource extends JsonResource {
             'schedule'               => ScheduleResource::make($this->schedule),
             'text'                   => $this->text(),
             'status'                 => $this->status(),
+            'in_job'                 => $this->in_job,
+            'min_commitment_percent' => $this->min_commitment_percent,
         ];
     }
 }

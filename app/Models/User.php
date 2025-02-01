@@ -122,7 +122,7 @@ class User extends Authenticatable {
     }
 
 
-    public function calculateCommitment($contract = null) {
+    public function calculateCommitment($contract = NULL) {
         $user = $this;
 
 
@@ -217,7 +217,7 @@ class User extends Authenticatable {
         }
 
 
-        $scheduleThreshold = 0.5;
+        $scheduleThreshold = $contract->min_commitment_percent;
         $totalDays = count($schedules);
         $done = $totalOverlapDuration;
         $missing = $totalUntilNowDuration - $done;
@@ -247,6 +247,7 @@ class User extends Authenticatable {
             "totalDaysUntilNow"        => $totalDaysUntilNow,
             "minimumWork"              => $totalScheduleDuration * $scheduleThreshold,
             "average"                  => $averageWorked,
+            "min_commitment_percent"                  => $scheduleThreshold,
         ];
     }
 
@@ -694,19 +695,25 @@ class User extends Authenticatable {
 
     }
 
-    public function hasTimeCounted() {
+    public function timeStarted() {
         $user = $this;
-        $time_start = TRUE;
 
 
-        if ($user->activeContract() !== NULL) {
-            if ($user->activeContract()->in_schedule && !isNowInUserSchedule($user->activeContract()->schedule)) {
-                $time_start = FALSE;
+        $activeContract = $user->activeContract();
 
-            }
+        if ($activeContract === NULL) {
+            return FALSE;
+        }
+        if ($activeContract->in_schedule && !isNowInUserSchedule($activeContract->schedule)) {
+            return FALSE;
+
+        }
+        if ($activeContract->in_job && $user->active_job_id === NULL) {
+            return FALSE;
+
         }
 
-        return $time_start;
+        return TRUE;
 
     }
 }

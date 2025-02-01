@@ -184,18 +184,13 @@ class UserController extends Controller {
 
             $room = $user->room;
 
-
-            if ($user->activeContract() !== NULL) {
-                if ($user->activeContract()->in_schedule && isNowInUserSchedule($user->activeContract()->schedule)) {
-
-                    acted($user->id, $room->workspace_id, $room->id, $user->active_job_id, 'time_started', 'UserController@unGhost');
-                    if ($user->active_job_id !== NULL) {
-                        acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_started', 'UserController@unGhost');
-
-                    }
-                    $user->joined($room, 'Connected From UserController unGhost Method');
+            if ($user->timeStarted()) {
+                acted($user->id, $room->workspace_id, $room->id, $user->active_job_id, 'time_started', 'UserController@unGhost');
+                if ($user->active_job_id !== NULL) {
+                    acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_started', 'UserController@unGhost');
 
                 }
+                $user->joined($room, 'Connected From UserController unGhost Method');
             }
 
 
@@ -225,17 +220,8 @@ class UserController extends Controller {
 
     public function isTimeCounting() {
         $user = auth()->user();
-        $time_start = TRUE;
 
-
-        if ($user->activeContract() !== NULL) {
-            if ($user->activeContract()->in_schedule && !isNowInUserSchedule($user->activeContract()->schedule)) {
-                $time_start = FALSE;
-
-            }
-        }
-
-        return api($time_start);
+        return api($user->timeStarted());
     }
 
     public function activities(Request $request) {
@@ -383,19 +369,16 @@ class UserController extends Controller {
 
             $room = $user->room;
 
-
-            if ($user->activeContract() !== NULL) {
-                if ($user->activeContract()->in_schedule && isNowInUserSchedule($user->activeContract()->schedule)) {
-
-                    acted($user->id, $room->workspace_id, $room->id, $user->active_job_id, 'time_started', 'UserController@beOnline');
-                    if ($user->active_job_id !== NULL) {
-                        acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_started', 'UserController@beOnline');
-
-                    }
-                    $user->joined($room, 'Connected From UserController beOnline Method');
+            if ($user->timeStarted()) {
+                acted($user->id, $room->workspace_id, $room->id, $user->active_job_id, 'time_started', 'UserController@beOnline');
+                if ($user->active_job_id !== NULL) {
+                    acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_started', 'UserController@beOnline');
 
                 }
+                $user->joined($room, 'Connected From UserController beOnline Method');
             }
+
+
             sendSocket(Constants::userUpdated, $user->room->channel, UserMinimalResource::make($user));
 
         }

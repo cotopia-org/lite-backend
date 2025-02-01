@@ -36,6 +36,8 @@ class Contract extends Model {
         'in_schedule',
         'content',
         'schedule_id',
+        'min_commitment_percent',
+        'in_job'
     ];
 
     protected function content(): Attribute {
