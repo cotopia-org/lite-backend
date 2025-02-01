@@ -125,6 +125,9 @@ class User extends Authenticatable {
     public function calculateCommitment($contract = NULL) {
         $user = $this;
 
+        if ($contract === NULL) {
+            $contract = $user->activeContract();
+        }
 
         $schedules = $user->scheduleDates($contract);
         if (count($schedules) < 1) {
@@ -247,7 +250,7 @@ class User extends Authenticatable {
             "totalDaysUntilNow"        => $totalDaysUntilNow,
             "minimumWork"              => $totalScheduleDuration * $scheduleThreshold,
             "average"                  => $averageWorked,
-            "min_commitment_percent"                  => $scheduleThreshold,
+            "min_commitment_percent"   => $scheduleThreshold,
         ];
     }
 
