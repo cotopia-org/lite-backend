@@ -510,7 +510,10 @@ class User extends Authenticatable {
         //        }
         $time = $this->calculateCommitment($contract);
 
-
+        \Carbon\CarbonInterval::setCascadeFactors([
+                                                      'minute' => [60, 'seconds'],
+                                                      'hour'   => [60, 'minutes'],
+                                                  ]);
         return [
             'sum_minutes'     => $time['done'],
             'idle_minutes'    => 0,
