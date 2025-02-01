@@ -4,6 +4,7 @@ use Agence104\LiveKit\RoomServiceClient;
 use App\Models\Activity;
 use App\Models\Contract;
 use App\Models\Job;
+use App\Models\Payment;
 use App\Utilities\Constants;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -14,7 +15,7 @@ Route::get('/', function () {
     return redirect('https://lite.cotopia.social');
 });
 Route::get('/avatar', function () {
-    $numericValue = (int) today()->timestamp;
+    $numericValue = (int)today()->timestamp;
 
     // Use a hashing function to generate a more evenly distributed value.
     $hashedValue = crc32($numericValue);
@@ -38,42 +39,23 @@ Route::get('/avatar', function () {
 
 Route::get('/tester', function () {
 
-    $user = \App\Models\User::find(request('user_id'));
+    $user = \App\Models\User::first();
 
-
-    $all = Activity::where('user_id', $user->id)
-                   ->where('created_at', '>=', now()->firstOfMonth())->get();
-    $schedule = 0;
-    $dates = $user->scheduleDates();
-    $acts = [];
-    $delta = 0;
-    foreach ($all as $act) {
-
-        $diffs = activityDiffWithSchedule($dates, $act);
-        $schedule += $diffs;
-        $realDiff = $act->join_at->diffInMinutes($act->left_at ?? now());
-        if ($realDiff !== $diffs) {
-            $acts[] = [
-                'id'           => $act->id,
-                'join_at'      => $act->join_at,
-                'left_at'      => $act->left_at,
-                'scheduleDiff' => $diffs,
-                'allDiff'      => $act->join_at->diffInMinutes($act->left_at ?? now()),
-            ];
-            $delta += $realDiff - $diffs;
-
-        }
-
-
-    }
-
-
-    return [
-        'scheduled' => $schedule / 60,
-        '$delta'    => $delta / 60,
-        '$acts'     => $acts,
-    ];
-
+    dd($user->activeContract());
+    //    $contracts = Contract::where('created_at','>=');
+    //
+    //
+    //    $contract = Contract::create($request->all());
+    //
+    //
+    //    $payment = Payment::create([
+    //                                   'status'      => 'pending',
+    //                                   'amount'      => NULL,
+    //                                   'total_hours' => NULL,
+    //                                   'type'        => 'salary',
+    //                                   'user_id'     => $request->user_id,
+    //                                   'contract_id' => $contract->id
+    //                               ]);
 });
 
 
@@ -141,8 +123,7 @@ Route::get('/lastMonth', function () {
     $workspace = \App\Models\Workspace::first();
     $users = $workspace->users;
     $acts = DB::table('activities')
-              ->select('user_id',
-                       DB::raw('SUM(TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60) as sum_minutes'))
+              ->select('user_id', DB::raw('SUM(TIMESTAMPDIFF(SECOND, join_at, IFNULL(left_at, NOW())) / 60) as sum_minutes'))
               ->where('created_at', '>=', $firstOfMonth)->where('created_at', '<=', $lastOfMonth)->groupBy('user_id')
               ->where('workspace_id', 1)->get();
     $d = [];
@@ -161,7 +142,7 @@ Route::get('/lastMonth', function () {
             'username'    => $user->username,
             'email'       => $user->email,
             'name'        => $user->email,
-            'sum_minutes' => (float) $act->sum_minutes,
+            'sum_minutes' => (float)$act->sum_minutes,
             'act'         => $act,
             'sum_hours'   => \Carbon\CarbonInterval::minutes($act->sum_minutes)->cascade()->forHumans(),
 
