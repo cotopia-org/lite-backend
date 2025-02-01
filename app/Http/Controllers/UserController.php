@@ -232,16 +232,18 @@ class UserController extends Controller {
 
         if ($activeContract === NULL) {
             $desc = 'No active contract';
-        }
-        if ($activeContract->in_schedule && !isNowInUserSchedule($activeContract->schedule)) {
-            $desc = 'No schedule for now';
+        } else {
+            if ($activeContract->in_schedule && !isNowInUserSchedule($activeContract->schedule)) {
+                $desc = 'No schedule for now';
 
-        }
-        if ($activeContract->in_job && $user->active_job_id === NULL) {
-            $desc = 'No active job';
+            }
+            if ($activeContract->in_job && $user->active_job_id === NULL) {
+                $desc = 'No active job';
 
 
+            }
         }
+
         if ($request->new) {
 
             return api([
