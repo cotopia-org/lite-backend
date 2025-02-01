@@ -85,9 +85,8 @@ class User extends Authenticatable {
 
 
         $now = now();
-
         return $this
-            ->contracts()->whereDate('start_at', '<=', $now)->whereDate('end_at', '>=', $now)
+            ->contracts()->where('start_at', '<=', $now)->where('end_at', '>=', $now)
             ->where('user_sign_status', TRUE)->where('contractor_sign_status', TRUE)->first();
     }
 
