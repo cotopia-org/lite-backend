@@ -111,15 +111,15 @@ function isNowInUserSchedule($schedule) {
         if ((int)$day->day === $now->weekday()) {
 
             foreach ($day->times as $time) {
-                $start = $now->setTimeFromTimeString($time->start);
-                $end = $now->setTimeFromTimeString($time->end);
+                $start = $now->copy()->setTimeFromTimeString($time->start);
+                $end = $now->copy()->setTimeFromTimeString($time->end);
 
 
                 logger('Start ' . $start);
                 logger('End ' . $end);
                 logger('Now ' . $now);
 
-                if ($now->between($start, $end)) {
+                if ($now->copy()->between($start, $end)) {
                     return TRUE;
                 }
 
