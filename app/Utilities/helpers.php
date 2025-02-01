@@ -115,10 +115,6 @@ function isNowInUserSchedule($schedule) {
                 $end = $now->copy()->setTimeFromTimeString($time->end);
 
 
-                logger('Start ' . $start);
-                logger('End ' . $end);
-                logger('Now ' . $now);
-
                 if ($now->copy()->between($start, $end)) {
                     return TRUE;
                 }
