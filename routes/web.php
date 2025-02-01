@@ -43,23 +43,12 @@ Route::get('/tester', function () {
     $lastMonth = now()->subMonth();
     $contracts = Contract::where('start_at', '>=', '2024-12-31 00:00:00')->where('user_sign_status', TRUE)
                          ->where('contractor_sign_status', TRUE)->get();
-    dd($contracts->count());
 
     foreach ($contracts as $contract) {
 
+        $contract->renew();
     }
-
-    //    $contract = Contract::create($request->all());
-    //
-    //
-    //    $payment = Payment::create([
-    //                                   'status'      => 'pending',
-    //                                   'amount'      => NULL,
-    //                                   'total_hours' => NULL,
-    //                                   'type'        => 'salary',
-    //                                   'user_id'     => $request->user_id,
-    //                                   'contract_id' => $contract->id
-    //                               ]);
+    dd('Done');
 });
 
 

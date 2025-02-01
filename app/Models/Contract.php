@@ -121,6 +121,10 @@ class Contract extends Model {
         $attrs = $this->toArray();
         $attrs['start_at'] = $this->start_at->addMonth();
         $attrs['end_at'] = $this->start_at->addMonth()->endOfMonth();
+        $attrs['user_sign_status'] = FALSE;
+        $attrs['contractor_sign_status'] = FALSE;
+        $attrs['schedule_id'] = NULL;
+        $attrs['payment_address'] = NULL;
         $contract = self::create($attrs);
 
 
