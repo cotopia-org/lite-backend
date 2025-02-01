@@ -50,12 +50,16 @@ return [
         7 => [
             "Counting times" => [
                 "The first party must be online on schedule times added to contract and only times count in schedule",
-                "The first party must has jobs to count times in workspace",
             ]
         ],
         8 => [
             "Disclosure" => [
                 "This agreement is not confidential and the parties are allowed to publicly disclose its provisions."
+            ]
+        ],
+        9 => [
+            "In Job" => [
+                "The first party must has jobs to count times in workspace"
             ]
         ],
 
