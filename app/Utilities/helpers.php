@@ -102,7 +102,7 @@ function userJoinedToRoomEmit($socket_id, $room_id) {
 }
 
 function isNowInUserSchedule($schedule) {
-    $now = now();
+    $now = now()->timezone($schedule->timezone);
 
     if ($schedule === NULL) {
         return FALSE;
@@ -111,15 +111,15 @@ function isNowInUserSchedule($schedule) {
         if ((int)$day->day === $now->weekday()) {
 
             foreach ($day->times as $time) {
-                $start = now()->copy()->timezone($schedule->timezone)->setTimeFromTimeString($time->start);
-                $end = now()->copy()->timezone($schedule->timezone)->setTimeFromTimeString($time->end);
+                $start = $now->setTimeFromTimeString($time->start);
+                $end = $now->setTimeFromTimeString($time->end);
 
 
                 logger('Start ' . $start);
                 logger('End ' . $end);
-                logger('Now ' . $now->copy()->timezone($schedule->timezone));
+                logger('Now ' . $now);
 
-                if ($now->copy()->timezone($schedule->timezone)->between($start, $end)) {
+                if ($now->between($start, $end)) {
                     return TRUE;
                 }
 
