@@ -39,23 +39,23 @@ Route::get('/avatar', function () {
 
 Route::get('/tester', function () {
 
-    $user = \App\Models\User::first();
 
-    dd($user->activeContract());
-    //    $contracts = Contract::where('created_at','>=');
-    //
-    //
-    //    $contract = Contract::create($request->all());
-    //
-    //
-    //    $payment = Payment::create([
-    //                                   'status'      => 'pending',
-    //                                   'amount'      => NULL,
-    //                                   'total_hours' => NULL,
-    //                                   'type'        => 'salary',
-    //                                   'user_id'     => $request->user_id,
-    //                                   'contract_id' => $contract->id
-    //                               ]);
+    $lastMonth = now()->subMonth();
+    $contracts = Contract::where('created_at', '>=', '2024-12-31 00:00:00')->where('user_sign_status', TRUE)
+                         ->where('contractor_sign_status', TRUE)->get();
+
+
+    $contract = Contract::create($request->all());
+
+
+    $payment = Payment::create([
+                                   'status'      => 'pending',
+                                   'amount'      => NULL,
+                                   'total_hours' => NULL,
+                                   'type'        => 'salary',
+                                   'user_id'     => $request->user_id,
+                                   'contract_id' => $contract->id
+                               ]);
 });
 
 

@@ -86,8 +86,8 @@ class User extends Authenticatable {
 
         $now = now();
         return $this
-            ->contracts()->where('start_at', '<=', $now)->where('end_at', '>=', $now)
-            ->where('user_sign_status', TRUE)->where('contractor_sign_status', TRUE)->first();
+            ->contracts()->where('start_at', '<=', $now)->where('end_at', '>=', $now)->where('user_sign_status', TRUE)
+            ->where('contractor_sign_status', TRUE)->first();
     }
 
     public function activeJob() {
@@ -122,11 +122,11 @@ class User extends Authenticatable {
     }
 
 
-    public function calculateCommitment() {
+    public function calculateCommitment($contract = null) {
         $user = $this;
 
 
-        $schedules = $user->scheduleDates();
+        $schedules = $user->scheduleDates($contract);
         if (count($schedules) < 1) {
             return [
                 "total_until_now_schedule" => 0,
@@ -508,7 +508,7 @@ class User extends Authenticatable {
         //
         //
         //        }
-        $time = $this->calculateCommitment();
+        $time = $this->calculateCommitment($contract);
 
 
         return [
@@ -555,10 +555,13 @@ class User extends Authenticatable {
         ];
     }
 
-    public function scheduleDates() {
+    public function scheduleDates($contract) {
+        $activeContract = $contract;
+        if ($contract === NULL) {
+            $activeContract = $this->activeContract();
 
+        }
 
-        $activeContract = $this->activeContract();
 
         if ($activeContract === NULL || $activeContract->schedule === NULL) {
             return [];
