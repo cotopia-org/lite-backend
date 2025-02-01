@@ -220,7 +220,7 @@ class User extends Authenticatable {
         }
 
 
-        $scheduleThreshold = $contract->min_commitment_percent;
+        $scheduleThreshold = $contract->min_commitment_percent / 100;
         $totalDays = count($schedules);
         $done = $totalOverlapDuration;
         $missing = $totalUntilNowDuration - $done;
