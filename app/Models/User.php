@@ -255,7 +255,7 @@ class User extends Authenticatable {
             "totalDaysUntilNow"        => $totalDaysUntilNow,
             "minimumWork"              => $totalScheduleDuration * $scheduleThreshold,
             "average"                  => $averageWorked,
-            "min_commitment_percent"   => $scheduleThreshold,
+            "min_commitment_percent"   => $contract->min_commitment_percent,
         ];
     }
 
