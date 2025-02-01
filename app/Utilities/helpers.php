@@ -12,8 +12,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Redis;
 
 
-function sendSocket($eventName, $channel, $data)
-{
+function sendSocket($eventName, $channel, $data) {
     if ($channel !== NULL) {
         sendSocketJob::dispatch([
                                     'eventName' => $eventName,
@@ -26,8 +25,7 @@ function sendSocket($eventName, $channel, $data)
 }
 
 
-function sendToChatGpt($prompt)
-{
+function sendToChatGpt($prompt) {
     $api_key = config('services.openai.api_key');
     if ($api_key === NULL) {
         error('No Api key provided for OpenAi');
@@ -49,8 +47,7 @@ function sendToChatGpt($prompt)
     return $res->json();
 }
 
-function updateMesssage($message, $text, $reply_to = NULL)
-{
+function updateMesssage($message, $text, $reply_to = NULL) {
 
     $message->update([
                          'text'      => $text,
@@ -60,8 +57,7 @@ function updateMesssage($message, $text, $reply_to = NULL)
                      ]);
 }
 
-function sendMessage($message, $chat_id, $reply_to = NULL)
-{
+function sendMessage($message, $chat_id, $reply_to = NULL) {
     //TODO: has to change to notification or Job.
     $notifUser = User::find(41);
     $chat = Chat::find($chat_id);
@@ -88,8 +84,7 @@ function sendMessage($message, $chat_id, $reply_to = NULL)
 
 }
 
-function getSocketUsers()
-{
+function getSocketUsers() {
     try {
         return collect(\Http::get(get_socket_url('sockets'))->json());
     } catch (\Exception $e) {
@@ -97,8 +92,7 @@ function getSocketUsers()
     }
 }
 
-function userJoinedToRoomEmit($socket_id, $room_id)
-{
+function userJoinedToRoomEmit($socket_id, $room_id) {
     Redis::publish('joined', json_encode([
                                              'socket_id' => $socket_id,
                                              'room_id'   => $room_id
@@ -107,20 +101,24 @@ function userJoinedToRoomEmit($socket_id, $room_id)
 
 }
 
-function isNowInUserSchedule($schedule)
-{
+function isNowInUserSchedule($schedule) {
     $now = now();
 
     if ($schedule === NULL) {
         return FALSE;
     }
     foreach ($schedule->days as $day) {
-        if ((int) $day->day === $now->weekday()) {
+        if ((int)$day->day === $now->weekday()) {
 
             foreach ($day->times as $time) {
-
-                $end = now()->copy()->timezone($schedule->timezone)->setTimeFromTimeString($time->end);
                 $start = now()->copy()->timezone($schedule->timezone)->setTimeFromTimeString($time->start);
+                $end = now()->copy()->timezone($schedule->timezone)->setTimeFromTimeString($time->end);
+
+
+                logger('Start ' . $start);
+                logger('End ' . $end);
+                logger('Now ' . $now->copy()->timezone($schedule->timezone));
+
                 if ($now->copy()->timezone($schedule->timezone)->between($start, $end)) {
                     return TRUE;
                 }
@@ -135,8 +133,7 @@ function isNowInUserSchedule($schedule)
 
 }
 
-function acted($user_id, $workspace_id, $room_id, $job_id, $type, $description)
-{
+function acted($user_id, $workspace_id, $room_id, $job_id, $type, $description) {
 
 
     return \App\Models\Act::create([
@@ -150,15 +147,12 @@ function acted($user_id, $workspace_id, $room_id, $job_id, $type, $description)
 
 }
 
-function get_enum_values($cases, $key = FALSE): array
-{
+function get_enum_values($cases, $key = FALSE): array {
     return array_column($cases, 'value', $key ? 'name' : NULL);
 }
 
 
-function api($data = NULL, $meta = [], $message = Constants::API_SUCCESS_MSG, $code = 1000,
-             $http_code = 200): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
-{
+function api($data = NULL, $meta = [], $message = Constants::API_SUCCESS_MSG, $code = 1000, $http_code = 200): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory {
     if ($message === Constants::API_SUCCESS_MSG) {
         $status = Constants::API_SUCCESS_MSG;
     } else {
@@ -178,24 +172,21 @@ function api($data = NULL, $meta = [], $message = Constants::API_SUCCESS_MSG, $c
     return response($response, $http_code);
 }
 
-function api_gateway_error($message = Constants::API_FAILED_MSG)
-{
+function api_gateway_error($message = Constants::API_FAILED_MSG) {
     return api(NULL, [], Constants::API_FAILED_MSG, 0, Response::HTTP_INTERNAL_SERVER_ERROR);
 }
 
 /**
  * @throws Exception
  */
-function error($message, $code = 400)
-{
+function error($message, $code = 400) {
 
     throw new RuntimeException($message, $code);
     //    throw new HttpException($code, $message, NULL, [], $code);
 
 }
 
-function convert($value): array|string
-{
+function convert($value): array|string {
     $western = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
     $eastern = ['۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹', '۰'];
 
@@ -203,13 +194,11 @@ function convert($value): array|string
 }
 
 
-function get_socket_url($path = ""): string
-{
+function get_socket_url($path = ""): string {
     return rtrim(config('socket.base_url'), '/') . '/' . $path;
 }
 
-function calculateScheduleHours($days)
-{
+function calculateScheduleHours($days) {
     $hours = 0;
     foreach ($days as $day) {
         foreach ($day['times'] as $time) {
@@ -223,8 +212,7 @@ function calculateScheduleHours($days)
     return $hours;
 }
 
-function getWeekDays()
-{
+function getWeekDays() {
     return [
         Carbon::SATURDAY  => 0,
         Carbon::SUNDAY    => 1,
@@ -236,8 +224,7 @@ function getWeekDays()
     ];
 }
 
-function scheduleIsFitInContract($days, $contract)
-{
+function scheduleIsFitInContract($days, $contract) {
     if ($contract) {
 
         $contract = Contract::find($contract);
@@ -255,8 +242,7 @@ function scheduleIsFitInContract($days, $contract)
 
 }
 
-function unConvert($value): array|string
-{
+function unConvert($value): array|string {
     $western = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
     $eastern = ['۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹', '۰'];
 
@@ -264,13 +250,11 @@ function unConvert($value): array|string
 }
 
 
-function activityDiffWithSchedule($dates, $activity)
-{
+function activityDiffWithSchedule($dates, $activity) {
 
     $join_at = $activity->join_at;
     $left_at = $activity->left_at ?? now();
     $scheduleTime = 0;
-
 
 
     foreach ($dates as $date) {
