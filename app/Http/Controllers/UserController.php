@@ -226,21 +226,28 @@ class UserController extends Controller {
 
     public function activities(Request $request) {
         $user = auth()->user();
-        $time_start = TRUE;
 
+        $desc = NULL;
+        $activeContract = $user->activeContract();
 
-        if ($user->activeContract() !== NULL) {
-            if ($user->activeContract()->in_schedule && !isNowInUserSchedule($user->activeContract()->schedule)) {
-                $time_start = FALSE;
-
-            }
+        if ($activeContract === NULL) {
+            $desc = 'No active contract';
         }
+        if ($activeContract->in_schedule && !isNowInUserSchedule($activeContract->schedule)) {
+            $desc = 'No schedule for now';
 
+        }
+        if ($activeContract->in_job && $user->active_job_id === NULL) {
+            $desc = 'No active job';
+
+
+        }
         if ($request->new) {
 
             return api([
-                           'minutes'    => $user->getTime(today(), today()->addDay(), $user->workspace_id)["sum_minutes"],
-                           'time_count' => $time_start
+                           'minutes'        => $user->getTime(today(), today()->addDay(), $user->workspace_id)["sum_minutes"],
+                           'time_count'     => $user->timeStarted(),
+                           'time_stop_desc' => $desc,
                        ]);
         }
 
