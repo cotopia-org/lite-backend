@@ -40,14 +40,14 @@ Route::get('/avatar', function () {
 Route::get('/tester', function () {
 
 
-    $lastMonth = now()->subMonth();
-    $contracts = Contract::where('start_at', '>=', '2024-12-31 00:00:00')->where('user_sign_status', TRUE)
-                         ->where('contractor_sign_status', TRUE)->get();
-
-    foreach ($contracts as $contract) {
-
-        $contract->renew();
-    }
+//    $lastMonth = now()->subMonth();
+//    $contracts = Contract::where('start_at', '>=', '2024-12-31 00:00:00')->where('user_sign_status', TRUE)
+//                         ->where('contractor_sign_status', TRUE)->get();
+//
+//    foreach ($contracts as $contract) {
+//
+//        $contract->renew();
+//    }
     dd('Done');
 });
 
