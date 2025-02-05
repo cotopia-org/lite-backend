@@ -59,11 +59,8 @@ Route::get('/isNowInUserSchedule', function () {
         $data = [];
         foreach (\App\Models\User::all() as $user) {
             $s = $user->activeContract()?->schedule;
-            if ($s === NULL) {
-                $data[$user->id] = NULL;
-            } else {
-                $data[$user->id] = isNowInUserSchedule($user->activeContract()?->schedule);
-
+            if ($s !== NULL) {
+                $data[$user->id . ' ' . $user->username] = isNowInUserSchedule($user->activeContract()?->schedule);
             }
         }
         return ['data' => $data, 'now' => now()];
