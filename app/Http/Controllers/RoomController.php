@@ -9,11 +9,13 @@ use App\Http\Resources\RoomResource;
 use App\Http\Resources\UserMinimalResource;
 use App\Jobs\disconnectLivekitJob;
 use App\Jobs\DisconnectUserJob;
+use App\Models\Act;
 use App\Models\File;
 use App\Models\Room;
 use App\Models\Seen;
 use App\Models\Workspace;
 use App\Utilities\Constants;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class RoomController extends Controller {
@@ -226,7 +228,15 @@ class RoomController extends Controller {
 
     public function leave() {
         $user = auth()->user();
-        $request = \request();
+
+        if ($user->active_job_id !== NULL) {
+            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended', 'RoomController@leave');
+
+        }
+        if ($user->active_activity_id !== NULL) {
+            //TODO: must change to if time started.
+            acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'time_ended', 'RoomController@leave');
+        }
 
 
         DisconnectUserJob::dispatch($user, FALSE, FALSE, 'Disconnected From RoomController Leave Method');
