@@ -107,7 +107,7 @@ Route::middleware('auth:sanctum')->group(callback: function () {
 
     Route::controller(RoomController::class)->prefix('rooms')->group(function () {
         Route::post('/', 'create');
-        Route::get('/leave', 'leave');
+        Route::get('{room}/leave', 'leave');
         Route::get('/{room}/', 'get');
         Route::put('/{room}/', 'update');
         Route::get('/{room}/join', 'join');

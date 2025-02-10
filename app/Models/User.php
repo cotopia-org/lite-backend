@@ -357,11 +357,11 @@ class User extends Authenticatable {
     public function createToken(string $name, $abilities = [], $expiresAt = NULL): NewAccessToken {
         $plainTextToken = $this->generateTokenString();
 
-        $abilities = $this->getAbilities();
+        $abs = $this->getAbilities();
         $token = $this->tokens()->create([
                                              'name'       => $name,
                                              'token'      => hash('sha256', $plainTextToken),
-                                             'abilities'  => $abilities,
+                                             'abilities'  => $abs,
                                              'expires_at' => $expiresAt,
                                          ]);
 
