@@ -69,9 +69,10 @@ class JobController extends Controller
 
         $job->createChat();
 
+        $models = ['user' => User::class, 'tag' => Tag::class];
+        $res = JobResource::make($job);
 
         if ($request->mentions) {
-            $models = ['user' => User::class, 'tag' => Tag::class];
             foreach ($request->mentions as $mention) {
                 $job->mentions()->create([
                                              'user_id'          => $user->id,
@@ -79,9 +80,23 @@ class JobController extends Controller
                                              'mentionable_id'   => $mention['model_id'],
 
                                          ]);
+                if ($mention['type'] === 'user') {
+                    sendSocket('jobSuggested', User::find($mention['model_id'])->socket_id, $res);
+
+                }
+                if ($mention['type'] === 'tag') {
+                    foreach (Tag::find($mention['model_id'])->users as $u) {
+                        sendSocket('jobSuggested', $u->socket_id, $res);
+
+                    }
+
+                }
             }
+
         }
 
+
+        sendSocket(Constants::jobCreated, $job->workspace->channel, $res);
 
         return api(JobResource::make($job));
     }
@@ -133,7 +148,7 @@ class JobController extends Controller
 
         $jobResource = JobResource::make($job);
 
-        sendSocket('jobUpdated', $job->workspace->channel, $jobResource);
+        sendSocket(Constants::jobUpdated, $job->workspace->channel, $jobResource);
 
 
         $currentMentionIds = $job->mentions()->pluck('id')->toArray();
@@ -148,10 +163,10 @@ class JobController extends Controller
             $job->mentions()->whereIn('id', $mentionsToDelete)->delete();
         }
 
+        $models = ['user' => User::class, 'tag' => Tag::class];
 
         foreach ($newMentions as $mention) {
             if (!isset($mentionData['id'])) {
-                $models = ['user' => User::class, 'tag' => Tag::class];
 
                 $job->mentions()->create([
                                              'user_id'          => $user->id,
@@ -159,6 +174,18 @@ class JobController extends Controller
                                              'mentionable_id'   => $mention['model_id'],
 
                                          ]);
+                if ($mention['type'] === 'user') {
+                    sendSocket(Constants::jobSuggested, User::find($mention['model_id'])->socket_id, $jobResource);
+
+                }
+                if ($mention['type'] === 'tag') {
+                    foreach (Tag::find($mention['model_id'])->users as $u) {
+                        sendSocket(Constants::jobSuggested, $u->socket_id, $jobResource);
+
+                    }
+
+                }
+
             }
         }
 
@@ -185,6 +212,9 @@ class JobController extends Controller
                                                                                                                     'status' => Constants::PAUSED
                                                                                                                 ]);
 
+            $jobResource = JobResource::make($job);
+
+            sendSocket(Constants::jobUpdated, $job->workspace->channel, $jobResource);
 
             if ($user->active_job_id !== NULL) {
                 acted($user->id, $user->workspace_id, $user->room_id, $user->active_job_id, 'job_ended',
@@ -208,9 +238,10 @@ class JobController extends Controller
                                                                                                   'status'     => $request->status,
                                                                                                   'updated_at' => now()
                                                                                               ]);
+        $jobResource = JobResource::make($job);
+        sendSocket(Constants::jobUpdated, $job->workspace->channel, $jobResource);
 
-
-        return api(JobResource::make($job));
+        return api($jobResource);
 
 
     }
