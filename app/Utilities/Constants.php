@@ -94,5 +94,7 @@ class Constants
     const jobUpdated = 'jobUpdated';
     const jobSuggested = 'jobSuggested';
 
+    const activeJobUpdated = 'activeJobUpdated';
+
 
 }
