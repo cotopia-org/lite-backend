@@ -6,6 +6,7 @@ use App\Enums\Permission;
 use App\Events\ChatCreated;
 use App\Events\JobCreated;
 use App\Http\Resources\JobResource;
+use App\Http\Resources\UserResource;
 use App\Models\Job;
 use App\Models\Tag;
 use App\Models\User;
@@ -59,6 +60,7 @@ class JobController extends Controller
             acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started', 'JobController@create');
 
             $user->updateActiveJob($job->id);
+            sendSocket(Constants::activeJobUpdated, $user->workspace->channel, UserResource::make($user));
 
         }
 
@@ -240,6 +242,7 @@ class JobController extends Controller
                                                                                               ]);
         $jobResource = JobResource::make($job);
         sendSocket(Constants::jobUpdated, $job->workspace->channel, $jobResource);
+        sendSocket(Constants::activeJobUpdated, $user->workspace->channel, UserResource::make($user));
 
         return api($jobResource);
 
@@ -271,6 +274,7 @@ class JobController extends Controller
             acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started', 'JobController@accept');
             $user->updateActiveJob($job->id);
 
+            sendSocket(Constants::activeJobUpdated, $user->workspace->channel, UserResource::make($user));
 
             $jobFolder = $user->folders()->where('title', 'Jobs')->first();
             $job->chat->users()->attach($user->id, ['role' => 'member', 'folder_id' => $jobFolder->id]);

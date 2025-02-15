@@ -466,10 +466,7 @@ class User extends Authenticatable
 
         $this->update(['active_job_id' => $job_id]);
 
-        if ($this->workspace_id !== NULL) {
-            sendSocket(Constants::activeJobUpdated, $this->workspace->channel, UserResource::make($this));
 
-        }
         //        $this->refreshActivity();
     }
 
