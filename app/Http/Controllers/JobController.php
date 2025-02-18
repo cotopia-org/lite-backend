@@ -60,7 +60,7 @@ class JobController extends Controller
             acted($user->id, $user->workspace_id, $user->room_id, $job->id, 'job_started', 'JobController@create');
 
             $user->updateActiveJob($job->id);
-            sendSocket(Constants::activeJobUpdated, $user->workspace->channel, UserResource::make($user));
+            sendSocket(Constants::activeJobUpdated, $user->workspace?->channel, UserResource::make($user));
 
         }
 
@@ -242,7 +242,7 @@ class JobController extends Controller
                                                                                               ]);
         $jobResource = JobResource::make($job);
         sendSocket(Constants::jobUpdated, $job->workspace->channel, $jobResource);
-        sendSocket(Constants::activeJobUpdated, $user->workspace->channel, UserResource::make($user));
+        sendSocket(Constants::activeJobUpdated, $user->workspace?->channel, UserResource::make($user));
 
         return api($jobResource);
 
