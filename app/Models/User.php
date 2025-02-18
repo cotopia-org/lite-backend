@@ -453,21 +453,19 @@ class User extends Authenticatable {
     public function joined($room, $data) {
         if ($this->active_activity_id === NULL || $this->active_activity_id === 0) {
 
-            if ($this->activities()->whereNull('left_at')->count() < 1) {
-                $act = $this->activities()->create([
-                                                       'join_at'      => now(),
-                                                       'left_at'      => NULL,
-                                                       'workspace_id' => $room->workspace->id,
-                                                       'room_id'      => $room->id,
-                                                       'job_id'       => $this->active_job_id,
-                                                       'data'         => $data,
-                                                   ]);
-                $this->update([
-                                  'active_activity_id' => $act->id,
-                              ]);
+            $act = $this->activities()->create([
+                                                   'join_at'      => now(),
+                                                   'left_at'      => NULL,
+                                                   'workspace_id' => $room->workspace->id,
+                                                   'room_id'      => $room->id,
+                                                   'job_id'       => $this->active_job_id,
+                                                   'data'         => $data,
+                                               ]);
+            $this->update([
+                              'active_activity_id' => $act->id,
+                          ]);
 
-                return TRUE;
-            }
+            return TRUE;
 
         }
         return FALSE;
