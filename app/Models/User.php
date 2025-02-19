@@ -165,9 +165,15 @@ class User extends Authenticatable {
                 $totalScheduleDuration += $scheduleDuration;
 
                 if (!Carbon::parse($date)->gt(now())) {
-                    $scheduleTillNowDuration = $scheduleStart->diffInMinutes(now());
+                    if ($scheduleStart->isToday()) {
+                        $scheduleTillNowDuration = $scheduleStart->diffInMinutes(now());
+                        $totalUntilNowDuration += $scheduleTillNowDuration;
 
-                    $totalUntilNowDuration += $scheduleTillNowDuration;
+                    } else {
+                        $totalUntilNowDuration += $scheduleDuration;
+
+                    }
+
 
                     $overlappingActivities = Activity::where('user_id', $user->id)
                                                      ->where(function ($query) use ($scheduleStart, $scheduleEnd) {
