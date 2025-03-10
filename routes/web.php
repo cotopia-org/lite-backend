@@ -183,7 +183,7 @@ Route::get('/scoreboard', function () {
     if ($request->endTime) {
         $now = \Carbon\Carbon::make($request->endTime);
     }
-    $acts = \App\Models\Act::where('created_at', '>=', $today)->whereIn('type', ['time_started', 'time_ended'])
+    $acts = \App\Models\Act::where('created_at', '>=', $today)->whereIn('type', ['connected', 'disconnected'])
                            ->orderBy('id', 'ASC')->where('user_id', $request->user_id)->get();
 
     $minutes = 0;
@@ -194,8 +194,8 @@ Route::get('/scoreboard', function () {
             'type'       => $act->type,
             'created_at' => $act->created_at
         ];
-        if ($act->type === 'time_started') {
-            $end = $acts->where('id', '>', $act->id)->where('type', 'time_ended')->first();
+        if ($act->type === 'connected') {
+            $end = $acts->where('id', '>', $act->id)->where('type', 'disconnected')->first();
             if ($end === NULL) {
                 $minutes += $act->created_at->diffInMinutes($now);
             } else {
